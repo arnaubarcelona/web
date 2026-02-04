@@ -1,0 +1,141 @@
+.annual-calendar {
+    display: grid;
+    grid-template-columns: minmax(220px, 260px) 1fr;
+    gap: 2.5rem;
+    align-items: start;
+    padding: 2rem 0 3rem;
+}
+
+.annual-calendar__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    color: #6c6a74;
+}
+
+.annual-calendar__logo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.annual-calendar__logo-mark {
+    font-size: 1rem;
+    color: #93b95d;
+    text-transform: uppercase;
+}
+
+.annual-calendar__logo-name {
+    font-size: 1.3rem;
+    color: #7a7a7a;
+}
+
+.annual-calendar__logo-subtitle {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: #9c9aa4;
+}
+
+.annual-calendar__course {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #7b6a87;
+    border-left: 4px solid #7b6a87;
+    padding-left: 0.75rem;
+}
+
+.annual-calendar__legend {
+    display: grid;
+    gap: 0.6rem;
+    font-size: 0.8rem;
+    color: #7a7483;
+}
+
+.annual-calendar__legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.annual-calendar__legend-swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    display: inline-block;
+    border: 1px solid #c9c5d3;
+}
+
+.annual-calendar__months {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.4rem;
+}
+
+.month-card {
+    border: 2px solid #a59bb6;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.month-card__header {
+    background: #a59bb6;
+    color: #ffffff;
+    text-align: center;
+    padding: 0.35rem 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.month-card__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.7rem;
+    color: #3d3d3d;
+}
+
+.month-card__table th {
+    background: #ede8f4;
+    font-weight: 700;
+    padding: 0.2rem 0;
+    text-transform: lowercase;
+}
+
+.month-card__table td {
+    text-align: center;
+    padding: 0.25rem 0;
+    border: 1px solid #f0eef4;
+}
+
+.month-card__empty {
+    background: #ffffff;
+    border: 1px solid #ffffff;
+}
+
+.calendar-day--lectiu {
+    background: #ffffff;
+}
+
+.calendar-day--festiu {
+    background: #f2b8b5;
+    color: #3a1f1d;
+}
+
+.calendar-day--obert {
+    background: #f6d3ad;
+    color: #55371f;
+}
+
+.calendar-day--closed {
+    background: #f4f4f6;
+    color: #7b7b7b;
+}
+
+@media (max-width: 900px) {
+    .annual-calendar {
+        grid-template-columns: 1fr;
+    }
+}
