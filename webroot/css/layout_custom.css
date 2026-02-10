@@ -23,34 +23,18 @@
   padding: 0 12px;
 }
 
-/* Botó menú (només mòbil) */
-/* Botó MENU (base: ocult) */
+/* Botó MENU (base: ocult; es mostra només mòbil) */
 .app-topbar__menuImgBtn{
-  display: none;          /* només mòbil */
+  display: none;
   background: grey;
   color: white;
-  padding: 0.3rem;
-  padding-left: 0.6rem;
-  padding-right: 0.6rem;
+  padding: 0.3rem 0.6rem;
   border: 0;
   font-family: "Bebas Neue", Bebas, Arial, sans-serif;
   font-size: 1.3rem;
   border-radius: 6px;
-
   cursor: pointer;
 }
-
-
-@media (max-width: 900px){
-
-  .app-topbar__menuImgBtn{
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-}
-
 
 /* Bloc centrat (logo + xarxes) */
 .app-topbar__center{
@@ -83,60 +67,75 @@
   display: block;
 }
 
-/* CTA: enganxat a dalt a la dreta (desktop) */
+/* CTA (desktop) */
 .app-topbar__cta{
   margin-left: auto;
 
-  /* AFEGEIX AIXÒ */
-  align-self: flex-start;  /* NO centrat vertical */
+  align-self: flex-start;
   display: inline-flex;
-  align-items: center;        /* centra verticalment el text */
-  justify-content: center;  
-  margin-top: 10px;        /* separació respecte dalt (ajusta) */
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
 
-  height: 44px;            /* més petit */
+  height: 44px;
   padding: 0 14px;
   background: var(--pink);
   color: #fff;
 
   font-family: "Bebas Neue", Bebas, Arial, sans-serif;
-  font-size: 1.6rem;       /* més petit */
-  letter-spacing: 0.02em;  /* lletres més juntes */
+  font-size: 1.6rem;
+  letter-spacing: 0.02em;
 
   text-decoration: none;
   white-space: nowrap;
 }
 
+/* ===== APP SHELL (SIDEBAR + MAIN) ===== */
+/* IMPORTANT: això assumeix que al layout has posat:
+   <div class="app-shell"> ... <aside class="app-sidebar"> ... <main class="app-main"> ... </div>
+*/
 
-
-/* ===== SIDEBAR (desktop) ===== */
-.app-sidebar{
-  position: fixed;
-  top: var(--topbar-h);
-  left: 0;
-  bottom: 0;
-  width: var(--sidebar-w);
-  background: #fff;
-  z-index: 900;
-  overflow-y: auto;
-  padding: 12px;
-  border: 0;
-}
-
-/* Botó tancar: amagat per defecte (desktop) */
-.app-sidebar__close{
-  display: none;
-}
-
-/* ===== CONTINGUT ===== */
-.app-main{
-  padding-top: var(--topbar-h);
-}
-
+/* ===== DESKTOP ===== */
 @media (min-width: 901px){
-  .app-main{
-    margin-left: var(--sidebar-w);
+
+  /* Sidebar fixa */
+  .app-sidebar{
+    position: fixed;
+    top: var(--topbar-h);
+    left: 0;
+    width: var(--sidebar-w);
+    height: calc(100vh - var(--topbar-h));
+    overflow-y: auto;
+    background: #fff;
+    z-index: 900;
+    padding: 12px;
+    border: 0;
   }
+
+  /* El contenidor principal deixa espai per la sidebar i la topbar */
+  .app-shell{
+    padding-top: var(--topbar-h);
+    margin-left: var(--sidebar-w);
+    min-height: calc(100vh - var(--topbar-h));
+  }
+
+  /* main no ha de tornar a sumar top/margin */
+  .app-main{
+    padding-top: -1rem;
+    margin-left: 5rem;
+    margin-right: 5rem;
+  }
+
+  .app-sidebar__close{
+    display: none;
+  }
+}
+
+
+/* Espaiat botons sidebar */
+.sidebar-item{
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 /* BACKDROP */
@@ -149,7 +148,12 @@
 
 /* ===== MÒBIL ===== */
 @media (max-width: 900px){
-  .app-topbar__menuBtn{
+
+  .app-shell{
+    display: block;
+  }
+
+  .app-topbar__menuImgBtn{
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -161,16 +165,28 @@
   }
 
   .app-sidebar{
+    position: fixed;
     top: 0; /* overlay també sobre la topbar */
+    left: 0;
+    bottom: 0;
+
     width: min(86vw, 360px);
+    background: #fff;
+
     transform: translateX(-110%);
     transition: transform .22s ease;
+
     z-index: 2000;
+    overflow-y: auto;
+
     padding: 16px;
     padding-top: 76px;
+    border: 0;
+  }
 
-    /* IMPORTANT perquè el close quedi dins i per sobre */
-    position: fixed;
+  .sidebar-item{
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
 
   body.sidebar-open .app-sidebar{
@@ -179,6 +195,7 @@
 
   .app-main{
     margin-left: 0;
+    padding-top: var(--topbar-h);
   }
 
   /* Botó tancar visible en mòbil */
@@ -200,6 +217,6 @@
     line-height: 52px;
     cursor: pointer;
 
-    z-index: 2100; /* per sobre del contingut */
+    z-index: 2100;
   }
 }

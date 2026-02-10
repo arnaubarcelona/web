@@ -6,10 +6,16 @@ namespace App\Test\Fixture;
 use Cake\TestSuite\Fixture\TestFixture;
 
 /**
- * SubjectsFixture
+ * HorarisatencioFixture
  */
-class SubjectsFixture extends TestFixture
+class HorarisatencioFixture extends TestFixture
 {
+    /**
+     * Table name
+     *
+     * @var string
+     */
+    public $table = 'horarisatencio';
     /**
      * Init method
      *
@@ -20,7 +26,10 @@ class SubjectsFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'name' => 'Lorem ipsum dolor sit amet',
+                'day_id' => 1,
+                'specialdate' => '2026-02-10',
+                'horainici' => '11:32:22',
+                'horafinal' => '11:32:22',
                 'created' => 1770723142,
                 'modified' => 1770723142,
             ],

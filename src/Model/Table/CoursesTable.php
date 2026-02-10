@@ -104,6 +104,10 @@ class CoursesTable extends Table
             ->notEmptyString('name');
 
         $validator
+            ->scalar('description')
+            ->allowEmptyString('description');
+
+        $validator
             ->requirePresence('propi', 'create')
             ->notEmptyString('propi');
 

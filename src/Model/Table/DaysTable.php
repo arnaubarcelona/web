@@ -46,6 +46,9 @@ class DaysTable extends Table
         $this->hasMany('Horaris', [
             'foreignKey' => 'day_id',
         ]);
+        $this->hasMany('Horarisatencio', [
+            'foreignKey' => 'day_id',
+        ]);
     }
 
     /**

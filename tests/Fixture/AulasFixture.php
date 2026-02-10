@@ -22,8 +22,8 @@ class AulasFixture extends TestFixture
                 'id' => 1,
                 'name' => 'Lorem ipsum dolor sit amet',
                 'code' => 'Lorem ip',
-                'created' => 1770222875,
-                'modified' => 1770222875,
+                'created' => 1770723115,
+                'modified' => 1770723115,
             ],
         ];
         parent::init();

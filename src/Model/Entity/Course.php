@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property string $code
  * @property string $name
+ * @property string|null $description
  * @property int $propi
  * @property int|null $parentcourse_id
  * @property bool $microgrup
@@ -52,6 +53,7 @@ class Course extends Entity
     protected $_accessible = [
         'code' => true,
         'name' => true,
+        'description' => true,
         'propi' => true,
         'parentcourse_id' => true,
         'microgrup' => true,

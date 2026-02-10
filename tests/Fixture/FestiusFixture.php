@@ -26,7 +26,7 @@ class FestiusFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'data' => '2026-02-04',
+                'data' => '2026-02-10',
             ],
         ];
         parent::init();

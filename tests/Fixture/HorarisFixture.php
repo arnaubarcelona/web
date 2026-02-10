@@ -22,11 +22,11 @@ class HorarisFixture extends TestFixture
                 'id' => 1,
                 'course_id' => 1,
                 'day_id' => 1,
-                'horainici' => '16:34:35',
-                'horafinal' => '16:34:35',
+                'horainici' => '11:32:22',
+                'horafinal' => '11:32:22',
                 'durada' => 1.5,
-                'created' => 1770222875,
-                'modified' => 1770222875,
+                'created' => 1770723142,
+                'modified' => 1770723142,
             ],
         ];
         parent::init();
