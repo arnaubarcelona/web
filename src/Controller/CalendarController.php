@@ -114,12 +114,19 @@ class CalendarController extends AppController
                 $weeks[] = $week;
             }
 
+            // 🔹 Forcem sempre 6 setmanes perquè la vora inferior
+            //     sigui la de l’última fila encara que sigui buida
+            while (count($weeks) < 6) {
+                $weeks[] = array_fill(0, 7, null);
+            }
+
             $months[] = [
                 'label' => $monthNames[(int)$cursor->format('n')],
                 'weeks' => $weeks,
             ];
 
-            $cursor = $cursor->addMonth();
+
+            $cursor = $cursor->addMonths(1);
         }
 
         return $months;

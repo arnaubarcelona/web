@@ -1,0 +1,205 @@
+:root{
+  --topbar-h: 10rem;
+  --sidebar-w: 280px;
+  --pink: #e83e8c;
+
+  /* si el PNG té marge transparent */
+  --logo-offset-x: 0rem;
+}
+
+/* ===== TOPBAR ===== */
+.app-topbar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-h);
+  background: #fff;
+  z-index: 1000;
+  border: 0;
+
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+}
+
+/* Botó menú (només mòbil) */
+/* Botó MENU (base: ocult) */
+.app-topbar__menuImgBtn{
+  display: none;          /* només mòbil */
+  background: grey;
+  color: white;
+  padding: 0.3rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  border: 0;
+  font-family: "Bebas Neue", Bebas, Arial, sans-serif;
+  font-size: 1.3rem;
+  border-radius: 6px;
+
+  cursor: pointer;
+}
+
+
+@media (max-width: 900px){
+
+  .app-topbar__menuImgBtn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+}
+
+
+/* Bloc centrat (logo + xarxes) */
+.app-topbar__center{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(calc(-50% + var(--logo-offset-x)), -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .35rem;
+}
+
+.app-topbar__logo{
+  height: 6rem;
+  width: auto;
+  display: block;
+}
+
+/* Xarxes sota el logo */
+.app-topbar__social{
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.app-topbar__socialIcon{
+  height: 2.2rem;
+  width: auto;
+  display: block;
+}
+
+/* CTA: enganxat a dalt a la dreta (desktop) */
+.app-topbar__cta{
+  margin-left: auto;
+
+  /* AFEGEIX AIXÒ */
+  align-self: flex-start;  /* NO centrat vertical */
+  display: inline-flex;
+  align-items: center;        /* centra verticalment el text */
+  justify-content: center;  
+  margin-top: 10px;        /* separació respecte dalt (ajusta) */
+
+  height: 44px;            /* més petit */
+  padding: 0 14px;
+  background: var(--pink);
+  color: #fff;
+
+  font-family: "Bebas Neue", Bebas, Arial, sans-serif;
+  font-size: 1.6rem;       /* més petit */
+  letter-spacing: 0.02em;  /* lletres més juntes */
+
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+
+
+/* ===== SIDEBAR (desktop) ===== */
+.app-sidebar{
+  position: fixed;
+  top: var(--topbar-h);
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-w);
+  background: #fff;
+  z-index: 900;
+  overflow-y: auto;
+  padding: 12px;
+  border: 0;
+}
+
+/* Botó tancar: amagat per defecte (desktop) */
+.app-sidebar__close{
+  display: none;
+}
+
+/* ===== CONTINGUT ===== */
+.app-main{
+  padding-top: var(--topbar-h);
+}
+
+@media (min-width: 901px){
+  .app-main{
+    margin-left: var(--sidebar-w);
+  }
+}
+
+/* BACKDROP */
+.app-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 1999;
+}
+
+/* ===== MÒBIL ===== */
+@media (max-width: 900px){
+  .app-topbar__menuBtn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* NO mostrar Inscriu-te en mòbil */
+  .app-topbar__cta{
+    display: none;
+  }
+
+  .app-sidebar{
+    top: 0; /* overlay també sobre la topbar */
+    width: min(86vw, 360px);
+    transform: translateX(-110%);
+    transition: transform .22s ease;
+    z-index: 2000;
+    padding: 16px;
+    padding-top: 76px;
+
+    /* IMPORTANT perquè el close quedi dins i per sobre */
+    position: fixed;
+  }
+
+  body.sidebar-open .app-sidebar{
+    transform: translateX(0);
+  }
+
+  .app-main{
+    margin-left: 0;
+  }
+
+  /* Botó tancar visible en mòbil */
+  .app-sidebar__close{
+    display: block !important;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+
+    width: 52px;
+    height: 52px;
+
+    background: #fff;
+    border: 0;
+    border-radius: 0;
+    color: #000;
+
+    font-size: 2rem;
+    line-height: 52px;
+    cursor: pointer;
+
+    z-index: 2100; /* per sobre del contingut */
+  }
+}

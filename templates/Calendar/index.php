@@ -10,6 +10,14 @@
 <?php $this->assign('title', __('Calendari')); ?>
 <?= $this->Html->css('calendar', ['block' => true]) ?>
 
+<?= $this->element('botoDoble', [
+  'color' => 'rosa',
+  'title' => 'PREINSCRIPCIÓ I MATRÍCULA',
+  'text'  => 'Què hi puc aprendre?',
+  'link'  => 'http://www.cfaguinardo.cat/cursos',
+]) ?>
+
+
 <section class="annual-calendar">
     <aside class="annual-calendar__intro">
         <div class="annual-calendar__logo">
@@ -23,15 +31,15 @@
         <div class="annual-calendar__legend">
             <div class="annual-calendar__legend-item">
                 <span class="annual-calendar__legend-swatch calendar-day--lectiu"></span>
-                <span><?= __('Dies lectius') ?></span>
+                <span><?= __('Obert (lectiu)') ?></span>
             </div>
             <div class="annual-calendar__legend-item">
                 <span class="annual-calendar__legend-swatch calendar-day--obert"></span>
-                <span><?= __('Centre obert (no lectiu)') ?></span>
+                <span><?= __('Obert (no lectiu)') ?></span>
             </div>
             <div class="annual-calendar__legend-item">
                 <span class="annual-calendar__legend-swatch calendar-day--festiu"></span>
-                <span><?= __('Festius i caps de setmana') ?></span>
+                <span><?= __('Tancat') ?></span>
             </div>
         </div>
     </aside>

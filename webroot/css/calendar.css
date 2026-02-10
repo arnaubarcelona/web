@@ -1,141 +1,289 @@
+/* Google-like fonts (mateix esperit que el HTML model) */
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Roboto:wght@400;700&family=Bebas+Neue&display=swap");
+
+/* Pàgina en blanc sempre */
+html, body {
+  background: #ffffff !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* si el layout posa fons amb pseudo-elements */
+body::before,
+body::after {
+  content: none !important;
+}
+
+/* Contenidor */
 .annual-calendar {
-    display: grid;
-    grid-template-columns: minmax(220px, 260px) 1fr;
-    gap: 2.5rem;
-    align-items: start;
-    padding: 2rem 0 3rem;
+  display: grid;
+  grid-template-columns: minmax(220px, 260px) 1fr;
+  gap: 2.5rem;
+  align-items: start;
+
+  /* “marges” tipus document */
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 28px 36px;
+
+  font-family: "Roboto Condensed", "Roboto", Arial, sans-serif;
+  color: #434343;
 }
 
+/* Intro */
 .annual-calendar__intro {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    color: #6c6a74;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  color: #7a7a7a;
 }
 
+/* Logo */
 .annual-calendar__logo {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .annual-calendar__logo-mark {
-    font-size: 1rem;
-    color: #93b95d;
-    text-transform: uppercase;
+  font-size: 14px;
+  color: #93b95d; /* verd model */
+  text-transform: uppercase;
+  font-family: "Roboto", Arial, sans-serif;
 }
 
 .annual-calendar__logo-name {
-    font-size: 1.3rem;
-    color: #7a7a7a;
+  font-size: 18px;
+  color: #7a7a7a;
+  font-family: "Roboto", Arial, sans-serif;
 }
 
 .annual-calendar__logo-subtitle {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    color: #9c9aa4;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #9c9aa4;
+  font-family: "Roboto", Arial, sans-serif;
 }
 
+/* Curs (model: lletra “display” gris) */
 .annual-calendar__course {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #7b6a87;
-    border-left: 4px solid #7b6a87;
-    padding-left: 0.75rem;
+  font-family: "Bebas Neue", "Roboto Condensed", Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: #808080;
+  letter-spacing: 0.02em;
+
+  /* treiem el teu border-left i padding perquè s’assembli més al model */
+  border: 0;
+  padding: 0;
 }
 
+/* Llegenda */
 .annual-calendar__legend {
-    display: grid;
-    gap: 0.6rem;
-    font-size: 0.8rem;
-    color: #7a7483;
+  display: grid;
+  gap: 10px;
+  font-size: 12px;
+  color: #434343;
 }
 
 .annual-calendar__legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .annual-calendar__legend-swatch {
-    width: 18px;
-    height: 18px;
-    border-radius: 4px;
-    display: inline-block;
-    border: 1px solid #c9c5d3;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  display: inline-block;
+  border: 1px solid #b2abbf; /* lila model */
 }
 
+/* Grid mesos (estructura igual, només look) */
 .annual-calendar__months {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.4rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.1rem;
 }
 
+/* Targeta mes = bloc de taula Google Docs */
 .month-card {
-    border: 2px solid #a59bb6;
-    border-radius: 4px;
-    overflow: hidden;
-    background: #ffffff;
+  border: 2px solid #b2abbf;
+  border-radius: 0;         /* Google Docs: cantonades rectes */
+  overflow: hidden;
+  background: #ffffff;
 }
 
+/* Capçalera mes (lila) */
 .month-card__header {
-    background: #a59bb6;
-    color: #ffffff;
-    text-align: center;
-    padding: 0.35rem 0;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
+  background: #b2abbf;
+  color: #ffffff;
+  text-align: center;
+
+  padding: 6px 0;
+  font-family: "Bebas Neue", "Roboto Condensed", Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
+/* Taula */
 .month-card__table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.7rem;
-    color: #3d3d3d;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  color: #434343;
 }
 
+/* Header setmana (dl dt...) */
 .month-card__table th {
-    background: #ede8f4;
-    font-weight: 700;
-    padding: 0.2rem 0;
-    text-transform: lowercase;
+  background: #e4dfee;      /* lila clar model */
+  font-weight: 700;
+  padding: 6px 0;
+  text-transform: lowercase;
+
+  border: 1px solid #b2abbf;
+}
+
+/* Cel·les */
+.month-card__table td {
+  text-align: center;
+  padding: 7px 0;
+
+  border: 1px solid #b2abbf; /* vores marcades */
+  background: #ffffff;
+}
+
+/* Buides */
+.month-card__empty {
+  background: #ffffff;
+  border: 1px solid #b2abbf;
+}
+
+/* Dies */
+.calendar-day--lectiu {
+  background: #ffffff;
+}
+
+/* Festius i caps de setmana (rosa model) */
+.calendar-day--festiu {
+  background: #f4cccc;
+  color: #434343;
+}
+
+/* Centre obert no lectiu (taronja model) */
+.calendar-day--obert {
+  background: #fce5cd;
+  color: #434343;
+}
+
+/* Si tens “closed” */
+.calendar-day--closed {
+  background: #f4f4f6;
+  color: #7b7b7b;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .annual-calendar {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   COLORS DIES (funcionin sí o sí)
+   ========================= */
+
+/* assegurem que la cel·la pot canviar de fons */
+.month-card__table td {
+  background: #fff; /* base */
+}
+
+/* suport tant a "calendar-day--X" com a "X" */
+.month-card__table td.calendar-day--festiu,
+.month-card__table td.festiu {
+  background: #f4cccc !important;
+  color: #434343 !important;
+}
+
+.month-card__table td.calendar-day--obert,
+.month-card__table td.obert {
+  background: #fce5cd !important;
+  color: #434343 !important;
+}
+
+.month-card__table td.calendar-day--lectiu,
+.month-card__table td.lectiu {
+  background: #ffffff !important;
+  color: #434343 !important;
+}
+
+.month-card__table td.calendar-day--closed,
+.month-card__table td.closed {
+  background: #f4f4f6 !important;
+  color: #7b7b7b !important;
+}
+
+/* També per la llegenda (els swatches) */
+.annual-calendar__legend-swatch.calendar-day--festiu,
+.annual-calendar__legend-swatch.festiu { background:#f4cccc; }
+
+.annual-calendar__legend-swatch.calendar-day--obert,
+.annual-calendar__legend-swatch.obert { background:#fce5cd; }
+
+.annual-calendar__legend-swatch.calendar-day--lectiu,
+.annual-calendar__legend-swatch.lectiu { background:#ffffff; }
+
+
+/* =========================
+   CEL·LES BUIDES SENSE VORES INTERIORS
+   ========================= */
+
+/* per defecte: cap vora */
+.month-card__table td.month-card__empty {
+  background: #fff;
+  border: 0 !important;
+}
+
+/* mantenim la vora exterior esquerra i dreta del mes */
+.month-card__table tr > td.month-card__empty:first-child {
+  border-left: 1px solid #b2abbf !important;
+}
+.month-card__table tr > td.month-card__empty:last-child {
+  border-right: 1px solid #b2abbf !important;
+}
+
+/* mantenim la vora inferior del mes si és l'última fila */
+.month-card__table tbody tr:last-child > td.month-card__empty {
+  border-bottom: 1px solid #b2abbf !important;
+}
+
+/* =========================
+   NOMÉS VORA EXTERIOR DEL MES
+   ========================= */
+
+/* cap vora interna */
+.month-card__table,
+.month-card__table th,
+.month-card__table td {
+  border: 0 !important;
+}
+
+/* la vora bona: el contorn del mes */
+.month-card__table {
+  outline: 2px solid #b2abbf; /* mateix lila del model */
+  outline-offset: -2px;       /* enganxada al contingut */
+}
+
+/* mantenim el fons de capçaleres */
+.month-card__table th {
+  background: #e4dfee;
 }
 
 .month-card__table td {
-    text-align: center;
-    padding: 0.25rem 0;
-    border: 1px solid #f0eef4;
-}
-
-.month-card__empty {
-    background: #ffffff;
-    border: 1px solid #ffffff;
-}
-
-.calendar-day--lectiu {
-    background: #ffffff;
-}
-
-.calendar-day--festiu {
-    background: #f2b8b5;
-    color: #3a1f1d;
-}
-
-.calendar-day--obert {
-    background: #f6d3ad;
-    color: #55371f;
-}
-
-.calendar-day--closed {
-    background: #f4f4f6;
-    color: #7b7b7b;
-}
-
-@media (max-width: 900px) {
-    .annual-calendar {
-        grid-template-columns: 1fr;
-    }
+  height: 1rem;
 }

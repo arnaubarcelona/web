@@ -1,0 +1,204 @@
+/* Tipografies globals */
+body {
+  font-family: 'Roboto Condensed', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  font-weight: 300;
+}
+
+/* Titulars i elements "Bebas" */
+h1, h2, h3, h4, h5, h6,
+.cfa-menu-btn,
+.cfa-inscriu-te,
+.cfa-menu a,
+.cfa-lang__btn {
+  font-family: 'Bebas Neue', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+
+:root{
+  --cfa-rosa: #e55381;
+  --cfa-gris-clar: #f5f5f5;
+  --cfa-gris-bora: #cfcfcf;
+}
+
+/* Header fix com al WP */
+.cfa-header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #fff;
+  padding: 10px 0 0;
+}
+
+/* Espai sota header */
+.cfa-main{
+  padding-top: 370px; /* desktop */
+}
+
+@media (max-width: 768px){
+  .cfa-main{ padding-top: 270px; }
+}
+
+.cfa-container{
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* Botó flotant "inscriu-te" (a dalt a la dreta) */
+.cfa-header__top{
+  display: flex;
+  justify-content: flex-end;
+  padding: 6px 16px;
+}
+
+.cfa-inscriu-te{
+  display: inline-block;
+  background: var(--cfa-rosa);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 6px;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.cfa-inscriu-te:hover{
+  transform: scale(1.08);
+  box-shadow: 0 6px 18px rgba(0,0,0,.18);
+}
+
+/* Logo centrat */
+.cfa-header__logo{
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+}
+
+.cfa-header__logo img{
+  width: 396px;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 768px){
+  .cfa-header__logo img{
+    width: 300px;
+  }
+}
+
+/* Fila: IG - Menú - FB */
+.cfa-header__row{
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px 0;
+}
+
+.cfa-social{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.cfa-social img{
+  width: 50px;
+  height: auto;
+  opacity: .9;
+  transition: transform .3s ease, opacity .3s ease;
+}
+
+.cfa-social:hover img{
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.cfa-social--ig{ justify-self: end; }
+.cfa-social--fb{ justify-self: start; }
+
+/* Botó "Menú" com el del WP (sense hamburguesa) */
+.cfa-menu-btn{
+  background: transparent;
+  border: 4px solid #cfcfcf;
+  color: #cfcfcf;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background-color .3s ease, transform .3s ease, color .3s ease;
+}
+
+.cfa-menu-btn:hover{
+  background-color: #f5f5f5;
+  color: #000;
+  transform: scale(1.15);
+}
+
+
+/* Menú desplegable */
+.cfa-menu{
+  display: none;
+  padding: 14px 16px 18px;
+  border-top: 1px solid #eee;
+  background: #fff;
+}
+
+.cfa-menu.is-open{
+  display: grid;
+  gap: 10px;
+}
+
+.cfa-menu a{
+  text-decoration: none;
+  color: #111;
+  font-weight: 600;
+  padding: 6px 0;
+}
+
+.cfa-menu a:hover{
+  text-decoration: underline;
+}
+
+/* Selector idioma (simple) */
+.cfa-lang{
+  display: flex;
+  justify-content: center;
+  padding: 6px 16px 14px;
+}
+
+.cfa-lang__btn{
+  background: transparent;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.cfa-lang__menu{
+  position: absolute;
+  margin-top: 44px;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 8px;
+  display: grid;
+  gap: 6px;
+}
+
+.cfa-lang__menu a{
+  text-decoration: none;
+  color: #111;
+  padding: 6px 8px;
+}
+
+.cfa-lang__menu a:hover{
+  background: #f6f6f6;
+}
+
+/* Opcional: amagar el "inscriu-te" en mòbil com feies amb el botó flotant */
+@media (max-width: 768px){
+  .cfa-header__top{ display:none; }
+}
