@@ -19,6 +19,8 @@ use Cake\Http\Exception\NotFoundException;
 $today = FrozenDate::today();
 $Years = TableRegistry::getTableLocator()->get('Years');
 
+$this->Html->css('calendar', ['block' => 'css']);
+
 $year = $Years->find()
     ->where([
         'datainici <=' => $today,

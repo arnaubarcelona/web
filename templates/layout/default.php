@@ -50,6 +50,7 @@ $pageLevel = function (string $orderCode): int {
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
+    <?= $this->fetch('calendar') ?>
     <?= $this->fetch('script') ?>
 </head>
 <body>
