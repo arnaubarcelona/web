@@ -216,4 +216,18 @@ echo $this->Html->css('calendar', ['block' => true]);
             </div>
         <?php endforeach; ?>
     </div>
+
+    <div class="annual-calendar__actions">
+        <?= $this->Html->link(
+            __('Descarrega calendari anual (PDF)'),
+            ['controller' => 'Calendar', 'action' => 'pdfAnnual'],
+            ['class' => 'annual-calendar__action-btn', 'target' => '_blank', 'rel' => 'noopener']
+        ) ?>
+
+        <?= $this->Html->link(
+            __('Descarrega calendari mensual (PDF)'),
+            ['controller' => 'Calendar', 'action' => 'pdfMonthly'],
+            ['class' => 'annual-calendar__action-btn', 'target' => '_blank', 'rel' => 'noopener']
+        ) ?>
+    </div>
 </section>

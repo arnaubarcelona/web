@@ -11,6 +11,26 @@ class CalendarController extends AppController
 {
     public function index(): void
     {
+        $this->set($this->calendarData());
+    }
+
+    public function pdfAnnual(): void
+    {
+        $this->viewBuilder()->disableAutoLayout();
+        $this->set($this->calendarData());
+    }
+
+    public function pdfMonthly(): void
+    {
+        $this->viewBuilder()->disableAutoLayout();
+        $this->set($this->calendarData());
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function calendarData(): array
+    {
         $today = FrozenDate::today();
         $yearsTable = $this->fetchTable('Years');
         $year = $yearsTable->find()
@@ -53,10 +73,9 @@ class CalendarController extends AppController
         }
 
         $months = $this->buildMonths($openStart, $openEnd, $datainici, $datafi, $festiuDates);
-
         $courseLabel = sprintf('CURS %d-%02d', $datainici->year, $datafi->year % 100);
 
-        $this->set(compact('months', 'courseLabel', 'datainici', 'datafi'));
+        return compact('months', 'courseLabel', 'datainici', 'datafi');
     }
 
     /**
