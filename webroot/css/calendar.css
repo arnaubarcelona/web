@@ -287,3 +287,56 @@ body::after {
 .month-card__table td {
   height: 1rem;
 }
+
+/* 3 columnes fixes per als mesos */
+.annual-calendar__months {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Botons de descàrrega PDF */
+.annual-calendar__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: .8rem;
+}
+
+.annual-calendar__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 280px;
+  padding: 10px 18px;
+  background: #e83e8c;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: 4px;
+  border: 2px solid #e83e8c;
+  transition: background-color .2s ease, color .2s ease;
+}
+
+.annual-calendar__action-btn:hover,
+.annual-calendar__action-btn:focus {
+  background: #fff;
+  color: #e83e8c;
+}
+
+@media (max-width: 1200px) {
+  .annual-calendar__months {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .annual-calendar__months {
+    grid-template-columns: 1fr;
+  }
+
+  .annual-calendar__action-btn {
+    width: 100%;
+    min-width: 0;
+  }
+}

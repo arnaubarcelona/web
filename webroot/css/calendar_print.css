@@ -1,0 +1,137 @@
+@page {
+  margin: 1cm;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  font-family: "Roboto Condensed", "Roboto", Arial, sans-serif;
+  color: #434343;
+}
+
+* {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.calendar-print__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8mm;
+}
+
+.calendar-print__title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.calendar-print__legend {
+  display: flex;
+  gap: 5mm;
+  flex-wrap: wrap;
+  font-size: 11px;
+  margin-bottom: 5mm;
+}
+
+.calendar-print__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 2mm;
+}
+
+.calendar-print__swatch {
+  width: 4mm;
+  height: 4mm;
+  border: 0.2mm solid #b2abbf;
+}
+
+.calendar-print__months--annual {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 3mm;
+}
+
+.month-card {
+  border: 0.5mm solid #b2abbf;
+  background: #fff;
+}
+
+.month-card__header {
+  background: #b2abbf;
+  color: #fff;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1.2mm 0;
+  letter-spacing: .04em;
+}
+
+.month-card__table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 9px;
+}
+
+.month-card__table th,
+.month-card__table td {
+  border: 0.2mm solid #b2abbf;
+  text-align: center;
+  padding: 0.9mm 0;
+}
+
+.month-card__table th {
+  background: #e4dfee;
+  font-size: 8px;
+}
+
+.month-card__empty,
+.calendar-day--lectiu { background: #ffffff; }
+.calendar-day--festiu { background: #f4cccc; }
+.calendar-day--obert { background: #fce5cd; }
+.calendar-day--closed { background: #f4f4f6; color: #7b7b7b; }
+
+.calendar-print__months--monthly {
+  display: block;
+}
+
+.pdf-month-page {
+  page-break-after: always;
+}
+
+.pdf-month-page:last-child {
+  page-break-after: auto;
+}
+
+.pdf-month-page .month-card__header {
+  font-size: 16px;
+  padding: 2.2mm 0;
+}
+
+.pdf-month-page .month-card__table {
+  font-size: 14px;
+}
+
+.pdf-month-page .month-card__table th,
+.pdf-month-page .month-card__table td {
+  padding: 3.5mm 0;
+}
+
+.pdf-month-page .month-card__table th {
+  font-size: 12px;
+}
+
+.no-print {
+  margin-top: 8mm;
+  font-size: 12px;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
