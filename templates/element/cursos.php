@@ -12,6 +12,7 @@ use Cake\ORM\TableRegistry;
 $locator = TableRegistry::getTableLocator();
 $yearsTable = $locator->get('Years');
 $coursesTable = $locator->get('Courses');
+$paginesTable = $locator->get('Pagines');
 $connection = $coursesTable->getConnection();
 $schema = $connection->getSchemaCollection();
 $tables = $schema->listTables();
@@ -145,6 +146,12 @@ if (!$latestYear) {
     echo '<p>No hi ha cursos disponibles.</p>';
     return;
 }
+
+$paginaMatricula = $paginesTable->find()
+    ->select(['id'])
+    ->where(['Pagines.name' => 'matricula'])
+    ->first();
+$matriculaUrl = $paginaMatricula ? $this->Url->build(['controller' => 'Pagines', 'action' => 'view', $paginaMatricula->id]) : '#';
 
 $courses = $coursesTable->find()
     ->where([
@@ -298,6 +305,7 @@ $nextColorIndex = 0;
                 . ($totalWithYearMaterial > $courseMaterialsTotal
                     ? '<li>En total són <strong>' . number_format($totalWithYearMaterial, 2, ',', '.') . ' €</strong>.</li>'
                     : '')
+                . '<li>Si t\'interessa aquest curs, <a href="' . h($matriculaUrl) . '">fes clic aquí</a>.</li>'
                 . '</ul>';
 
             $subjectKey = (int)($course->subject_id ?? 0);
@@ -317,7 +325,7 @@ $nextColorIndex = 0;
 
 <style>
 .cursos-element h1 {
-    text-align: center;
+    text-align: left;
     margin-bottom: 1rem;
 }
 
@@ -333,7 +341,11 @@ $nextColorIndex = 0;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.5rem;
     margin: 0.3rem;
-    padding: 0.45rem 1rem;
+    width: 14rem;
+    height: 3.1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .cursos-subject-button.pestanya-blaumari { background-color: #708090; }
@@ -350,6 +362,10 @@ $nextColorIndex = 0;
     display: none;
 }
 
+.cursos-tab-item.is-visible {
+    display: block;
+}
+
 .cursos-element .horari-linia {
     margin-left: 2rem !important;
 }
@@ -363,13 +379,13 @@ $nextColorIndex = 0;
 
     const showSubject = function (subjectId) {
         tabs.forEach((tab) => {
-            tab.style.display = tab.dataset.subject === subjectId ? '' : 'none';
+            tab.classList.toggle('is-visible', tab.dataset.subject === subjectId);
         });
     };
 
     const hideAll = function () {
         tabs.forEach((tab) => {
-            tab.style.display = 'none';
+            tab.classList.remove('is-visible');
         });
     };
 
