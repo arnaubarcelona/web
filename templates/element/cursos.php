@@ -99,7 +99,7 @@ $getMaterialsForCourse = static function (Connection $conn, array $existingTable
 
 $latestYear = $yearsTable->find()
     ->where(['Years.datainicipreinscripcio IS NOT' => null])
-    ->orderBy(['Years.datainicipreinscripcio' => 'DESC'])
+    ->order(['Years.datainicipreinscripcio' => 'DESC'])
     ->first();
 
 if (!$latestYear) {
@@ -118,7 +118,7 @@ $courses = $coursesTable->find()
         'Subjects',
         'Horaris' => ['Days'],
     ])
-    ->orderBy(['Courses.name' => 'ASC'])
+    ->order(['Courses.name' => 'ASC'])
     ->all();
 
 $competencies = [];
