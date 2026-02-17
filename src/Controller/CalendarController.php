@@ -58,7 +58,7 @@ class CalendarController extends AppController
         $pdf->SetFont('Arial', 'B', 18);
         $pdf->SetTextColor(68, 68, 68);
         $pdf->SetXY(12, 10);
-        $pdf->Cell(0, 10, utf8_decode($title), 0, 1, 'L');
+        $pdf->Cell(0, 10, $this->pdfText($title), 0, 1, 'L');
 
         $this->drawLegend($pdf, 12, 22);
     }
@@ -80,7 +80,7 @@ class CalendarController extends AppController
             $pdf->SetFillColor($item['color'][0], $item['color'][1], $item['color'][2]);
             $pdf->Rect($itemX, $y + 1, 4, 4, 'DF');
             $pdf->SetXY($itemX + 6, $y);
-            $pdf->Cell(35, 6, utf8_decode($item['label']), 0, 0, 'L');
+            $pdf->Cell(35, 6, $this->pdfText((string)$item['label']), 0, 0, 'L');
             $itemX += 46;
         }
     }
@@ -126,7 +126,7 @@ class CalendarController extends AppController
         $pdf->SetFont('Arial', 'B', 9);
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetXY($x, $y + 1.5);
-        $pdf->Cell($width, 4, utf8_decode((string)$month['label']), 0, 0, 'C');
+        $pdf->Cell($width, 4, $this->pdfText((string)$month['label']), 0, 0, 'C');
 
         $tableY = $y + $headerHeight;
         $cellWidth = $width / 7;
@@ -183,6 +183,17 @@ class CalendarController extends AppController
             'calendar-day--closed' => [244, 244, 246],
             default => [255, 255, 255],
         };
+    }
+
+    private function pdfText(string $text): string
+    {
+        if ($text === '') {
+            return '';
+        }
+
+        $converted = iconv('UTF-8', 'windows-1252//TRANSLIT//IGNORE', $text);
+
+        return $converted === false ? $text : $converted;
     }
 
     /**

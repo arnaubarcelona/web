@@ -121,9 +121,16 @@
 
   /* main no ha de tornar a sumar top/margin */
   .app-main{
-    padding-top: -1rem;
-    margin-left: 5rem;
-    margin-right: 5rem;
+    padding-top: 0;
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+  }
+
+  .app-container{
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
   }
 
   .app-sidebar__close{
