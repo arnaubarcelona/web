@@ -18,12 +18,39 @@ class CalendarController extends AppController
     public function pdfAnnual(): void
     {
         $calendar = $this->calendarData();
-        $pdf = new Fpdi('L', 'mm', 'A4');
+        $pdf = new Fpdi('P', 'mm', 'A4');
         $pdf->SetAutoPageBreak(false);
         $pdf->AddPage();
 
-        $this->renderPdfHeader($pdf, $calendar['courseLabel']);
-        $this->renderAnnualMonths($pdf, $calendar['months']);
+        $margin = 10.0;
+        $contentWidth = 190.0;
+        $contentHeight = 277.0;
+        $gap = 4.0;
+        $cols = 4;
+        $rows = 3;
+        $cellWidth = ($contentWidth - (($cols - 1) * $gap)) / $cols;
+        $cellHeight = ($contentHeight - (($rows - 1) * $gap)) / $rows;
+
+        $this->renderAnnualInfoPanel($pdf, $calendar['courseLabel'], $margin, $margin, $cellWidth, $cellHeight);
+
+        foreach ($calendar['months'] as $idx => $month) {
+            $slot = $idx + 1; // primera casella reservada pel panell d'informació
+            $col = $slot % $cols;
+            $row = intdiv($slot, $cols);
+
+            $x = $margin + ($col * ($cellWidth + $gap));
+            $y = $margin + ($row * ($cellHeight + $gap));
+
+            $this->renderMonthGrid($pdf, $month, $x, $y, $cellWidth, $cellHeight, [
+                'dayAlign' => 'center',
+                'dayFontSize' => 7.2,
+                'dayTopPadding' => 2.6,
+                'dayLineWidth' => 0.2,
+                'gridLineWidth' => 0.2,
+                'gridLineColor' => [178, 171, 191],
+                'lectiuColor' => [255, 255, 255],
+            ]);
+        }
 
         $this->respondPdfDownload($pdf, sprintf('calendari-anual-%s.pdf', strtolower(str_replace(' ', '-', $calendar['courseLabel']))));
     }
@@ -36,8 +63,18 @@ class CalendarController extends AppController
 
         foreach ($calendar['months'] as $month) {
             $pdf->AddPage();
-            $this->renderPdfHeader($pdf, sprintf('%s · %s', $calendar['courseLabel'], $month['label']));
-            $this->renderSingleMonth($pdf, $month, 20, 35, 170, 240);
+
+            $this->renderMonthlyHeader($pdf, $calendar['courseLabel']);
+            $this->renderMonthGrid($pdf, $month, 10, 36, 190, 251, [
+                'dayAlign' => 'right',
+                'dayFontSize' => 11,
+                'dayTopPadding' => 2.2,
+                'dayRightPadding' => 1.8,
+                'dayLineWidth' => 0.8,
+                'gridLineWidth' => 0.8,
+                'gridLineColor' => [255, 255, 255],
+                'lectiuColor' => [239, 239, 239],
+            ]);
         }
 
         $this->respondPdfDownload($pdf, sprintf('calendari-mensual-%s.pdf', strtolower(str_replace(' ', '-', $calendar['courseLabel']))));
@@ -53,92 +90,111 @@ class CalendarController extends AppController
         $this->autoRender = false;
     }
 
-    private function renderPdfHeader(Fpdi $pdf, string $title): void
+    private function renderAnnualInfoPanel(Fpdi $pdf, string $courseLabel, float $x, float $y, float $width, float $height): void
     {
-        $pdf->SetFont('Arial', 'B', 18);
+        $this->drawLogo($pdf, $x, $y, $width, 28);
+
+        $pdf->SetFont('Arial', 'B', 20);
         $pdf->SetTextColor(68, 68, 68);
-        $pdf->SetXY(12, 10);
-        $pdf->Cell(0, 10, $this->pdfText($title), 0, 1, 'L');
+        $pdf->SetXY($x, $y + 31);
+        $pdf->Cell($width, 9, $this->pdfText($courseLabel), 0, 1, 'L');
 
-        $this->drawLegend($pdf, 12, 22);
-    }
-
-    private function drawLegend(Fpdi $pdf, float $x, float $y): void
-    {
-        $legend = [
+        $this->drawLegend($pdf, $x, $y + 44, [
             ['label' => 'Obert (lectiu)', 'color' => [255, 255, 255]],
             ['label' => 'Obert (no lectiu)', 'color' => [252, 229, 205]],
             ['label' => 'Festiu', 'color' => [244, 204, 204]],
             ['label' => 'Tancat', 'color' => [244, 244, 246]],
-        ];
+        ], 6.4);
+    }
 
-        $pdf->SetFont('Arial', '', 9);
-        $itemX = $x;
+    private function renderMonthlyHeader(Fpdi $pdf, string $courseLabel): void
+    {
+        $this->drawLogo($pdf, 10, 10, 42, 20);
 
-        foreach ($legend as $item) {
-            $pdf->SetDrawColor(178, 171, 191);
-            $pdf->SetFillColor($item['color'][0], $item['color'][1], $item['color'][2]);
-            $pdf->Rect($itemX, $y + 1, 4, 4, 'DF');
-            $pdf->SetXY($itemX + 6, $y);
-            $pdf->Cell(35, 6, $this->pdfText((string)$item['label']), 0, 0, 'L');
-            $itemX += 46;
+        $pdf->SetTextColor(68, 68, 68);
+        $pdf->SetFont('Arial', 'B', 18);
+        $pdf->SetXY(56, 12);
+        $pdf->Cell(144, 10, $this->pdfText($courseLabel), 0, 1, 'L');
+    }
+
+    private function drawLogo(Fpdi $pdf, float $x, float $y, float $maxWidth, float $maxHeight): void
+    {
+        $logoPath = WWW_ROOT . 'img' . DS . 'logoGran.png';
+        if (!is_file($logoPath)) {
+            return;
         }
+
+        [$imgWidth, $imgHeight] = getimagesize($logoPath) ?: [0, 0];
+        if ($imgWidth <= 0 || $imgHeight <= 0) {
+            return;
+        }
+
+        $scale = min($maxWidth / $imgWidth, $maxHeight / $imgHeight);
+        $drawWidth = $imgWidth * $scale;
+        $drawHeight = $imgHeight * $scale;
+
+        $pdf->Image($logoPath, $x, $y, $drawWidth, $drawHeight);
     }
 
     /**
-     * @param array<int, array<string, mixed>> $months
+     * @param array<int, array{label:string,color:array<int,int>}> $legend
      */
-    private function renderAnnualMonths(Fpdi $pdf, array $months): void
+    private function drawLegend(Fpdi $pdf, float $x, float $y, array $legend, float $fontSize): void
     {
-        $startX = 12;
-        $startY = 32;
-        $cols = 4;
-        $gapX = 4;
-        $gapY = 6;
-        $monthWidth = 67;
-        $monthHeight = 58;
+        $pdf->SetFont('Arial', '', $fontSize);
+        $pdf->SetTextColor(67, 67, 67);
 
-        foreach ($months as $idx => $month) {
-            $col = $idx % $cols;
-            $row = intdiv($idx, $cols);
-
-            $x = $startX + $col * ($monthWidth + $gapX);
-            $y = $startY + $row * ($monthHeight + $gapY);
-
-            $this->renderSingleMonth($pdf, $month, $x, $y, $monthWidth, $monthHeight);
+        $lineY = $y;
+        foreach ($legend as $item) {
+            $pdf->SetDrawColor(178, 171, 191);
+            $pdf->SetFillColor($item['color'][0], $item['color'][1], $item['color'][2]);
+            $pdf->Rect($x, $lineY + 0.6, 4, 4, 'DF');
+            $pdf->SetXY($x + 6, $lineY);
+            $pdf->Cell(36, 5.2, $this->pdfText($item['label']), 0, 0, 'L');
+            $lineY += 7.2;
         }
     }
 
     /**
      * @param array<string, mixed> $month
+     * @param array<string, float|array<int,int>|string> $options
      */
-    private function renderSingleMonth(Fpdi $pdf, array $month, float $x, float $y, float $width, float $height): void
+    private function renderMonthGrid(Fpdi $pdf, array $month, float $x, float $y, float $width, float $height, array $options): void
     {
         $headerHeight = 7;
         $weekHeaderHeight = 6;
         $days = ['dl', 'dt', 'dc', 'dj', 'dv', 'ds', 'dg'];
+
+        $dayAlign = (string)($options['dayAlign'] ?? 'center');
+        $dayFontSize = (float)($options['dayFontSize'] ?? 7.2);
+        $dayTopPadding = (float)($options['dayTopPadding'] ?? 2.6);
+        $dayRightPadding = (float)($options['dayRightPadding'] ?? 0);
+        $gridLineWidth = (float)($options['gridLineWidth'] ?? 0.2);
+        $dayLineWidth = (float)($options['dayLineWidth'] ?? 0.2);
+        $gridLineColor = $options['gridLineColor'] ?? [178, 171, 191];
+        $lectiuColor = $options['lectiuColor'] ?? [255, 255, 255];
 
         $pdf->SetDrawColor(178, 171, 191);
         $pdf->SetLineWidth(0.25);
 
         $pdf->SetFillColor(178, 171, 191);
         $pdf->Rect($x, $y, $width, $headerHeight, 'DF');
-        $pdf->SetFont('Arial', 'B', 9);
+        $pdf->SetFont('Arial', 'B', 10);
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetXY($x, $y + 1.5);
         $pdf->Cell($width, 4, $this->pdfText((string)$month['label']), 0, 0, 'C');
 
         $tableY = $y + $headerHeight;
         $cellWidth = $width / 7;
-        $rows = 7;
-        $cellHeight = ($height - $headerHeight) / $rows;
+        $dayRowsHeight = $height - $headerHeight - $weekHeaderHeight;
+        $cellHeight = $dayRowsHeight / 6;
 
         $pdf->SetFont('Arial', 'B', 7);
         $pdf->SetFillColor(228, 223, 238);
         $pdf->SetTextColor(67, 67, 67);
         foreach ($days as $i => $day) {
             $cellX = $x + ($i * $cellWidth);
-            $pdf->Rect($cellX, $tableY, $cellWidth, $weekHeaderHeight, 'DF');
+            $pdf->Rect($cellX, $tableY, $cellWidth, $weekHeaderHeight, 'F');
             $pdf->SetXY($cellX, $tableY + 1.5);
             $pdf->Cell($cellWidth, 3, $day, 0, 0, 'C');
         }
@@ -154,34 +210,61 @@ class CalendarController extends AppController
                 if ($day === null) {
                     $pdf->SetFillColor(255, 255, 255);
                 } else {
-                    [$r, $g, $b] = $this->dayColor((string)$day['class']);
+                    [$r, $g, $b] = $this->dayColor((string)$day['class'], $lectiuColor);
                     $pdf->SetFillColor($r, $g, $b);
                 }
 
                 $pdf->Rect($cellX, $cellY, $cellWidth, $cellHeight, 'F');
 
                 if ($day !== null) {
-                    $pdf->SetFont('Arial', '', 7);
+                    $pdf->SetFont('Arial', '', $dayFontSize);
                     $pdf->SetTextColor(67, 67, 67);
-                    $pdf->SetXY($cellX, $cellY + 1.4);
-                    $pdf->Cell($cellWidth, 3, (string)$day['number'], 0, 0, 'C');
+                    $textX = $cellX;
+                    $textY = $cellY + $dayTopPadding;
+
+                    if ($dayAlign === 'right') {
+                        $textX += $dayRightPadding;
+                    }
+
+                    $pdf->SetXY($textX, $textY);
+                    $pdf->Cell($cellWidth - ($dayAlign === 'right' ? ($dayRightPadding * 2) : 0), 4, (string)$day['number'], 0, 0, $dayAlign === 'right' ? 'R' : 'C');
                 }
             }
         }
 
+        $pdf->SetDrawColor($gridLineColor[0], $gridLineColor[1], $gridLineColor[2]);
+        $pdf->SetLineWidth($gridLineWidth);
+
+        for ($i = 0; $i <= 7; $i++) {
+            $lineX = $x + ($i * $cellWidth);
+            $pdf->Line($lineX, $tableY, $lineX, $y + $height);
+        }
+
+        $pdf->Line($x, $tableY, $x + $width, $tableY);
+        $pdf->Line($x, $tableY + $weekHeaderHeight, $x + $width, $tableY + $weekHeaderHeight);
+
+        for ($i = 1; $i <= 6; $i++) {
+            $lineY = $tableY + $weekHeaderHeight + ($i * $cellHeight);
+            $pdf->SetLineWidth($dayLineWidth);
+            $pdf->Line($x, $lineY, $x + $width, $lineY);
+        }
+
+        $pdf->SetLineWidth(0.25);
+        $pdf->SetDrawColor(178, 171, 191);
         $pdf->Rect($x, $y, $width, $height, 'D');
     }
 
     /**
+     * @param array<int,int> $lectiuColor
      * @return array{0:int,1:int,2:int}
      */
-    private function dayColor(string $class): array
+    private function dayColor(string $class, array $lectiuColor = [255, 255, 255]): array
     {
         return match ($class) {
             'calendar-day--festiu' => [244, 204, 204],
             'calendar-day--obert' => [252, 229, 205],
             'calendar-day--closed' => [244, 244, 246],
-            default => [255, 255, 255],
+            default => [$lectiuColor[0], $lectiuColor[1], $lectiuColor[2]],
         };
     }
 
