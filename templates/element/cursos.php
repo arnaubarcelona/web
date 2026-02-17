@@ -29,18 +29,34 @@ $formatDateCatalan = static function ($date): string {
         return '-';
     }
 
-    $formatter = new \IntlDateFormatter(
+    $weekdayFormatter = new \IntlDateFormatter(
         'ca_ES',
         \IntlDateFormatter::FULL,
         \IntlDateFormatter::NONE,
         $date->getTimezone()->getName(),
         \IntlDateFormatter::GREGORIAN,
-        "EEEE, d 'de' MMMM 'de' yyyy"
+        'EEEE'
     );
 
-    $formatted = $formatter->format($date);
+    $monthFormatter = new \IntlDateFormatter(
+        'ca_ES',
+        \IntlDateFormatter::FULL,
+        \IntlDateFormatter::NONE,
+        $date->getTimezone()->getName(),
+        \IntlDateFormatter::GREGORIAN,
+        'LLLL'
+    );
 
-    return is_string($formatted) ? mb_strtolower($formatted) : '-';
+    $weekday = $weekdayFormatter->format($date);
+    $month = $monthFormatter->format($date);
+
+    if (!is_string($weekday) || !is_string($month)) {
+        return '-';
+    }
+
+    $formatted = sprintf('%s, %d de %s de %d', mb_strtolower($weekday), (int)$date->format('j'), mb_strtolower($month), (int)$date->format('Y'));
+
+    return $formatted;
 };
 
 $formatTime = static function ($time): string {
@@ -136,18 +152,6 @@ if (in_array('competenciestic', $tables, true)) {
     }
 }
 
-$teachers = [];
-if (in_array('teachers', $tables, true)) {
-    try {
-        $rows = $connection->execute('SELECT id, name FROM teachers')->fetchAll('assoc');
-        foreach ($rows as $row) {
-            $teachers[(int)$row['id']] = (string)$row['name'];
-        }
-    } catch (\Throwable $e) {
-        $teachers = [];
-    }
-}
-
 $colors = ['blaumari', 'blaucel', 'verd', 'rosa', 'lila', 'taronja', 'gris', 'ocre', 'grisclar'];
 $subjectColors = [];
 $nextColorIndex = 0;
@@ -163,7 +167,7 @@ $nextColorIndex = 0;
             if ($paragraph === '') {
                 continue;
             }
-            $paragraphItems .= '<li>' . h($paragraph) . '</li>';
+            $paragraphItems .= '<p>' . h($paragraph) . '</p>';
         }
 
         $horesSetmanals = 0.0;
@@ -184,76 +188,67 @@ $nextColorIndex = 0;
         foreach ($horaris as $horari) {
             $horesSetmanals += (float)($horari->durada ?? 0);
             $dayName = mb_strtolower((string)($horari->day->name ?? ''));
-            $horariLines[] = sprintf(
-                '%s: %s-%s',
-                h($dayName),
-                h($formatTime($horari->horainici)),
-                h($formatTime($horari->horafinal))
-            );
+            $horariLines[] = [
+                'day' => $dayName,
+                'start' => $formatTime($horari->horainici),
+                'end' => $formatTime($horari->horafinal),
+            ];
         }
 
         $competencia = '';
         if ($course->competenciatic_id !== null) {
-            $competencia = $competencies[(int)$course->competenciatic_id] ?? '';
-        }
-
-        $teacherName = '-';
-        if (property_exists($course, 'teacher') && $course->teacher !== null && isset($course->teacher->name)) {
-            $teacherName = (string)$course->teacher->name;
-        } elseif (isset($course->teacher_id) && isset($teachers[(int)$course->teacher_id])) {
-            $teacherName = $teachers[(int)$course->teacher_id];
+            $competencia = mb_strtolower((string)($competencies[(int)$course->competenciatic_id] ?? ''));
         }
 
         $nivell = (string)$course->level;
-        $mecr = isset($course->mecr) && $course->mecr !== null && $course->mecr !== ''
-            ? sprintf(' (%s MECR)', h((string)$course->mecr))
-            : '';
+        $hasMecr = isset($course->mecr) && $course->mecr !== null && $course->mecr !== '';
 
         $materials = $getMaterialsForCourse($connection, $tables, (int)$course->id);
-        $materialRows = '';
+        $materialLines = '';
         $totalPrice = 0.0;
+        $preuMaterial = 0.0;
+
+        $isGenericMaterial = static function (string $name): bool {
+            $normalized = mb_strtolower(trim($name));
+
+            return $normalized === 'material' || $normalized === 'material extra';
+        };
 
         foreach ($materials as $material) {
             $price = (float)($material['price'] ?? 0);
             $totalPrice += $price;
 
-            $materialRows .= '<tr>'
-                . '<td>' . h((string)($material['name'] ?? '')) . '</td>'
-                . '<td>' . h((string)($material['description'] ?? '')) . '</td>'
-                . '<td>' . h((string)($material['isbn'] ?? '')) . '</td>'
-                . '<td class="preu-col">' . number_format($price, 2, ',', '.') . ' €</td>'
-                . '</tr>';
+            $name = trim((string)($material['name'] ?? ''));
+            if (mb_strtolower($name) === 'material') {
+                $preuMaterial += $price;
+            }
+
+            if ($name === '' || $isGenericMaterial($name)) {
+                continue;
+            }
+
+            $isbn = trim((string)($material['isbn'] ?? ''));
+            $isbnText = $isbn !== '' ? ' (ISBN: ' . h($isbn) . ')' : '';
+            $materialLines .= '<p>El ' . h(mb_strtolower($name)) . $isbnText . ' val <strong>' . number_format($price, 2, ',', '.') . ' €</strong>.</p>';
         }
 
-        $materialRows .= '<tr>'
-            . '<td colspan="3"><strong>Preu total</strong></td>'
-            . '<td class="preu-col preu-total">' . number_format($totalPrice, 2, ',', '.') . ' €</td>'
-            . '</tr>';
-
-        $content = '<ul class="cursos-llista">'
+        $content = '<div class="cursos-contingut">'
             . $paragraphItems
-            . ($competencia !== '' ? '<li><strong>Competència:</strong> ' . h($competencia) . '</li>' : '')
-            . '<li><strong>Data d\'inici:</strong> ' . h($formatDateCatalan($course->datainici)) . '</li>'
-            . '<li><strong>Data d\'acabament:</strong> ' . h($formatDateCatalan($course->datafi)) . '</li>'
-            . '<li><strong>Hores setmanals:</strong> ' . h(rtrim(rtrim(number_format($horesSetmanals, 2, ',', ''), '0'), ',')) . '</li>'
-            . '<li><strong>Hores totals:</strong> ' . h((string)$course->horesanuals) . ' hores</li>'
-            . '<li><strong>Aula:</strong> ' . h((string)($course->aula->name ?? '-')) . '</li>'
-            . '<li><strong>Professor/a:</strong> ' . h($teacherName) . '</li>'
-            . '<li><strong>Nivell:</strong> ' . h($nivell) . $mecr . '</li>'
-            . '<li><strong>Horari:</strong></li>';
+            . ($competencia !== '' ? '<p>Tractarà la competència de <strong>' . h($competencia) . '</strong>.</p>' : '')
+            . '<p>És el <strong>nivell ' . h($nivell) . '</strong>' . ($hasMecr ? ' (equivalent al nivell ' . h((string)$course->mecr) . ' del Marc Europeu Comú de Referència).' : '.') . '</p>'
+            . '<p>El curs <strong>comença el ' . h($formatDateCatalan($course->datainici)) . ' i </strong>acaba el ' . h($formatDateCatalan($course->datafi)) . '.</p>'
+            . '<p>Són <strong>' . h(rtrim(rtrim(number_format($horesSetmanals, 2, ',', ''), '0'), ',')) . ' hores</strong> a la setmana, <strong>' . h((string)$course->horesanuals) . ' hores</strong> en total.</p>'
+            . '<p>Es fa a l\'<strong>' . h((string)($course->aula->name ?? '-')) . '</strong>, en aquest horari:</p>';
 
         foreach ($horariLines as $line) {
-            $content .= '<li class="horari-linia">' . $line . '</li>';
+            $content .= '<p class="horari-linia"><strong>' . h((string)$line['day']) . '</strong> de ' . h((string)$line['start']) . ' a ' . h((string)$line['end']) . '</p>';
         }
 
-        $content .= '<li>Matrícula gratuïta.</li>'
-            . '<li><strong>Preus:</strong></li>'
-            . '</ul>'
-            . '<table class="cursos-preus">'
-            . '<tbody>'
-            . $materialRows
-            . '</tbody>'
-            . '</table>';
+        $content .= '<p>La matrícula és <strong>gratuïta</strong>.</p>'
+            . '<p>El preu del material és de <strong>' . number_format($preuMaterial, 2, ',', '.') . ' €</strong>.</p>'
+            . $materialLines
+            . '<p>En total són <strong>' . number_format($totalPrice, 2, ',', '.') . ' €</strong>.</p>'
+            . '</div>';
 
         $subjectKey = (int)($course->subject_id ?? 0);
         if (!isset($subjectColors[$subjectKey])) {
@@ -272,34 +267,11 @@ $nextColorIndex = 0;
 </div>
 
 <style>
-.cursos-element .cursos-pestanya .text .cursos-llista {
-    margin-bottom: 1rem;
+.cursos-element .cursos-pestanya .text .cursos-contingut p {
+    margin: 0 0 0.65rem;
 }
 
 .cursos-element .horari-linia {
-    text-align: center;
-    list-style: none;
-    margin-left: 0;
-}
-
-.cursos-element .cursos-preus {
-    width: 80%;
-    margin: 0 auto;
-    border-collapse: collapse;
-    border: none;
-}
-
-.cursos-element .cursos-preus td {
-    border: none;
-    padding: 0.25rem 0.5rem;
-}
-
-.cursos-element .cursos-preus .preu-col {
-    text-align: right;
-    white-space: nowrap;
-}
-
-.cursos-element .cursos-preus .preu-total {
-    border-top: 1px solid #000;
+    margin-left: 2rem !important;
 }
 </style>
