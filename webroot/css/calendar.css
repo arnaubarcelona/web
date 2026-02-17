@@ -22,8 +22,9 @@ body::after {
   align-items: start;
 
   /* “marges” tipus document */
-  max-width: 1100px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
   padding: 28px 28px 36px;
 
   font-family: "Roboto Condensed", "Roboto", Arial, sans-serif;
@@ -105,7 +106,7 @@ body::after {
 /* Grid mesos (estructura igual, només look) */
 .annual-calendar__months {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.1rem;
 }
 
@@ -288,9 +289,9 @@ body::after {
   height: 1rem;
 }
 
-/* 3 columnes fixes per als mesos */
+/* 4 columnes fixes per als mesos */
 .annual-calendar__months {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 /* Botons de descàrrega PDF */
@@ -326,7 +327,7 @@ body::after {
 
 @media (max-width: 1200px) {
   .annual-calendar__months {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

@@ -221,13 +221,13 @@ echo $this->Html->css('calendar', ['block' => true]);
         <?= $this->Html->link(
             __('Descarrega calendari anual (PDF)'),
             ['controller' => 'Calendar', 'action' => 'pdfAnnual'],
-            ['class' => 'annual-calendar__action-btn', 'target' => '_blank', 'rel' => 'noopener']
+            ['class' => 'annual-calendar__action-btn']
         ) ?>
 
         <?= $this->Html->link(
             __('Descarrega calendari mensual (PDF)'),
             ['controller' => 'Calendar', 'action' => 'pdfMonthly'],
-            ['class' => 'annual-calendar__action-btn', 'target' => '_blank', 'rel' => 'noopener']
+            ['class' => 'annual-calendar__action-btn']
         ) ?>
     </div>
 </section>
