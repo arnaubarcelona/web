@@ -26,8 +26,8 @@ class CalendarController extends AppController
         $contentWidth = 190.0;
         $contentHeight = 277.0;
         $gap = 4.0;
-        $cols = 4;
-        $rows = 3;
+        $cols = 3;
+        $rows = 4;
         $cellWidth = ($contentWidth - (($cols - 1) * $gap)) / $cols;
         $cellHeight = ($contentHeight - (($rows - 1) * $gap)) / $rows;
 
@@ -43,12 +43,16 @@ class CalendarController extends AppController
 
             $this->renderMonthGrid($pdf, $month, $x, $y, $cellWidth, $cellHeight, [
                 'dayAlign' => 'center',
-                'dayFontSize' => 7.2,
-                'dayTopPadding' => 2.6,
-                'dayLineWidth' => 0.2,
-                'gridLineWidth' => 0.2,
-                'gridLineColor' => [178, 171, 191],
-                'lectiuColor' => [255, 255, 255],
+                'dayFontSize' => 8.6,
+                'dayTopPadding' => 3.1,
+                'monthHeaderFontSize' => 13,
+                'weekHeaderFontSize' => 8.2,
+                'dayLineWidth' => 0.0,
+                'gridLineWidth' => 0.0,
+                'gridLineColor' => [255, 255, 255],
+                'lectiuColor' => [239, 239, 239],
+                'drawInnerGrid' => false,
+                'dayBold' => false,
             ]);
         }
 
@@ -65,15 +69,19 @@ class CalendarController extends AppController
             $pdf->AddPage();
 
             $this->renderMonthlyHeader($pdf, $calendar['courseLabel']);
-            $this->renderMonthGrid($pdf, $month, 10, 36, 190, 251, [
+            $this->renderMonthGrid($pdf, $month, 10, 38, 190, 249, [
                 'dayAlign' => 'right',
-                'dayFontSize' => 11,
-                'dayTopPadding' => 2.2,
-                'dayRightPadding' => 1.8,
-                'dayLineWidth' => 0.8,
-                'gridLineWidth' => 0.8,
+                'dayFontSize' => 14,
+                'dayTopPadding' => 3,
+                'dayRightPadding' => 2.2,
+                'monthHeaderFontSize' => 18,
+                'weekHeaderFontSize' => 10,
+                'dayLineWidth' => 1.1,
+                'gridLineWidth' => 1.1,
                 'gridLineColor' => [255, 255, 255],
                 'lectiuColor' => [239, 239, 239],
+                'drawInnerGrid' => true,
+                'dayBold' => true,
             ]);
         }
 
@@ -94,39 +102,45 @@ class CalendarController extends AppController
     {
         $this->drawLogo($pdf, $x, $y, $width, 28);
 
-        $pdf->SetFont('Arial', 'B', 20);
+        $this->setFontHeading($pdf, 24);
         $pdf->SetTextColor(68, 68, 68);
         $pdf->SetXY($x, $y + 31);
-        $pdf->Cell($width, 9, $this->pdfText($courseLabel), 0, 1, 'L');
+        $pdf->Cell($width, 10, $this->pdfText($courseLabel), 0, 1, 'L');
 
-        $this->drawLegend($pdf, $x, $y + 44, [
-            ['label' => 'Obert (lectiu)', 'color' => [255, 255, 255]],
+        $this->drawLegend($pdf, $x, $y + 46, [
+            ['label' => 'Obert (lectiu)', 'color' => [239, 239, 239]],
             ['label' => 'Obert (no lectiu)', 'color' => [252, 229, 205]],
             ['label' => 'Festiu', 'color' => [244, 204, 204]],
             ['label' => 'Tancat', 'color' => [244, 244, 246]],
-        ], 6.4);
+        ], 8.2);
     }
 
     private function renderMonthlyHeader(Fpdi $pdf, string $courseLabel): void
     {
-        $this->drawLogo($pdf, 10, 10, 42, 20);
+        $logo = $this->drawLogo($pdf, 10, 10, 42, 22);
+
+        $titleX = $logo['x2'] + 4;
+        $titleWidth = 200 - $titleX;
 
         $pdf->SetTextColor(68, 68, 68);
-        $pdf->SetFont('Arial', 'B', 18);
-        $pdf->SetXY(56, 12);
-        $pdf->Cell(144, 10, $this->pdfText($courseLabel), 0, 1, 'L');
+        $this->setFontHeading($pdf, 24);
+        $pdf->SetXY($titleX, 12);
+        $pdf->Cell($titleWidth, 12, $this->pdfText($courseLabel), 0, 1, 'C');
     }
 
-    private function drawLogo(Fpdi $pdf, float $x, float $y, float $maxWidth, float $maxHeight): void
+    /**
+     * @return array{x2:float}
+     */
+    private function drawLogo(Fpdi $pdf, float $x, float $y, float $maxWidth, float $maxHeight): array
     {
         $logoPath = WWW_ROOT . 'img' . DS . 'logoGran.png';
         if (!is_file($logoPath)) {
-            return;
+            return ['x2' => $x + $maxWidth];
         }
 
         [$imgWidth, $imgHeight] = getimagesize($logoPath) ?: [0, 0];
         if ($imgWidth <= 0 || $imgHeight <= 0) {
-            return;
+            return ['x2' => $x + $maxWidth];
         }
 
         $scale = min($maxWidth / $imgWidth, $maxHeight / $imgHeight);
@@ -134,6 +148,8 @@ class CalendarController extends AppController
         $drawHeight = $imgHeight * $scale;
 
         $pdf->Image($logoPath, $x, $y, $drawWidth, $drawHeight);
+
+        return ['x2' => $x + $drawWidth];
     }
 
     /**
@@ -141,7 +157,7 @@ class CalendarController extends AppController
      */
     private function drawLegend(Fpdi $pdf, float $x, float $y, array $legend, float $fontSize): void
     {
-        $pdf->SetFont('Arial', '', $fontSize);
+        $this->setFontBody($pdf, $fontSize);
         $pdf->SetTextColor(67, 67, 67);
 
         $lineY = $y;
@@ -150,52 +166,56 @@ class CalendarController extends AppController
             $pdf->SetFillColor($item['color'][0], $item['color'][1], $item['color'][2]);
             $pdf->Rect($x, $lineY + 0.6, 4, 4, 'DF');
             $pdf->SetXY($x + 6, $lineY);
-            $pdf->Cell(36, 5.2, $this->pdfText($item['label']), 0, 0, 'L');
-            $lineY += 7.2;
+            $pdf->Cell(56, 6, $this->pdfText($item['label']), 0, 0, 'L');
+            $lineY += 8.4;
         }
     }
 
     /**
      * @param array<string, mixed> $month
-     * @param array<string, float|array<int,int>|string> $options
+     * @param array<string, float|array<int,int>|string|bool> $options
      */
     private function renderMonthGrid(Fpdi $pdf, array $month, float $x, float $y, float $width, float $height, array $options): void
     {
-        $headerHeight = 7;
-        $weekHeaderHeight = 6;
+        $headerHeight = 8;
+        $weekHeaderHeight = 7;
         $days = ['dl', 'dt', 'dc', 'dj', 'dv', 'ds', 'dg'];
 
         $dayAlign = (string)($options['dayAlign'] ?? 'center');
-        $dayFontSize = (float)($options['dayFontSize'] ?? 7.2);
-        $dayTopPadding = (float)($options['dayTopPadding'] ?? 2.6);
+        $dayFontSize = (float)($options['dayFontSize'] ?? 8.6);
+        $dayTopPadding = (float)($options['dayTopPadding'] ?? 3.1);
         $dayRightPadding = (float)($options['dayRightPadding'] ?? 0);
+        $monthHeaderFontSize = (float)($options['monthHeaderFontSize'] ?? 13);
+        $weekHeaderFontSize = (float)($options['weekHeaderFontSize'] ?? 8.2);
         $gridLineWidth = (float)($options['gridLineWidth'] ?? 0.2);
         $dayLineWidth = (float)($options['dayLineWidth'] ?? 0.2);
+        $drawInnerGrid = (bool)($options['drawInnerGrid'] ?? true);
+        $dayBold = (bool)($options['dayBold'] ?? false);
         $gridLineColor = $options['gridLineColor'] ?? [178, 171, 191];
-        $lectiuColor = $options['lectiuColor'] ?? [255, 255, 255];
+        $lectiuColor = $options['lectiuColor'] ?? [239, 239, 239];
 
         $pdf->SetDrawColor(178, 171, 191);
         $pdf->SetLineWidth(0.25);
 
         $pdf->SetFillColor(178, 171, 191);
         $pdf->Rect($x, $y, $width, $headerHeight, 'DF');
-        $pdf->SetFont('Arial', 'B', 10);
+        $this->setFontHeading($pdf, $monthHeaderFontSize);
         $pdf->SetTextColor(255, 255, 255);
-        $pdf->SetXY($x, $y + 1.5);
-        $pdf->Cell($width, 4, $this->pdfText((string)$month['label']), 0, 0, 'C');
+        $pdf->SetXY($x, $y + 1.6);
+        $pdf->Cell($width, 5, $this->pdfText((string)$month['label']), 0, 0, 'C');
 
         $tableY = $y + $headerHeight;
         $cellWidth = $width / 7;
         $dayRowsHeight = $height - $headerHeight - $weekHeaderHeight;
         $cellHeight = $dayRowsHeight / 6;
 
-        $pdf->SetFont('Arial', 'B', 7);
+        $this->setFontBody($pdf, $weekHeaderFontSize, true);
         $pdf->SetFillColor(228, 223, 238);
         $pdf->SetTextColor(67, 67, 67);
         foreach ($days as $i => $day) {
             $cellX = $x + ($i * $cellWidth);
             $pdf->Rect($cellX, $tableY, $cellWidth, $weekHeaderHeight, 'F');
-            $pdf->SetXY($cellX, $tableY + 1.5);
+            $pdf->SetXY($cellX, $tableY + 2.0);
             $pdf->Cell($cellWidth, 3, $day, 0, 0, 'C');
         }
 
@@ -217,7 +237,7 @@ class CalendarController extends AppController
                 $pdf->Rect($cellX, $cellY, $cellWidth, $cellHeight, 'F');
 
                 if ($day !== null) {
-                    $pdf->SetFont('Arial', '', $dayFontSize);
+                    $this->setFontBody($pdf, $dayFontSize, $dayBold);
                     $pdf->SetTextColor(67, 67, 67);
                     $textX = $cellX;
                     $textY = $cellY + $dayTopPadding;
@@ -227,26 +247,28 @@ class CalendarController extends AppController
                     }
 
                     $pdf->SetXY($textX, $textY);
-                    $pdf->Cell($cellWidth - ($dayAlign === 'right' ? ($dayRightPadding * 2) : 0), 4, (string)$day['number'], 0, 0, $dayAlign === 'right' ? 'R' : 'C');
+                    $pdf->Cell($cellWidth - ($dayAlign === 'right' ? ($dayRightPadding * 2) : 0), 4.5, (string)$day['number'], 0, 0, $dayAlign === 'right' ? 'R' : 'C');
                 }
             }
         }
 
-        $pdf->SetDrawColor($gridLineColor[0], $gridLineColor[1], $gridLineColor[2]);
-        $pdf->SetLineWidth($gridLineWidth);
+        if ($drawInnerGrid) {
+            $pdf->SetDrawColor($gridLineColor[0], $gridLineColor[1], $gridLineColor[2]);
+            $pdf->SetLineWidth($gridLineWidth);
 
-        for ($i = 0; $i <= 7; $i++) {
-            $lineX = $x + ($i * $cellWidth);
-            $pdf->Line($lineX, $tableY, $lineX, $y + $height);
-        }
+            for ($i = 0; $i <= 7; $i++) {
+                $lineX = $x + ($i * $cellWidth);
+                $pdf->Line($lineX, $tableY, $lineX, $y + $height);
+            }
 
-        $pdf->Line($x, $tableY, $x + $width, $tableY);
-        $pdf->Line($x, $tableY + $weekHeaderHeight, $x + $width, $tableY + $weekHeaderHeight);
+            $pdf->Line($x, $tableY, $x + $width, $tableY);
+            $pdf->Line($x, $tableY + $weekHeaderHeight, $x + $width, $tableY + $weekHeaderHeight);
 
-        for ($i = 1; $i <= 6; $i++) {
-            $lineY = $tableY + $weekHeaderHeight + ($i * $cellHeight);
-            $pdf->SetLineWidth($dayLineWidth);
-            $pdf->Line($x, $lineY, $x + $width, $lineY);
+            for ($i = 1; $i <= 6; $i++) {
+                $lineY = $tableY + $weekHeaderHeight + ($i * $cellHeight);
+                $pdf->SetLineWidth($dayLineWidth);
+                $pdf->Line($x, $lineY, $x + $width, $lineY);
+            }
         }
 
         $pdf->SetLineWidth(0.25);
@@ -258,7 +280,7 @@ class CalendarController extends AppController
      * @param array<int,int> $lectiuColor
      * @return array{0:int,1:int,2:int}
      */
-    private function dayColor(string $class, array $lectiuColor = [255, 255, 255]): array
+    private function dayColor(string $class, array $lectiuColor = [239, 239, 239]): array
     {
         return match ($class) {
             'calendar-day--festiu' => [244, 204, 204],
@@ -266,6 +288,18 @@ class CalendarController extends AppController
             'calendar-day--closed' => [244, 244, 246],
             default => [$lectiuColor[0], $lectiuColor[1], $lectiuColor[2]],
         };
+    }
+
+    private function setFontHeading(Fpdi $pdf, float $size): void
+    {
+        // FPDF base sense fonts externes: mantenim Arial Bold com a fallback de capçalera.
+        $pdf->SetFont('Arial', 'B', $size);
+    }
+
+    private function setFontBody(Fpdi $pdf, float $size, bool $bold = false): void
+    {
+        // FPDF base sense fonts externes: mantenim Arial com a fallback de text.
+        $pdf->SetFont('Arial', $bold ? 'B' : '', $size);
     }
 
     private function pdfText(string $text): string
