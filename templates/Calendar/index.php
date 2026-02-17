@@ -1,2 +1,1 @@
-<?= $this->element('menuppal') ?>
-<?= $this->element('calendar') ?>
+<?= $this->element('botocursos') ?>

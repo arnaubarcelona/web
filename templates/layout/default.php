@@ -45,8 +45,9 @@ $pageLevel = function (string $orderCode): int {
     <title><?= h($cakeDescription) ?>: <?= $this->fetch('title') ?></title>
     <?= $this->Html->meta('icon') ?>
 
-    <?= $this->Html->css(['normalize.min', 'milligram.min', 'fonts', 'cake']) ?>
+    <?= $this->Html->css(['fonts', 'cake']) ?>
     <?= $this->Html->css('layout_custom') ?>
+    <?= $this->Html->css('pestanya') ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>

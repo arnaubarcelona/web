@@ -150,7 +150,6 @@ $courseLabel = sprintf(
  * 5) VISTA
  * ============================ */
 $this->assign('title', __('Calendari'));
-echo $this->Html->css('calendar', ['block' => true]);
 ?>
 
 <section class="annual-calendar">

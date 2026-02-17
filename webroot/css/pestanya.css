@@ -1,0 +1,171 @@
+/* PESTANYES GENERALS */
+.pestanya {
+    display: block;
+    max-width: 1000px;
+    width: 100%;
+    margin: 1rem auto;
+    opacity: 0;
+    transform: translateX(-100%);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.pestanya.apareix {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Títol */
+.pestanya .titol {
+    display: inline-block;
+    padding: 0.75rem 1rem;
+    color: white;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    border-radius: 0;
+    white-space: nowrap;
+    margin-bottom: 0;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+/* Text */
+.pestanya .text {
+    padding: 1.5rem;
+    border: 0.3rem solid;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 1.5rem;
+    line-height: 1.4;
+    background-color: white;
+    border-radius: 0;
+    margin-top: 0;
+    text-align: left;
+}
+
+.pestanya .text ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.pestanya .text ul li {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 0.3rem;
+    background-color: inherit;
+    color: inherit;
+    text-indent: 0rem;
+}
+
+.pestanya .text ul li::before {
+    content: '';
+    display: inline-block;
+    width: 0.6rem;
+    height: 0.6rem;
+    margin-right: 1rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: absolute;
+    left: 0;
+    top: 0.6rem;
+}
+
+.pestanya .text a {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    font-size: inherit;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.pestanya .text ol {
+    counter-reset: list-counter;
+    list-style: none;
+    padding-left: 0;
+}
+
+.pestanya .text ol li {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 0.3rem;
+    color: inherit;
+    display: flex;
+    align-items: flex-start;
+}
+
+.pestanya .text ol li::before {
+    counter-increment: list-counter;
+    content: counter(list-counter);
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    background-color: currentColor;
+    color: white;
+    font-weight: bold;
+    font-size: 0.7em;
+    text-align: center;
+    line-height: 1.5em;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translateY(0.1em);
+}
+
+.pestanya .text p {
+    margin: 0.3rem 0;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+    .pestanya { width: 100%; }
+    .pestanya .titol { font-size: 1.5rem; }
+    .pestanya .text { font-size: 1.1rem; padding: 1.2rem; }
+    .pestanya .text ol li::before { font-size: 0.8rem; line-height: 1.2rem; }
+}
+
+/* COLORS (els de sempre) */
+.pestanya-rosa .titol,
+.pestanya-rosa .text ol li::before,
+.pestanya-rosa .text ul li::before { background-color: #e55381; }
+.pestanya-rosa .text { border-color: #e55381; }
+
+.pestanya-blaucel .titol,
+.pestanya-blaucel .text ol li::before,
+.pestanya-blaucel .text ul li::before { background-color: #8ec3c3; }
+.pestanya-blaucel .text { border-color: #8ec3c3; }
+
+.pestanya-lila .titol,
+.pestanya-lila .text ol li::before,
+.pestanya-lila .text ul li::before { background-color: #b2abbe; }
+.pestanya-lila .text { border-color: #b2abbe; }
+
+.pestanya-taronja .titol,
+.pestanya-taronja .text ol li::before,
+.pestanya-taronja .text ul li::before { background-color: #feb20e; }
+.pestanya-taronja .text { border-color: #feb20e; }
+
+.pestanya-blaumari .titol,
+.pestanya-blaumari .text ol li::before,
+.pestanya-blaumari .text ul li::before { background-color: #708090; }
+.pestanya-blaumari .text { border-color: #708090; }
+
+.pestanya-verd .titol,
+.pestanya-verd .text ol li::before,
+.pestanya-verd .text ul li::before { background-color: #aed581; }
+.pestanya-verd .text { border-color: #aed581; }
+
+.pestanya-gris .titol,
+.pestanya-gris .text ol li::before,
+.pestanya-gris .text ul li::before { background-color: #bfbfbf; }
+.pestanya-gris .text { border-color: #bfbfbf; }
+
+.pestanya-ocre .titol,
+.pestanya-ocre .text ol li::before,
+.pestanya-ocre .text ul li::before { background-color: #d8baa9; }
+.pestanya-ocre .text { border-color: #d8baa9; }
+
+.pestanya-grisclar .titol,
+.pestanya-grisclar .text ol li::before,
+.pestanya-grisclar .text ul li::before { background-color: #cfcfcf; }
+.pestanya-grisclar .text { border-color: #cfcfcf; }

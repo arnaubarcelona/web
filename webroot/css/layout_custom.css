@@ -101,7 +101,7 @@
   /* Sidebar fixa */
   .app-sidebar{
     position: fixed;
-    top: var(--topbar-h);
+    top: var(--topbar-h) + 2;
     left: 0;
     width: var(--sidebar-w);
     height: calc(100vh - var(--topbar-h));
@@ -110,6 +110,7 @@
     z-index: 900;
     padding: 12px;
     border: 0;
+    margin-top:0.8rem;
   }
 
   /* El contenidor principal deixa espai per la sidebar i la topbar */

@@ -68,11 +68,11 @@ $i = 0;
 
 <style>
 .menuppal-wrapper{
-    margin-top:5rem !important;
+    margin-top:1rem !important;
     margin-left: 1rem;
     margin-right: 1rem;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1rem;
 }
 
