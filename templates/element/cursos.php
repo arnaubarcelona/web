@@ -123,9 +123,16 @@ $courses = $coursesTable->find()
 
 $competencies = [];
 if (in_array('competenciestic', $tables, true)) {
-    $rows = $connection->execute('SELECT id, nom, name FROM competenciestic')->fetchAll('assoc');
+    $competenciaSchema = $schema->describe('competenciestic');
+    $competenciaColumns = $competenciaSchema->columns();
+    $competenciaNameColumn = in_array('name', $competenciaColumns, true) ? 'name' : 'nom';
+
+    $rows = $connection->execute(
+        sprintf('SELECT id, %s FROM competenciestic', $competenciaNameColumn)
+    )->fetchAll('assoc');
+
     foreach ($rows as $row) {
-        $competencies[(int)$row['id']] = $row['name'] ?? $row['nom'] ?? '';
+        $competencies[(int)$row['id']] = (string)($row[$competenciaNameColumn] ?? '');
     }
 }
 
