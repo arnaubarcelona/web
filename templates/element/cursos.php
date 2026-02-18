@@ -149,7 +149,7 @@ if (!$latestYear) {
 
 $paginaMatricula = $paginesTable->find()
     ->select(['id'])
-    ->where(['Pagines.name' => 'matricula'])
+    ->where(['Pagines.title' => 'matricula'])
     ->first();
 $matriculaUrl = $paginaMatricula ? $this->Url->build(['controller' => 'Pagines', 'action' => 'view', $paginaMatricula->id]) : '#';
 
