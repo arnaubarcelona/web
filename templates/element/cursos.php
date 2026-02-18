@@ -16,6 +16,7 @@ $paginesTable = $locator->get('Pagines');
 $connection = $coursesTable->getConnection();
 $schema = $connection->getSchemaCollection();
 $tables = $schema->listTables();
+$courseColumns = in_array('courses', $tables, true) ? $schema->describe('courses')->columns() : [];
 
 $formatDateCatalan = static function ($date): string {
     if (!$date) {
@@ -64,6 +65,14 @@ $formatTime = static function ($time): string {
     }
 
     return $time->format('H:i');
+};
+
+$timeToMinutes = static function ($time): int {
+    if (!$time instanceof \DateTimeInterface) {
+        $time = new \DateTime((string)$time);
+    }
+
+    return ((int)$time->format('H')) * 60 + (int)$time->format('i');
 };
 
 $getMaterialsForCourse = static function (Connection $conn, array $existingTables, int $courseId): array {
@@ -137,6 +146,87 @@ $getYearMaterialPrice = static function (Connection $conn, array $existingTables
     return $total;
 };
 
+$buildHorariAbreujat = static function (array $horaris, callable $formatTime): string {
+    if (empty($horaris)) {
+        return '';
+    }
+
+    $abbr = [
+        'dilluns' => 'dl.',
+        'dimarts' => 'dt.',
+        'dimecres' => 'dc.',
+        'dijous' => 'dj.',
+        'divendres' => 'dv.',
+        'dissabte' => 'ds.',
+        'diumenge' => 'dg.',
+    ];
+
+    $items = [];
+    foreach ($horaris as $h) {
+        $dayName = mb_strtolower((string)($h->day->name ?? ''));
+        $items[] = [
+            'day' => $abbr[$dayName] ?? $dayName,
+            'start' => $formatTime($h->horainici),
+            'end' => $formatTime($h->horafinal),
+        ];
+    }
+
+    usort($items, static function ($a, $b): int {
+        return strcmp($a['day'] . $a['start'], $b['day'] . $b['start']);
+    });
+
+    $firstStart = $items[0]['start'];
+    $firstEnd = $items[0]['end'];
+    $sameRange = true;
+    $days = [];
+
+    foreach ($items as $item) {
+        $days[] = $item['day'];
+        if ($item['start'] !== $firstStart || $item['end'] !== $firstEnd) {
+            $sameRange = false;
+        }
+    }
+
+    if ($sameRange) {
+        return implode(' i ', $days) . ' de ' . $firstStart . ' a ' . $firstEnd;
+    }
+
+    $chunks = [];
+    foreach ($items as $item) {
+        $chunks[] = $item['day'] . ' de ' . $item['start'] . ' a ' . $item['end'];
+    }
+
+    return implode(', ', $chunks);
+};
+
+$areCoursesCompatible = static function (array $horarisA, array $horarisB, callable $timeToMinutes): bool {
+    if (empty($horarisA) || empty($horarisB)) {
+        return true;
+    }
+
+    foreach ($horarisA as $a) {
+        $dayA = (int)($a->day_id ?? 0);
+        $aStart = $timeToMinutes($a->horainici);
+        $aEnd = $timeToMinutes($a->horafinal);
+
+        foreach ($horarisB as $b) {
+            if ($dayA !== (int)($b->day_id ?? 0)) {
+                continue;
+            }
+
+            $bStart = $timeToMinutes($b->horainici);
+            $bEnd = $timeToMinutes($b->horafinal);
+
+            $overlap = min($aEnd, $bEnd) - max($aStart, $bStart);
+            if ($overlap > 30) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+};
+
 $latestYear = $yearsTable->find()
     ->where(['Years.datainicipreinscripcio IS NOT' => null])
     ->order(['Years.datainicipreinscripcio' => 'DESC'])
@@ -165,7 +255,21 @@ $courses = $coursesTable->find()
         'Horaris' => ['Days'],
     ])
     ->order(['Courses.name' => 'ASC'])
-    ->all();
+    ->all()
+    ->toList();
+
+$hasParentCourseId = in_array('parentcourse_id', $courseColumns, true);
+$childParentIds = [];
+if ($hasParentCourseId) {
+    try {
+        $rows = $connection->execute('SELECT DISTINCT parentcourse_id FROM courses WHERE parentcourse_id IS NOT NULL')->fetchAll('assoc');
+        foreach ($rows as $row) {
+            $childParentIds[(int)$row['parentcourse_id']] = true;
+        }
+    } catch (\Throwable $e) {
+        $childParentIds = [];
+    }
+}
 
 $competencies = [];
 if (in_array('competenciestic', $tables, true)) {
@@ -257,6 +361,24 @@ $nextColorIndex = 0;
                 );
             }
 
+            $compatibleItems = [];
+            foreach ($courses as $otherCourse) {
+                if ((int)$otherCourse->id === (int)$course->id) {
+                    continue;
+                }
+                if ((int)($otherCourse->subject_id ?? 0) === (int)($course->subject_id ?? 0)) {
+                    continue;
+                }
+
+                $otherHoraris = (array)($otherCourse->horaris ?? []);
+                if (!$areCoursesCompatible($horaris, $otherHoraris, $timeToMinutes)) {
+                    continue;
+                }
+
+                $horariAbreujat = $buildHorariAbreujat($otherHoraris, $formatTime);
+                $compatibleItems[] = '<li class="horari-linia">' . h((string)$otherCourse->name) . ($horariAbreujat !== '' ? ' (' . h($horariAbreujat) . ')' : '') . '</li>';
+            }
+
             $competenciaItem = '';
             if ($course->competenciatic_id !== null) {
                 $competencia = mb_strtolower((string)($competencies[(int)$course->competenciatic_id] ?? ''));
@@ -265,8 +387,12 @@ $nextColorIndex = 0;
                 }
             }
 
+            $showLevel = !isset($childParentIds[(int)$course->id]);
             $nivell = (string)$course->level;
-            $hasMecr = isset($course->mecr) && $course->mecr !== null && $course->mecr !== '';
+            $hasMecr = isset($course->mecr) && $course->mecr !== null && trim((string)$course->mecr) !== '';
+            $levelItem = $showLevel
+                ? '<li>És el <strong>nivell ' . h($nivell) . '</strong>' . ($hasMecr ? ' (' . h((string)$course->mecr) . ' del Marc Europeu Comú de Referència).' : '.') . '</li>'
+                : '';
 
             $materials = $getMaterialsForCourse($connection, $tables, (int)$course->id);
             $materialLines = '';
@@ -286,25 +412,26 @@ $nextColorIndex = 0;
                 $isbn = trim((string)($material['isbn'] ?? ''));
                 $isbnText = $isbn !== '' ? ' (ISBN: ' . h($isbn) . ')' : '';
 
-                $materialLines .= '<li>El ' . h($name) . $descriptionText . $isbnText . ' val <strong>' . number_format($price, 2, ',', '.') . ' €</strong>.</li>';
+                $materialLines .= '<li>El ' . h($name) . $descriptionText . $isbnText . ' i el podeu comprar al nostre centre al preu reduït de <strong>' . number_format($price, 2, ',', '.') . ' €</strong>.</li>';
             }
 
             $totalWithYearMaterial = $courseMaterialsTotal + $materialPriceByYear;
+            $showTotal = abs($totalWithYearMaterial - $materialPriceByYear) > 0.0001;
 
             $content = '<ul class="cursos-llista">'
                 . $descriptionItems
                 . $competenciaItem
-                . '<li>És el <strong>nivell ' . h($nivell) . '</strong>' . ($hasMecr ? ' (equivalent al nivell ' . h((string)$course->mecr) . ' del Marc Europeu Comú de Referència).' : '.') . '</li>'
+                . $levelItem
                 . '<li>El curs <strong>comença</strong> el ' . h($formatDateCatalan($course->datainici)) . ' i <strong>acaba</strong> el ' . h($formatDateCatalan($course->datafi)) . '.</li>'
                 . '<li>Són <strong>' . h(rtrim(rtrim(number_format($horesSetmanals, 2, ',', ''), '0'), ',')) . ' hores</strong> a la setmana, <strong>' . h((string)$course->horesanuals) . ' hores</strong> en total.</li>'
                 . '<li>Es fa a l\'<strong>' . h((string)($course->aula->name ?? '-')) . '</strong>, en aquest horari:</li>'
                 . implode('', $horariLines)
+                . '<li>És compatible amb els cursos:</li>'
+                . (empty($compatibleItems) ? '<li class="horari-linia">Cap curs compatible.</li>' : implode('', $compatibleItems))
                 . '<li>La matrícula és <strong>gratuïta</strong>.</li>'
                 . '<li>El preu del material és de <strong>' . number_format($materialPriceByYear, 2, ',', '.') . ' €</strong>.</li>'
                 . $materialLines
-                . ($totalWithYearMaterial > $courseMaterialsTotal
-                    ? '<li>En total són <strong>' . number_format($totalWithYearMaterial, 2, ',', '.') . ' €</strong>.</li>'
-                    : '')
+                . ($showTotal ? '<li>En total són <strong>' . number_format($totalWithYearMaterial, 2, ',', '.') . ' €</strong>.</li>' : '')
                 . '<li>Si t\'interessa aquest curs, <a href="' . h($matriculaUrl) . '">fes clic aquí</a>.</li>'
                 . '</ul>';
 
@@ -342,10 +469,13 @@ $nextColorIndex = 0;
     font-size: 1.5rem;
     margin: 0.3rem;
     width: 14rem;
-    height: 3.1rem;
+    height: 4.4rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    line-height: 1.1;
+    text-align: center;
+    padding: 0.4rem;
 }
 
 .cursos-subject-button.pestanya-blaumari { background-color: #708090; }
