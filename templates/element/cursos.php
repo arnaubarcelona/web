@@ -487,6 +487,12 @@ foreach ($courses as $course) {
 .cursos-compatible-wrapper {
     list-style: none;
     padding-left: 0 !important;
+    margin-bottom: 0;
+}
+
+.cursos-compatible-wrapper::before {
+    content: none !important;
+    display: none !important;
 }
 
 .cursos-compatible-list {
@@ -500,6 +506,11 @@ foreach ($courses as $course) {
 }
 
 @media (max-width: 980px) {
+    .cursos-element {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
     .cursos-tab-item {
         scroll-margin-top: 9rem;
     }
