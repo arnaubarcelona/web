@@ -17,6 +17,7 @@
  */
 
 $titol = $titol ?? '';
+$titolHtml = $titolHtml ?? '';
 $contingut = $contingut ?? '';
 $color = $color ?? 'grisclar';
 $extraClass = $extraClass ?? '';
@@ -30,6 +31,6 @@ $classes = trim("pestanya pestanya-{$color} {$extraClass}");
 ?>
 
 <div class="<?= h($classes) ?>">
-    <div class="titol"><?= h($titol) ?></div>
+    <div class="titol"><?= $titolHtml !== '' ? $titolHtml : h($titol) ?></div>
     <div class="text"><?= $contingut ?></div>
 </div>
