@@ -457,6 +457,7 @@ foreach ($courses as $course) {
 
 .cursos-tab-item {
     display: block;
+    scroll-margin-top: 9rem;
 }
 
 .cursos-element .horari-linia {
@@ -479,6 +480,10 @@ foreach ($courses as $course) {
 }
 
 @media (max-width: 980px) {
+    .cursos-tab-item {
+        scroll-margin-top: 10.5rem;
+    }
+
     .cursos-horari-abreujat {
         display: block;
         margin-left: 0;
