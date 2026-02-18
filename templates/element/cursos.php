@@ -416,6 +416,11 @@ foreach ($courses as $course) {
             $totalWithYearMaterial = $courseMaterialsTotal + $materialPriceByYear;
             $showTotal = abs($totalWithYearMaterial - $materialPriceByYear) > 0.0001;
 
+            $compatibleListId = 'compatible-list-' . (int)$course->id;
+            $compatibleList = empty($compatibleItems)
+                ? '<li class="horari-linia cursos-compatible-item">Cap curs compatible.</li>'
+                : implode('', $compatibleItems);
+
             $content = '<ul class="cursos-llista">'
                 . $descriptionItems
                 . $competenciaItem
@@ -429,8 +434,8 @@ foreach ($courses as $course) {
                 . $materialLines
                 . ($showTotal ? '<li>En total són <strong>' . number_format($totalWithYearMaterial, 2, ',', '.') . ' €</strong>.</li>' : '')
                 . '<li>Si t\'interessa aquest curs, <a href="' . h($matriculaUrl) . '">fes clic aquí</a>.</li>'
-                . '<li>L\'horari d\'aquest curs és compatible amb l\'horari de:</li>'
-                . (empty($compatibleItems) ? '<li class="horari-linia cursos-compatible-item">Cap curs compatible.</li>' : implode('', $compatibleItems))
+                . '<li>Els horaris d\'aquest curs són compatibles amb aquests <a href="#" class="cursos-compatible-toggle" data-target="' . h($compatibleListId) . '">altres cursos</a>.</li>'
+                . '<li class="cursos-compatible-wrapper"><ul id="' . h($compatibleListId) . '" class="cursos-compatible-list">' . $compatibleList . '</ul></li>'
                 . '</ul>';
 
             $subjectKey = (int)($course->subject_id ?? 0);
@@ -457,7 +462,7 @@ foreach ($courses as $course) {
 
 .cursos-tab-item {
     display: block;
-    scroll-margin-top: 9rem;
+    scroll-margin-top: 10.5rem;
 }
 
 .cursos-element .horari-linia {
@@ -479,9 +484,24 @@ foreach ($courses as $course) {
     margin-left: 0.35rem;
 }
 
+.cursos-compatible-wrapper {
+    list-style: none;
+    padding-left: 0 !important;
+}
+
+.cursos-compatible-list {
+    display: none;
+    margin: 0;
+    padding-left: 0;
+}
+
+.cursos-compatible-list.is-open {
+    display: block;
+}
+
 @media (max-width: 980px) {
     .cursos-tab-item {
-        scroll-margin-top: 10.5rem;
+        scroll-margin-top: 9rem;
     }
 
     .cursos-horari-abreujat {
@@ -490,3 +510,24 @@ foreach ($courses as $course) {
     }
 }
 </style>
+
+<script>
+(function () {
+    document.querySelectorAll('.cursos-compatible-toggle').forEach((toggle) => {
+        toggle.addEventListener('click', function (event) {
+            event.preventDefault();
+            const targetId = this.dataset.target;
+            if (!targetId) {
+                return;
+            }
+
+            const list = document.getElementById(targetId);
+            if (!list) {
+                return;
+            }
+
+            list.classList.toggle('is-open');
+        });
+    });
+})();
+</script>
