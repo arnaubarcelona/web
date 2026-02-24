@@ -536,6 +536,13 @@ foreach ($courses as $course) {
     display: block;
 }
 
+.cursos-page.is-active:not(.cursos-course-page) {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .cursos-buttons-grid {
     display: flex;
     flex-direction: column;
@@ -545,7 +552,7 @@ foreach ($courses as $course) {
 
 .cursos-nav-button {
     width: 60%;
-    max-width: 720px;
+    max-width: 15rem;
     border: 0;
     background: var(--btn-bg, #708090);
     color: #fff;
@@ -565,7 +572,8 @@ foreach ($courses as $course) {
 .cursos-back-course {
     margin-top: 1rem;
     width: auto;
-    align-self: center;
+    display: inline-block;
+    margin-left: 0;
     padding-left: 1.8rem;
     padding-right: 1.8rem;
 }
@@ -664,6 +672,11 @@ foreach ($courses as $course) {
     .cursos-element {
         padding-left: 0.75rem;
         padding-right: 0.75rem;
+    }
+
+    .cursos-nav-button {
+        width: 100%;
+        max-width: none;
     }
 
     .cursos-horari-abreujat {
