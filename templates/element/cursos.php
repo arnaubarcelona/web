@@ -551,8 +551,7 @@ foreach ($courses as $course) {
 }
 
 .cursos-nav-button {
-    width: 60%;
-    max-width: 15rem;
+    min-width: 25rem;
     border: 0;
     background: var(--btn-bg, #708090);
     color: #fff;
@@ -571,11 +570,12 @@ foreach ($courses as $course) {
 
 .cursos-back-course {
     margin-top: 1rem;
-    width: auto;
-    display: inline-block;
-    margin-left: 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
     padding-left: 1.8rem;
     padding-right: 1.8rem;
+    width: fit-content;
 }
 
 .cursos-nav-button:hover {
