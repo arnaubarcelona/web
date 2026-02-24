@@ -7,6 +7,11 @@
 $this->assign('title', $pagina->title ?? 'Pàgina');
 
 $body = (string)($pagina->body ?? '');
+$hasMenuppal = preg_match('/(?:\{|\&\#123;)\s*menuppal\s*(?:\}|\&\#125;)/i', $body) === 1;
+
+if ($hasMenuppal) {
+    $this->assign('appMainClass', 'app-main app-main--centered');
+}
 
 if ($body !== '') {
     // Regex que captura:

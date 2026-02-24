@@ -36,6 +36,10 @@ $pageLevel = function (string $orderCode): int {
     $orderCode = trim($orderCode);
     return $orderCode === '' ? 1 : count(explode('.', $orderCode));
 };
+$appMainClass = trim((string)$this->fetch('appMainClass'));
+if ($appMainClass === '') {
+    $appMainClass = 'app-main';
+}
 ?>
 <!DOCTYPE html>
 <html lang="ca">
@@ -172,7 +176,7 @@ $pageLevel = function (string $orderCode): int {
     </aside>
 
     <!-- CONTINGUT -->
-    <main class="app-main">
+    <main class="<?= h($appMainClass) ?>">
         <div class="app-container">
             <?= $this->Flash->render() ?>
             <?= $this->fetch('content') ?>
