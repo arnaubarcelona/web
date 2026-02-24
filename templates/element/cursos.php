@@ -314,168 +314,241 @@ foreach ($courses as $course) {
 }
 ?>
 
+
 <div class="cursos-element" id="cursos-top">
-    <div class="cursos-tabs">
-        <?php foreach ($courses as $course): ?>
+    <div class="cursos-page is-active" data-page="subjects">
+        <div class="cursos-buttons-grid">
             <?php
-            $courseAnchor = 'course-' . (int)$course->id;
-            $courseTitleLink = '<a href="#' . h($courseAnchor) . '" class="cursos-title-link">' . h((string)$course->name) . '</a>';
-
-            $paragraphs = preg_split('/\R{2,}/u', trim((string)$course->description)) ?: [];
-            $descriptionItems = '';
-            foreach ($paragraphs as $paragraph) {
-                $paragraph = trim(strip_tags((string)$paragraph));
-                if ($paragraph === '') {
-                    continue;
-                }
-                $descriptionItems .= '<li>' . h($paragraph) . '</li>';
-            }
-
-            $horesSetmanals = 0.0;
-            $horariLines = [];
-            $horaris = (array)($course->horaris ?? []);
-
-            usort($horaris, static function ($a, $b): int {
-                $dayA = (int)($a->day->id ?? $a->day_id ?? 0);
-                $dayB = (int)($b->day->id ?? $b->day_id ?? 0);
-
-                if ($dayA === $dayB) {
-                    return strcmp((string)$a->horainici, (string)$b->horainici);
-                }
-
-                return $dayA <=> $dayB;
-            });
-
-            foreach ($horaris as $horari) {
-                $horesSetmanals += (float)($horari->durada ?? 0);
-                $horariLines[] = sprintf(
-                    '<li class="horari-linia"><strong>%s</strong> de %s a %s</li>',
-                    h(mb_strtolower((string)($horari->day->name ?? ''))),
-                    h($formatTime($horari->horainici)),
-                    h($formatTime($horari->horafinal))
-                );
-            }
-
-            $compatibleItems = [];
-            foreach ($courses as $otherCourse) {
-                if ((int)$otherCourse->id === (int)$course->id) {
-                    continue;
-                }
-                if ((int)($otherCourse->subject_id ?? 0) === (int)($course->subject_id ?? 0)) {
-                    continue;
-                }
-
-                $otherHoraris = (array)($otherCourse->horaris ?? []);
-                if (!$areCoursesCompatible($horaris, $otherHoraris, $timeToMinutes)) {
-                    continue;
-                }
-
-                $otherAnchor = '#course-' . (int)$otherCourse->id;
-                $horariAbreujat = $buildHorariAbreujat($otherHoraris, $formatTime);
-                $compatibleItems[] = '<li class="horari-linia cursos-compatible-item"><a href="' . h($otherAnchor) . '" class="cursos-link-course">' . h((string)$otherCourse->name) . '</a>' . ($horariAbreujat !== '' ? '<span class="cursos-horari-abreujat">(' . h($horariAbreujat) . ')</span>' : '') . '</li>';
-            }
-
-            $competenciaItem = '';
-            if ($course->competenciatic_id !== null) {
-                $competencia = mb_strtolower((string)($competencies[(int)$course->competenciatic_id] ?? ''));
-                if ($competencia !== '') {
-                    $competenciaItem = '<li>Es treballarà la competència de <strong>' . h($competencia) . '</strong>.</li>';
-                }
-            }
-
-            $showLevel = !isset($childParentIds[(int)$course->id]);
-            $nivell = (string)$course->level;
-            $hasMecr = isset($course->mecr) && $course->mecr !== null && trim((string)$course->mecr) !== '';
-            $levelItem = $showLevel
-                ? '<li>És el <strong>nivell ' . h($nivell) . '</strong>' . ($hasMecr ? ' (' . h((string)$course->mecr) . ' del Marc Europeu Comú de Referència).' : '.') . '</li>'
-                : '';
-
-            $materials = $getMaterialsForCourse($connection, $tables, (int)$course->id);
-            $materialLines = '';
-            $courseMaterialsTotal = 0.0;
-
-            foreach ($materials as $material) {
-                $price = (float)($material['price'] ?? 0);
-                $courseMaterialsTotal += $price;
-
-                $name = mb_strtolower(trim((string)($material['name'] ?? '')));
-                if ($name === '' || $name === 'material' || $name === 'material extra') {
-                    continue;
-                }
-
-                $description = trim((string)($material['description'] ?? ''));
-                $descriptionText = $description !== '' ? ' es diu ' . h($description) : '';
-                $isbn = trim((string)($material['isbn'] ?? ''));
-                $isbnText = $isbn !== '' ? ' (ISBN: ' . h($isbn) . ')' : '';
-
-                $materialLines .= '<li>El ' . h($name) . $descriptionText . $isbnText . ' i el podeu comprar al nostre centre al preu reduït de <strong>' . number_format($price, 2, ',', '.') . ' €</strong>.</li>';
-            }
-
-            $totalWithYearMaterial = $courseMaterialsTotal + $materialPriceByYear;
-            $showTotal = abs($totalWithYearMaterial - $materialPriceByYear) > 0.0001;
-
-            $compatibleListId = 'compatible-list-' . (int)$course->id;
-            $compatibleList = empty($compatibleItems)
-                ? '<li class="horari-linia cursos-compatible-item">Cap curs compatible.</li>'
-                : implode('', $compatibleItems);
-
-            $content = '<ul class="cursos-llista">'
-                . $descriptionItems
-                . $competenciaItem
-                . $levelItem
-                . '<li>El curs <strong>comença</strong> el ' . h($formatDateCatalan($course->datainici)) . ' i <strong>acaba</strong> el ' . h($formatDateCatalan($course->datafi)) . '.</li>'
-                . '<li>Són <strong>' . h(rtrim(rtrim(number_format($horesSetmanals, 2, ',', ''), '0'), ',')) . ' hores</strong> a la setmana, <strong>' . h((string)$course->horesanuals) . ' hores</strong> en total.</li>'
-                . '<li>Es fa a l\'<strong>' . h((string)($course->aula->name ?? '-')) . '</strong>, en aquest horari:</li>'
-                . implode('', $horariLines)
-                . '<li>La matrícula és <strong>gratuïta</strong>.</li>'
-                . '<li>El preu del material és de <strong>' . number_format($materialPriceByYear, 2, ',', '.') . ' €</strong>.</li>'
-                . $materialLines
-                . ($showTotal ? '<li>En total són <strong>' . number_format($totalWithYearMaterial, 2, ',', '.') . ' €</strong>.</li>' : '')
-                . '<li>Si t\'interessa aquest curs, <a href="' . h($matriculaUrl) . '">fes clic aquí</a>.</li>'
-                . '<li>Els horaris d\'aquest curs són compatibles amb aquests <a href="#" class="cursos-compatible-toggle" data-target="' . h($compatibleListId) . '">altres cursos</a>.</li>'
-                . '<li class="cursos-compatible-wrapper"><ul id="' . h($compatibleListId) . '" class="cursos-compatible-list">' . $compatibleList . '</ul></li>'
-                . '</ul>';
-
-            $subjectKey = (int)($course->subject_id ?? 0);
-            $subjectColor = $subjectColors[$subjectKey] ?? $colors[0];
+            $subjectsSorted = $subjectNames;
+            asort($subjectsSorted, SORT_NATURAL | SORT_FLAG_CASE);
+            foreach ($subjectsSorted as $subjectId => $subjectName):
+                $subjectCourses = array_values(array_filter($courses, static function ($course) use ($subjectId): bool {
+                    return (int)($course->subject_id ?? 0) === (int)$subjectId;
+                }));
+                $target = count($subjectCourses) === 1
+                    ? 'course-' . (int)$subjectCourses[0]->id
+                    : 'subject-' . (int)$subjectId;
             ?>
-            <div id="<?= h($courseAnchor) ?>" class="cursos-tab-item is-visible" data-subject="<?= h((string)$subjectKey) ?>">
-                <?= $this->element('pestanya', [
-                    'titol' => (string)$course->name,
-                    'titolHtml' => $courseTitleLink,
-                    'contingut' => $content,
-                    'color' => $subjectColor,
-                    'extraClass' => 'cursos-pestanya',
-                ]) ?>
-            </div>
-        <?php endforeach; ?>
+                <button type="button" class="cursos-nav-button" data-target-page="<?= h($target) ?>">
+                    <?= h($subjectName) ?>
+                </button>
+            <?php endforeach; ?>
+        </div>
     </div>
+
+    <?php foreach ($subjectsSorted as $subjectId => $subjectName): ?>
+        <?php
+        $subjectCourses = array_values(array_filter($courses, static function ($course) use ($subjectId): bool {
+            return (int)($course->subject_id ?? 0) === (int)$subjectId;
+        }));
+        if (count($subjectCourses) <= 1) {
+            continue;
+        }
+        ?>
+        <div class="cursos-page" data-page="subject-<?= h((string)$subjectId) ?>">
+            <div class="cursos-buttons-grid">
+                <?php foreach ($subjectCourses as $subjectCourse): ?>
+                    <button type="button" class="cursos-nav-button" data-target-page="course-<?= h((string)$subjectCourse->id) ?>">
+                        <?= h((string)$subjectCourse->name) ?>
+                    </button>
+                <?php endforeach; ?>
+
+                <button type="button" class="cursos-nav-button cursos-nav-button--back" data-target-page="subjects">
+                    VEURE TOTS ELS ENSENYAMENTS
+                </button>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
+    <?php foreach ($courses as $course): ?>
+        <?php
+        $courseAnchor = 'course-' . (int)$course->id;
+
+        $paragraphs = preg_split('/\R{2,}/u', trim((string)$course->description)) ?: [];
+        $descriptionItems = '';
+        foreach ($paragraphs as $paragraph) {
+            $paragraph = trim(strip_tags((string)$paragraph));
+            if ($paragraph === '') {
+                continue;
+            }
+            $descriptionItems .= '<li>' . h($paragraph) . '</li>';
+        }
+
+        $horesSetmanals = 0.0;
+        $horariLines = [];
+        $horaris = (array)($course->horaris ?? []);
+
+        usort($horaris, static function ($a, $b): int {
+            $dayA = (int)($a->day->id ?? $a->day_id ?? 0);
+            $dayB = (int)($b->day->id ?? $b->day_id ?? 0);
+
+            if ($dayA === $dayB) {
+                return strcmp((string)$a->horainici, (string)$b->horainici);
+            }
+
+            return $dayA <=> $dayB;
+        });
+
+        foreach ($horaris as $horari) {
+            $horesSetmanals += (float)($horari->durada ?? 0);
+            $horariLines[] = sprintf(
+                '<li class="horari-linia"><strong>%s</strong> de %s a %s</li>',
+                h(mb_strtolower((string)($horari->day->name ?? ''))),
+                h($formatTime($horari->horainici)),
+                h($formatTime($horari->horafinal))
+            );
+        }
+
+        $compatibleItems = [];
+        foreach ($courses as $otherCourse) {
+            if ((int)$otherCourse->id === (int)$course->id) {
+                continue;
+            }
+            if ((int)($otherCourse->subject_id ?? 0) === (int)($course->subject_id ?? 0)) {
+                continue;
+            }
+
+            $otherHoraris = (array)($otherCourse->horaris ?? []);
+            if (!$areCoursesCompatible($horaris, $otherHoraris, $timeToMinutes)) {
+                continue;
+            }
+
+            $horariAbreujat = $buildHorariAbreujat($otherHoraris, $formatTime);
+            $compatibleItems[] = '<li class="horari-linia cursos-compatible-item"><button type="button" class="cursos-link-course cursos-go-course" data-course-id="' . (int)$otherCourse->id . '">' . h((string)$otherCourse->name) . '</button>' . ($horariAbreujat !== '' ? '<span class="cursos-horari-abreujat">(' . h($horariAbreujat) . ')</span>' : '') . '</li>';
+        }
+
+        $competenciaItem = '';
+        if ($course->competenciatic_id !== null) {
+            $competencia = mb_strtolower((string)($competencies[(int)$course->competenciatic_id] ?? ''));
+            if ($competencia !== '') {
+                $competenciaItem = '<li>Es treballarà la competència de <strong>' . h($competencia) . '</strong>.</li>';
+            }
+        }
+
+        $showLevel = !isset($childParentIds[(int)$course->id]);
+        $nivell = (string)$course->level;
+        $hasMecr = isset($course->mecr) && $course->mecr !== null && trim((string)$course->mecr) !== '';
+        $levelItem = $showLevel
+            ? '<li>És el <strong>nivell ' . h($nivell) . '</strong>' . ($hasMecr ? ' (' . h((string)$course->mecr) . ' del Marc Europeu Comú de Referència).' : '.') . '</li>'
+            : '';
+
+        $materials = $getMaterialsForCourse($connection, $tables, (int)$course->id);
+        $materialLines = '';
+        $courseMaterialsTotal = 0.0;
+
+        foreach ($materials as $material) {
+            $price = (float)($material['price'] ?? 0);
+            $courseMaterialsTotal += $price;
+
+            $name = mb_strtolower(trim((string)($material['name'] ?? '')));
+            if ($name === '' || $name === 'material' || $name === 'material extra') {
+                continue;
+            }
+
+            $description = trim((string)($material['description'] ?? ''));
+            $descriptionText = $description !== '' ? ' es diu ' . h($description) : '';
+            $isbn = trim((string)($material['isbn'] ?? ''));
+            $isbnText = $isbn !== '' ? ' (ISBN: ' . h($isbn) . ')' : '';
+
+            $materialLines .= '<li>El ' . h($name) . $descriptionText . $isbnText . ' i el podeu comprar al nostre centre al preu reduït de <strong>' . number_format($price, 2, ',', '.') . ' €</strong>.</li>';
+        }
+
+        $totalWithYearMaterial = $courseMaterialsTotal + $materialPriceByYear;
+        $showTotal = abs($totalWithYearMaterial - $materialPriceByYear) > 0.0001;
+
+        $compatibleListId = 'compatible-list-' . (int)$course->id;
+        $compatibleList = empty($compatibleItems)
+            ? '<li class="horari-linia cursos-compatible-item">Cap curs compatible.</li>'
+            : implode('', $compatibleItems);
+
+        $content = '<ul class="cursos-llista">'
+            . $descriptionItems
+            . $competenciaItem
+            . $levelItem
+            . '<li>El curs <strong>comença</strong> el ' . h($formatDateCatalan($course->datainici)) . ' i <strong>acaba</strong> el ' . h($formatDateCatalan($course->datafi)) . '.</li>'
+            . '<li>Són <strong>' . h(rtrim(rtrim(number_format($horesSetmanals, 2, ',', ''), '0'), ',')) . ' hores</strong> a la setmana, <strong>' . h((string)$course->horesanuals) . ' hores</strong> en total.</li>'
+            . '<li>Es fa a l\'<strong>' . h((string)($course->aula->name ?? '-')) . '</strong>, en aquest horari:</li>'
+            . implode('', $horariLines)
+            . '<li>La matrícula és <strong>gratuïta</strong>.</li>'
+            . '<li>El preu del material és de <strong>' . number_format($materialPriceByYear, 2, ',', '.') . ' €</strong>.</li>'
+            . $materialLines
+            . ($showTotal ? '<li>En total són <strong>' . number_format($totalWithYearMaterial, 2, ',', '.') . ' €</strong>.</li>' : '')
+            . '<li>Si t\'interessa aquest curs, <a href="' . h($matriculaUrl) . '">fes clic aquí</a>.</li>'
+            . '<li>Els horaris d\'aquest curs són compatibles amb aquests <a href="#" class="cursos-compatible-toggle" data-target="' . h($compatibleListId) . '">altres cursos</a>.</li>'
+            . '<li class="cursos-compatible-wrapper"><ul id="' . h($compatibleListId) . '" class="cursos-compatible-list">' . $compatibleList . '</ul></li>'
+            . '</ul>';
+
+        $subjectKey = (int)($course->subject_id ?? 0);
+        $subjectColor = $subjectColors[$subjectKey] ?? $colors[0];
+        $subjectCoursesCount = count(array_filter($courses, static function ($item) use ($subjectKey): bool {
+            return (int)($item->subject_id ?? 0) === $subjectKey;
+        }));
+        $backTarget = $subjectCoursesCount > 1 ? 'subject-' . $subjectKey : 'subjects';
+        ?>
+        <div class="cursos-page cursos-course-page" data-page="<?= h($courseAnchor) ?>" data-back-page="<?= h($backTarget) ?>">
+            <?= $this->element('pestanya', [
+                'titol' => (string)$course->name,
+                'contingut' => $content,
+                'color' => $subjectColor,
+                'extraClass' => 'cursos-pestanya',
+            ]) ?>
+
+            <button type="button" class="cursos-nav-button cursos-nav-button--back cursos-back-course" data-target-page="<?= h($backTarget) ?>">
+                VEURE ELS ALTRES GRUPS
+            </button>
+        </div>
+    <?php endforeach; ?>
 </div>
 
 <style>
-.cursos-element h1 {
-    text-align: left;
-    margin-bottom: 1rem;
+.cursos-page {
+    display: none;
 }
 
-.cursos-tab-item {
+.cursos-page.is-active {
     display: block;
-    scroll-margin-top: 10.5rem;
+}
+
+.cursos-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.75rem;
+}
+
+.cursos-nav-button {
+    width: 100%;
+    border: 0;
+    background: #708090;
+    color: #fff;
+    padding: 0.9rem 1rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    cursor: pointer;
+    text-align: left;
+}
+
+.cursos-nav-button--back {
+    background: #111;
+    text-align: center;
+}
+
+.cursos-back-course {
+    margin-top: 1rem;
 }
 
 .cursos-element .horari-linia {
     margin-left: 2rem !important;
 }
 
-.cursos-title-link {
-    color: inherit;
-    text-decoration: none;
-}
-
-.cursos-title-link:hover,
 .cursos-link-course {
     text-decoration: underline;
     font-weight: 700;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
 }
 
 .cursos-horari-abreujat {
@@ -503,14 +576,17 @@ foreach ($courses as $course) {
     display: block;
 }
 
+.cursos-pestanya .titol {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    margin-bottom: 0.5rem;
+}
+
 @media (max-width: 980px) {
     .cursos-element {
         padding-left: 0.75rem;
         padding-right: 0.75rem;
-    }
-
-    .cursos-tab-item {
-        scroll-margin-top: 9rem;
     }
 
     .cursos-horari-abreujat {
@@ -522,6 +598,38 @@ foreach ($courses as $course) {
 
 <script>
 (function () {
+    const pages = document.querySelectorAll('.cursos-page');
+
+    function showPage(pageId) {
+        pages.forEach((page) => {
+            page.classList.toggle('is-active', page.dataset.page === pageId);
+        });
+
+        const top = document.getElementById('cursos-top');
+        if (top) {
+            top.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    document.querySelectorAll('.cursos-nav-button[data-target-page]').forEach((button) => {
+        button.addEventListener('click', function () {
+            const targetPage = this.dataset.targetPage;
+            if (targetPage) {
+                showPage(targetPage);
+            }
+        });
+    });
+
+    document.querySelectorAll('.cursos-go-course').forEach((button) => {
+        button.addEventListener('click', function () {
+            const courseId = this.dataset.courseId;
+            if (!courseId) {
+                return;
+            }
+            showPage('course-' + courseId);
+        });
+    });
+
     document.querySelectorAll('.cursos-compatible-toggle').forEach((toggle) => {
         toggle.addEventListener('click', function (event) {
             event.preventDefault();
@@ -538,5 +646,7 @@ foreach ($courses as $course) {
             list.classList.toggle('is-open');
         });
     });
+
+    showPage('subjects');
 })();
 </script>
