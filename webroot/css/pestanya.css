@@ -9,29 +9,6 @@
     transform: translateX(0);
 }
 
-.pestanya-capcalera {
-    display: flex;
-    align-items: stretch;
-    justify-content: space-between;
-    gap: 0.5rem;
-}
-
-.pestanya-nav {
-    display: inline-flex;
-    gap: 0.35rem;
-}
-
-.pestanya-nav-btn {
-    width: 3.5rem;
-    min-width: 3.5rem;
-    border: 0;
-    border-radius: 0;
-    background: var(--pestanya-color);
-    color: #fff;
-    font-size: 1.3rem;
-    line-height: 1;
-    cursor: pointer;
-}
 
 /* Animació opcional: només si es vol aplicar explícitament */
 .pestanya.animable {
@@ -199,7 +176,7 @@
 /* Responsive */
 @media (max-width: 767px) {
     .pestanya { width: 100%; }
-    .pestanya-nav-btn { width: 2.8rem; min-width: 2.8rem; }
+
     .pestanya .titol { font-size: 1.5rem; }
     .pestanya .text { font-size: 1.1rem; padding: 1.2rem; }
     .pestanya .text ol li::before { font-size: 0.8rem; line-height: 1.2rem; }

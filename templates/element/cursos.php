@@ -316,7 +316,7 @@ foreach ($courses as $course) {
 
 <div class="cursos-element" id="cursos-top">
     <div class="cursos-tabs">
-        <?php foreach ($courses as $course): ?>
+        <?php foreach ($courses as $courseIndex => $course): ?>
             <?php
             $courseAnchor = 'course-' . (int)$course->id;
             $courseTitleLink = '<a href="#' . h($courseAnchor) . '" class="cursos-title-link">' . h((string)$course->name) . '</a>';
@@ -439,7 +439,7 @@ foreach ($courses as $course) {
             $subjectKey = (int)($course->subject_id ?? 0);
             $subjectColor = $subjectColors[$subjectKey] ?? $colors[0];
             ?>
-            <div id="<?= h($courseAnchor) ?>" class="cursos-tab-item is-visible" data-subject="<?= h((string)$subjectKey) ?>">
+            <div id="<?= h($courseAnchor) ?>" class="cursos-tab-item <?= $courseIndex === 0 ? 'is-visible' : '' ?>" data-subject="<?= h((string)$subjectKey) ?>">
                 <?= $this->element('pestanya', [
                     'titol' => (string)$course->name,
                     'titolHtml' => $courseTitleLink,
@@ -459,8 +459,12 @@ foreach ($courses as $course) {
 }
 
 .cursos-tab-item {
-    display: block;
+    display: none;
     scroll-margin-top: 10.5rem;
+}
+
+.cursos-tab-item.is-visible {
+    display: block;
 }
 
 .cursos-element .horari-linia {
@@ -522,6 +526,33 @@ foreach ($courses as $course) {
 
 <script>
 (function () {
+    const tabItems = Array.from(document.querySelectorAll('.cursos-tab-item'));
+    if (tabItems.length === 0) {
+        return;
+    }
+
+    let activeIndex = Math.max(0, tabItems.findIndex((item) => item.classList.contains('is-visible')));
+    let isNavigating = false;
+    let touchStartY = null;
+
+    const setActive = (index) => {
+        const normalized = ((index % tabItems.length) + tabItems.length) % tabItems.length;
+        tabItems.forEach((item, idx) => item.classList.toggle('is-visible', idx === normalized));
+        activeIndex = normalized;
+        tabItems[activeIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    const navigate = (direction) => {
+        if (isNavigating || direction === 0) {
+            return;
+        }
+        isNavigating = true;
+        setActive(activeIndex + direction);
+        window.setTimeout(() => {
+            isNavigating = false;
+        }, 450);
+    };
+
     document.querySelectorAll('.cursos-compatible-toggle').forEach((toggle) => {
         toggle.addEventListener('click', function (event) {
             event.preventDefault();
@@ -538,5 +569,63 @@ foreach ($courses as $course) {
             list.classList.toggle('is-open');
         });
     });
+
+    document.querySelectorAll('.cursos-title-link').forEach((link) => {
+        link.addEventListener('click', function (event) {
+            const href = this.getAttribute('href') || '';
+            if (!href.startsWith('#course-')) {
+                return;
+            }
+
+            event.preventDefault();
+            const target = document.querySelector(href);
+            if (!target) {
+                return;
+            }
+
+            const nextIndex = tabItems.indexOf(target);
+            if (nextIndex !== -1) {
+                setActive(nextIndex);
+            }
+        });
+    });
+
+    window.addEventListener('wheel', (event) => {
+        const active = tabItems[activeIndex];
+        const scrollPanel = active?.querySelector('.pestanya .text');
+        if (!scrollPanel) {
+            return;
+        }
+
+        const atTop = scrollPanel.scrollTop <= 0;
+        const atBottom = scrollPanel.scrollTop + scrollPanel.clientHeight >= scrollPanel.scrollHeight - 1;
+        if (event.deltaY > 0 && atBottom) {
+            event.preventDefault();
+            navigate(1);
+        } else if (event.deltaY < 0 && atTop) {
+            event.preventDefault();
+            navigate(-1);
+        }
+    }, { passive: false });
+
+    window.addEventListener('touchstart', (event) => {
+        touchStartY = event.touches[0]?.clientY ?? null;
+    }, { passive: true });
+
+    window.addEventListener('touchend', (event) => {
+        if (touchStartY === null) {
+            return;
+        }
+
+        const endY = event.changedTouches[0]?.clientY ?? touchStartY;
+        const deltaY = touchStartY - endY;
+        touchStartY = null;
+
+        if (Math.abs(deltaY) < 40) {
+            return;
+        }
+
+        navigate(deltaY > 0 ? 1 : -1);
+    }, { passive: true });
 })();
 </script>

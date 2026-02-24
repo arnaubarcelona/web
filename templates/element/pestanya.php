@@ -31,48 +31,6 @@ $classes = trim("pestanya pestanya-{$color} {$extraClass}");
 ?>
 
 <div class="<?= h($classes) ?>">
-    <div class="pestanya-capcalera">
-        <div class="titol"><?= $titolHtml !== '' ? $titolHtml : h($titol) ?></div>
-        <div class="pestanya-nav" aria-label="Navegació de pestanyes">
-            <button type="button" class="pestanya-nav-btn pestanya-nav-btn--prev" aria-label="Pestanya anterior">&#9664;</button>
-            <button type="button" class="pestanya-nav-btn pestanya-nav-btn--next" aria-label="Pestanya següent">&#9654;</button>
-        </div>
-    </div>
+    <div class="titol"><?= $titolHtml !== '' ? $titolHtml : h($titol) ?></div>
     <div class="text"><?= $contingut ?></div>
 </div>
-
-<script>
-(function () {
-    if (window.__pestanyaNavReady) {
-        return;
-    }
-    window.__pestanyaNavReady = true;
-
-    document.addEventListener('click', function (event) {
-        const button = event.target.closest('.pestanya-nav-btn');
-        if (!button) {
-            return;
-        }
-
-        const tabItem = button.closest('.cursos-tab-item');
-        if (!tabItem) {
-            return;
-        }
-
-        const direction = button.classList.contains('pestanya-nav-btn--prev') ? -1 : 1;
-        let sibling = tabItem;
-
-        do {
-            sibling = direction < 0 ? sibling.previousElementSibling : sibling.nextElementSibling;
-        } while (sibling && !sibling.classList.contains('cursos-tab-item'));
-
-        if (!sibling) {
-            sibling = direction < 0
-                ? tabItem.parentElement.querySelector('.cursos-tab-item:last-child')
-                : tabItem.parentElement.querySelector('.cursos-tab-item:first-child');
-        }
-
-        sibling?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-})();
-</script>
