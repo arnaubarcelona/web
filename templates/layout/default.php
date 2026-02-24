@@ -172,7 +172,7 @@ $pageLevel = function (string $orderCode): int {
     </aside>
 
     <!-- CONTINGUT -->
-    <main class="app-main">
+    <main class="app-main <?= h(trim((string)$this->fetch('appMainClass'))) ?>">
         <div class="app-container">
             <?= $this->Flash->render() ?>
             <?= $this->fetch('content') ?>

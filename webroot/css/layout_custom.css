@@ -244,12 +244,17 @@ body{ margin: 0; }
     height: calc(100vh - var(--topbar-h-desktop) - var(--bottombar-h-desktop));
 
     display: flex;              /* ← clau */
-    align-items: center;
+    align-items: flex-start;
 
     overflow-y: auto;
 
     margin: 0;
     padding: 0;
+  }
+
+
+  .app-main.app-main--centered{
+    align-items: center;
   }
 
   .app-container{

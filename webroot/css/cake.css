@@ -2291,7 +2291,7 @@ td.accions {
     flex-wrap: wrap;
     gap: 0.5rem;
     padding-left: 0;
-    border-bottom: 2px solid #ccc;
+    border-bottom: none;
     margin-bottom: 1rem;
 }
 
@@ -2304,8 +2304,7 @@ td.accions {
     display: inline-block;
     padding: 0.5rem 1rem;
     background-color: #f1f1f1;
-    border: 1px solid #ccc;
-    border-bottom: none;
+    border: none;
     color: black;
     text-decoration: none;
     cursor: pointer;
@@ -2316,7 +2315,7 @@ td.accions {
 
 .nav-tabs .nav-link.active {
     background-color: white;
-    border-bottom: 2px solid white;
+    border-bottom: none;
 }
 .tab-pane {
     display: none;

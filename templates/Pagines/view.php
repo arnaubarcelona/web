@@ -7,6 +7,11 @@
 $this->assign('title', $pagina->title ?? 'Pàgina');
 
 $body = (string)($pagina->body ?? '');
+$isMenuPpalPage = str_contains($body, '{menuppal}') || str_contains($body, '&#123;menuppal&#125;');
+
+if ($isMenuPpalPage) {
+    $this->assign('appMainClass', 'app-main--centered');
+}
 
 if ($body !== '') {
     // Regex que captura:
