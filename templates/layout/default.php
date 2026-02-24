@@ -55,6 +55,7 @@ $pageLevel = function (string $orderCode): int {
     <?= $this->fetch('script') ?>
 </head>
 <body>
+<?php $mainClass = trim('app-main ' . $this->fetch('appMainClass')); ?>
 
 <!-- TOPBAR -->
 <header class="app-topbar" id="appTopbar">
@@ -172,7 +173,7 @@ $pageLevel = function (string $orderCode): int {
     </aside>
 
     <!-- CONTINGUT -->
-    <main class="app-main">
+    <main class="<?= h($mainClass) ?>">
         <div class="app-container">
             <?= $this->Flash->render() ?>
             <?= $this->fetch('content') ?>
@@ -238,6 +239,69 @@ $pageLevel = function (string $orderCode): int {
         if (e.key === 'Escape' && document.body.classList.contains('sidebar-open')) {
             closeSidebar();
         }
+    });
+})();
+
+(function () {
+    const EDGE_TOLERANCE = 2;
+    const CHANGE_COOLDOWN_MS = 450;
+    let lastChangeTime = 0;
+
+    function getVisiblePestanyes() {
+        return Array.from(document.querySelectorAll('.pestanya')).filter((panel) => {
+            const style = window.getComputedStyle(panel);
+            return style.display !== 'none' && style.visibility !== 'hidden';
+        });
+    }
+
+    function activateNextPanel(currentPanel, direction) {
+        const now = Date.now();
+        if (now - lastChangeTime < CHANGE_COOLDOWN_MS) {
+            return false;
+        }
+
+        const panels = getVisiblePestanyes();
+        const index = panels.indexOf(currentPanel);
+        if (index < 0) {
+            return false;
+        }
+
+        const target = direction > 0 ? panels[index + 1] : panels[index - 1];
+        if (!target) {
+            return false;
+        }
+
+        lastChangeTime = now;
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        const targetText = target.querySelector('.text');
+        if (targetText) {
+            targetText.scrollTop = direction > 0 ? 0 : targetText.scrollHeight;
+        }
+
+        return true;
+    }
+
+    document.querySelectorAll('.pestanya .text').forEach((scrollBox) => {
+        scrollBox.addEventListener('wheel', (event) => {
+            const panel = scrollBox.closest('.pestanya');
+            if (!panel) {
+                return;
+            }
+
+            const atTop = scrollBox.scrollTop <= EDGE_TOLERANCE;
+            const atBottom = scrollBox.scrollTop + scrollBox.clientHeight >= scrollBox.scrollHeight - EDGE_TOLERANCE;
+            const scrollingDown = event.deltaY > 0;
+            const scrollingUp = event.deltaY < 0;
+
+            if (scrollingDown && atBottom && activateNextPanel(panel, 1)) {
+                event.preventDefault();
+            }
+
+            if (scrollingUp && atTop && activateNextPanel(panel, -1)) {
+                event.preventDefault();
+            }
+        }, { passive: false });
     });
 })();
 </script>

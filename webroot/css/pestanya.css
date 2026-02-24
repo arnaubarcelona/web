@@ -1,11 +1,13 @@
 /* PESTANYES GENERALS */
 .pestanya {
-    display: block;
+    display: flex;
+    flex-direction: column;
     max-width: 1000px;
     width: 100%;
     margin: 1rem auto;
     opacity: 1;
     transform: translateX(0);
+    max-height: calc(100vh - var(--topbar-h-desktop) - var(--bottombar-h-desktop) - 2rem);
 }
 
 /* Animació opcional: només si es vol aplicar explícitament */
@@ -45,6 +47,8 @@
     border-radius: 0;
     margin-top: 0;
     text-align: left;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 .pestanya .text ul {
@@ -175,3 +179,9 @@
 .pestanya-grisclar .text ol li::before,
 .pestanya-grisclar .text ul li::before { background-color: #cfcfcf; }
 .pestanya-grisclar .text { border-color: #cfcfcf; }
+
+@media (max-width: 900px) {
+    .pestanya {
+        max-height: calc(100vh - var(--topbar-h-mobile) - 2rem);
+    }
+}
