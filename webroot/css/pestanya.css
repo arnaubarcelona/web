@@ -22,7 +22,7 @@
 
 /* Títol */
 .pestanya .titol {
-    display: inline-block;
+    display: block;
     padding: 0.75rem 1rem;
     color: white;
     font-family: 'Bebas Neue', sans-serif;
@@ -31,7 +31,7 @@
     white-space: nowrap;
     margin-bottom: 0;
     box-sizing: border-box;
-    text-align: left;
+    text-align: center;
 }
 
 /* Text */
@@ -45,7 +45,7 @@
     background-color: white;
     border-radius: 0;
     margin-top: 0;
-    text-align: left;
+    text-align: center;
 }
 
 .pestanya .text ul {
@@ -127,7 +127,15 @@
 @media (max-width: 767px) {
     .pestanya { width: 100%; }
     .pestanya .titol { font-size: 1.5rem; }
-    .pestanya .text { font-size: 1.1rem; padding: 1.2rem; }
+    .pestanya .titol,
+    .pestanya .text {
+        border: 0;
+    }
+    .pestanya .text {
+        font-size: 1.1rem;
+        padding: 0;
+        padding-left: 0.5rem;
+    }
     .pestanya .text ol li::before { font-size: 0.8rem; line-height: 1.2rem; }
 }
 
