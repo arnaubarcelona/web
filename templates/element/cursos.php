@@ -564,12 +564,13 @@ foreach ($courses as $course) {
 }
 
 .cursos-nav-button--back {
+    margin-top:2rem;
     background: #111;
     text-align: center;
 }
 
 .cursos-back-course {
-    margin-top: 1rem;
+    margin-top: 4rem;
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -675,8 +676,8 @@ foreach ($courses as $course) {
     }
 
     .cursos-nav-button {
-        width: 100%;
-        max-width: none;
+        min-width: 18rem;
+        max-width: 18rem;
     }
 
     .cursos-horari-abreujat {
