@@ -315,8 +315,6 @@ foreach ($courses as $course) {
 ?>
 
 <div class="cursos-element" id="cursos-top">
-    <h1>CURSOS</h1>
-
     <div class="cursos-tabs">
         <?php foreach ($courses as $course): ?>
             <?php

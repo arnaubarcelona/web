@@ -2,16 +2,16 @@
 /**
  * Element: menuppal
  *
- * Mostra un menú principal en 3 columnes amb botoDoble
- * - Pàgines: visible=1, main=1
- * - Només principals: order_code sense punt
- * - Ordenació natural per order_code
- * - Colors en seqüència: blaucel, blaumari, verd, rosa, lila, taronja, gris, ocre
+ * - visible=1
+ * - main=1
+ * - principals (order_code sense punt)
+ * - ordenació natural
+ * - màxim 5 botons per fila
+ * - espai sobrant repartit
  */
 
 use Cake\ORM\TableRegistry;
 
-/** @var \App\Model\Table\PaginesTable $Pagines */
 $Pagines = TableRegistry::getTableLocator()->get('Pagines');
 
 $pages = $Pagines->find()
@@ -20,15 +20,11 @@ $pages = $Pagines->find()
         'visible' => 1,
         'main' => 1,
     ])
-    // només order_code sense punt (principals)
     ->andWhere(['order_code NOT LIKE' => '%.%'])
     ->all()
     ->toList();
 
-/**
- * Ordenació "natural" per order_code: 1, 2, 10, 11...
- * (si algun order_code no és numèric, quedarà al final per comparació 0)
- */
+/* Ordenació natural */
 usort($pages, function ($a, $b) {
     $va = (int)preg_replace('/\D+/', '', (string)$a->order_code);
     $vb = (int)preg_replace('/\D+/', '', (string)$b->order_code);
@@ -44,84 +40,100 @@ $i = 0;
 ?>
 
 <div class="menuppal-wrapper">
-    <?php foreach ($pages as $p): ?>
-        <?php
-            $color = $colors[$i % count($colors)];
-            $i++;
+<?php foreach ($pages as $p): ?>
+    <?php
+        $color = $colors[$i % count($colors)];
+        $i++;
 
-            // Link: si hi ha link a la DB l’usem; sinó anem a Pagines/view/id
-            $link = !empty($p->link)
-                ? $p->link
-                : ['controller' => 'Pagines', 'action' => 'view', $p->id];
+        $link = !empty($p->link)
+            ? $p->link
+            : ['controller' => 'Pagines', 'action' => 'view', $p->id];
 
-            $desc = trim((string)($p->description ?? ''));
-        ?>
+        $desc = trim((string)($p->description ?? ''));
+    ?>
 
-        <?= $this->element('botoDoble', [
-            'color' => $color,
-            'title' => (string)$p->title,
-            'text'  => $desc,
-            'link'  => $link,
-        ]) ?>
-    <?php endforeach; ?>
+    <?= $this->element('botoDoble', [
+        'color' => $color,
+        'title' => (string)$p->title,
+        'text'  => $desc,
+        'link'  => $link,
+    ]) ?>
+
+<?php endforeach; ?>
 </div>
 
 <style>
+
+/* =========================
+   FLEX LAYOUT (max 5 per fila)
+========================= */
+
 .menuppal-wrapper{
-    margin-top:1rem !important;
-    margin-left: 1rem;
-    margin-right: 1rem;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1rem;
+  margin: 1rem 0;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* reparteix espai sobrant */
+  row-gap: 1rem;
 }
 
-/* responsive simple */
+/* 5 per fila màxim */
+.menuppal-wrapper > a.custom-button{
+  flex: 0 1 calc(20% - 0.8rem); /* 100% / 5 = 20% */
+  max-width: 320px;             /* límit perquè no es facin gegants */
+  width: 100%;
+
+  margin: 0 !important;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1200px){
+  .menuppal-wrapper > a.custom-button{
+    flex: 0 1 calc(25% - 0.8rem); /* 4 per fila */
+  }
+}
+
 @media (max-width: 900px){
-    .menuppal-wrapper{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 600px){
-    .menuppal-wrapper{ grid-template-columns: 1fr; }
+  .menuppal-wrapper > a.custom-button{
+    flex: 0 1 calc(50% - 0.8rem); /* 2 per fila */
+    max-width: none;
+  }
 }
 
-/* ===== MENU PPAL: animació entrada en cascada ===== */
-@keyframes menuPpalSlideInLeft {
+@media (max-width: 600px){
+  .menuppal-wrapper{
+    justify-content: flex-start;
+  }
+  .menuppal-wrapper > a.custom-button{
+    flex: 0 1 100%;
+  }
+}
+
+/* =========================
+   ANIMACIÓ ENTRADA
+========================= */
+
+@keyframes menuPpalSlideInLeft{
   0%   { opacity: 0; transform: translateX(-40px); }
   100% { opacity: 1; transform: translateX(0); }
 }
 
-/* Aplica només dins menuppal (i sobrescriu la bounceIn del botoDoble) */
-.menuppal-wrapper a.custom-button{
+.menuppal-wrapper > a.custom-button{
   opacity: 0;
   animation: menuPpalSlideInLeft 520ms cubic-bezier(.2,.8,.2,1) both;
-  will-change: transform, opacity;
 }
 
-/* Cascada (un rere l'altre) */
-.menuppal-wrapper a.custom-button:nth-child(1)  { animation-delay: 0ms; }
-.menuppal-wrapper a.custom-button:nth-child(2)  { animation-delay: 140ms; }
-.menuppal-wrapper a.custom-button:nth-child(3)  { animation-delay: 280ms; }
-.menuppal-wrapper a.custom-button:nth-child(4)  { animation-delay: 420ms; }
-.menuppal-wrapper a.custom-button:nth-child(5)  { animation-delay: 560ms; }
-.menuppal-wrapper a.custom-button:nth-child(6)  { animation-delay: 700ms; }
-.menuppal-wrapper a.custom-button:nth-child(7)  { animation-delay: 840ms; }
-.menuppal-wrapper a.custom-button:nth-child(8)  { animation-delay: 980ms; }
-.menuppal-wrapper a.custom-button:nth-child(9)  { animation-delay: 1120ms; }
-.menuppal-wrapper a.custom-button:nth-child(10) { animation-delay: 1260ms; }
-.menuppal-wrapper a.custom-button:nth-child(11) { animation-delay: 1400ms; }
-.menuppal-wrapper a.custom-button:nth-child(12) { animation-delay: 1540ms; }
-.menuppal-wrapper a.custom-button:nth-child(13) { animation-delay: 1680ms; }
-.menuppal-wrapper a.custom-button:nth-child(14) { animation-delay: 1820ms; }
-.menuppal-wrapper a.custom-button:nth-child(15) { animation-delay: 1960ms; }
-.menuppal-wrapper a.custom-button:nth-child(16) { animation-delay: 2100ms; }
-.menuppal-wrapper a.custom-button:nth-child(17) { animation-delay: 2240ms; }
-.menuppal-wrapper a.custom-button:nth-child(18) { animation-delay: 2380ms; }
-.menuppal-wrapper a.custom-button:nth-child(19) { animation-delay: 2520ms; }
-.menuppal-wrapper a.custom-button:nth-child(20) { animation-delay: 2660ms; }
+<?php for ($d = 1; $d <= 20; $d++): ?>
+.menuppal-wrapper > a.custom-button:nth-child(<?= $d ?>){
+  animation-delay: <?= ($d - 1) * 120 ?>ms;
+}
+<?php endfor; ?>
 
-/* Respecta prefers-reduced-motion */
-@media (prefers-reduced-motion: reduce) {
-  .menuppal-wrapper a.custom-button{
+@media (prefers-reduced-motion: reduce){
+  .menuppal-wrapper > a.custom-button{
     opacity: 1;
     animation: none;
   }

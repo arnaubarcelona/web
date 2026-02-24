@@ -1,19 +1,31 @@
 :root{
-  --topbar-h: 10rem;
+  /* MÒBIL */
+  --topbar-h-mobile: 10rem;
+
+  /* DESKTOP (10/80/10) */
+  --topbar-h-desktop: 10vh;
+  --bottombar-h-desktop: 20vh;
+
   --sidebar-w: 280px;
   --pink: #e83e8c;
 
-  /* si el PNG té marge transparent */
+  /* si el PNG té marge transparent (només afecta mòbil, on el logo és a topbar) */
   --logo-offset-x: 0rem;
 }
 
-/* ===== TOPBAR ===== */
+/* =========================
+   BASE
+========================= */
+
+*{ box-sizing: border-box; }
+
+body{ margin: 0; }
+
+/* =========================
+   TOPBAR (base)
+========================= */
+
 .app-topbar{
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--topbar-h);
   background: #fff;
   z-index: 1000;
   border: 0;
@@ -23,29 +35,18 @@
   padding: 0 12px;
 }
 
-/* Botó MENU (base: ocult; es mostra només mòbil) */
-.app-topbar__menuImgBtn{
-  display: none;
-  background: grey;
-  color: white;
-  padding: 0.3rem 0.6rem;
-  border: 0;
-  font-family: "Bebas Neue", Bebas, Arial, sans-serif;
-  font-size: 1.3rem;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-/* Bloc centrat (logo + xarxes) */
-.app-topbar__center{
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(calc(-50% + var(--logo-offset-x)), -50%);
+/* Branding TOPBAR (només mòbil; en desktop s’amaga) */
+.topbar-brand{
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: .35rem;
+
+  /* centrat com abans */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(calc(-50% + var(--logo-offset-x)), -50%);
 }
 
 .app-topbar__logo{
@@ -54,7 +55,6 @@
   display: block;
 }
 
-/* Xarxes sota el logo */
 .app-topbar__social{
   display: flex;
   align-items: center;
@@ -67,18 +67,30 @@
   display: block;
 }
 
+/* Botó MENU (base ocult; només mòbil) */
+.app-topbar__menuImgBtn{
+  display: none;
+  background: grey;
+  color: white;
+  padding: 0.3rem 0.6rem;
+  border: 0;
+  font-family: "Bebas Neue", Bebas, Arial, sans-serif;
+  font-size: 1.3rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
 /* CTA (desktop) */
 .app-topbar__cta{
   margin-left: auto;
 
-  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
 
   height: 44px;
   padding: 0 14px;
+
   background: var(--pink);
   color: #fff;
 
@@ -90,63 +102,47 @@
   white-space: nowrap;
 }
 
-/* ===== APP SHELL (SIDEBAR + MAIN) ===== */
-/* IMPORTANT: això assumeix que al layout has posat:
-   <div class="app-shell"> ... <aside class="app-sidebar"> ... <main class="app-main"> ... </div>
-*/
+/* =========================
+   SIDEBAR (base)
+========================= */
 
-/* ===== DESKTOP ===== */
-@media (min-width: 901px){
-
-  /* Sidebar fixa */
-  .app-sidebar{
-    position: fixed;
-    top: var(--topbar-h) + 2;
-    left: 0;
-    width: var(--sidebar-w);
-    height: calc(100vh - var(--topbar-h));
-    overflow-y: auto;
-    background: #fff;
-    z-index: 900;
-    padding: 12px;
-    border: 0;
-    margin-top:0.8rem;
-  }
-
-  /* El contenidor principal deixa espai per la sidebar i la topbar */
-  .app-shell{
-    padding-top: var(--topbar-h);
-    margin-left: var(--sidebar-w);
-    min-height: calc(100vh - var(--topbar-h));
-  }
-
-  /* main no ha de tornar a sumar top/margin */
-  .app-main{
-    padding-top: 0;
-    margin-left: 1.5rem;
-    margin-right: 1.5rem;
-  }
-
-  .app-container{
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .app-sidebar__close{
-    display: none;
-  }
-}
-
-
-/* Espaiat botons sidebar */
 .sidebar-item{
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 }
 
-/* BACKDROP */
+/* Branding a la SIDEBAR (només desktop) - SENSE LÍNIA */
+.sidebar-brand{
+  display: none;
+  padding: 8px 4px 8px 4px;
+  margin-bottom: 20px;
+  border: 0; /* <-- important: cap línia separadora */
+}
+
+.sidebar-logo{
+  height: 6.2rem;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.sidebar-social{
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: .75rem;
+}
+
+.sidebar-socialIcon{
+  height: 2.2rem;
+  width: auto;
+  display: block;
+}
+
+/* =========================
+   BACKDROP (mòbil)
+========================= */
+
 .app-backdrop{
   position: fixed;
   inset: 0;
@@ -154,27 +150,256 @@
   z-index: 1999;
 }
 
-/* ===== MÒBIL ===== */
+/* =========================
+   BOTTOMBAR (base)
+========================= */
+
+.app-bottombar{
+  background: #fff;
+  border: 0;
+}
+
+.app-bottombar__inner{
+  padding: 12px;
+}
+
+/* Textos bottombar */
+.bottombar-title{
+  font-family: "Bebas Neue", Bebas, Arial, sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: .02em;
+}
+
+.bottombar-text{
+  margin-top: 6px;
+  font-size: .95rem;
+  line-height: 1.25rem;
+}
+
+/* =========================
+   DESKTOP (>=901px)
+   Sidebar 100vh + dreta en 10/80/10 (fixes)
+========================= */
+@media (min-width: 901px){
+
+  /* sense scroll global: el scroll el fa main i sidebar */
+  html, body{
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* TOPBAR fixa a la dreta */
+  .app-topbar{
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-w);
+    width: calc(100% - var(--sidebar-w));
+    height: var(--topbar-h-desktop);
+
+    /* topbar “neta”: CTA a la dreta */
+    justify-content: flex-end;
+  }
+
+  /* En desktop, NO es veu el branding de la topbar */
+  .topbar-brand{
+    display: none;
+  }
+
+  /* Sidebar fixa 100vh */
+  .app-sidebar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+
+    overflow-y: auto;
+    background: #fff;
+
+    z-index: 900;
+    padding: 12px;
+
+    border: 0;
+    margin: 0;
+  }
+
+  /* En desktop, SÍ es veu el branding dins sidebar */
+  .sidebar-brand{
+    display: block;
+  }
+
+  /* Contenidor shell neutre */
+  .app-shell{
+    padding: 0;
+    margin: 0;
+    min-height: 0;
+  }
+
+  /* MAIN ocupa la franja central (80vh) i fa scroll */
+  .app-main{
+    position: fixed;
+    left: var(--sidebar-w);
+    top: var(--topbar-h-desktop);
+    width: calc(100% - var(--sidebar-w));
+    height: calc(100vh - var(--topbar-h-desktop) - var(--bottombar-h-desktop));
+
+    display: flex;              /* ← clau */
+    align-items: center;
+
+    overflow-y: auto;
+
+    margin: 0;
+    padding: 0;
+  }
+
+  .app-container{
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 16px;
+  }
+
+  /* BOTTOMBAR fixa (10vh) i 3 columnes, alineades a dalt */
+  .app-bottombar{
+    position: fixed;
+    left: var(--sidebar-w);
+    bottom: 0;
+    width: calc(100% - var(--sidebar-w));
+    height: var(--bottombar-h-desktop);
+
+    display: flex;
+    align-items: flex-start;   /* <-- a dalt */
+
+    padding-top: 12px;
+    overflow: hidden;
+    z-index: 950;
+  }
+
+  .app-bottombar__inner{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+
+    align-items: start;
+    align-content: start;      /* <-- reforç a dalt */
+
+    padding: 0 16px;
+  }
+
+  /* En desktop no cal botó tancar */
+  .app-sidebar__close{
+    display: none;
+  }
+
+  /* En desktop no cal backdrop */
+  .app-backdrop{
+    display: none;
+  }
+
+  /* Alineacions específiques per columna */
+  .app-bottombar__inner > section:nth-child(1){
+    text-align: left;
+  }
+
+  .app-bottombar__inner > section:nth-child(2){
+    text-align: center;
+  }
+
+  .app-bottombar__inner > section:nth-child(3){
+    text-align: right;
+  }
+}
+
+/* =========================
+   MÒBIL (<=900px)
+   Topbar fixa, sidebar overlay, bottombar després del main
+========================= */
 @media (max-width: 900px){
+
+  /* Evita que el scroll sigui del body (així la topbar no "balla") */
+  html, body{
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* TOPBAR fixa */
+  .app-topbar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--topbar-h-mobile);
+    z-index: 2500;
+  }
 
   .app-shell{
     display: block;
   }
 
+  /* En mòbil: mostra botó menú */
   .app-topbar__menuImgBtn{
     display: inline-flex;
     align-items: center;
     justify-content: center;
   }
 
-  /* NO mostrar Inscriu-te en mòbil */
+  /* En mòbil: NO mostrar Inscriu-te */
   .app-topbar__cta{
     display: none;
   }
 
+  /* Branding centrat dins topbar */
+  .topbar-brand{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Centra també la fila d’icones + botó MENU */
+  .app-topbar__social{
+    justify-content: center;
+  }
+
+  /* (Opcional) treu qualsevol offset en mòbil */
+  :root{
+    --logo-offset-x: 0rem;
+  }
+
+  /* MAIN: ocupa la pantalla sota la topbar i fa scroll */
+  .app-main{
+    position: fixed;
+    top: var(--topbar-h-mobile);
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Marges laterals del contingut */
+  .app-container{
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  /* Sidebar overlay */
   .app-sidebar{
     position: fixed;
-    top: 0; /* overlay també sobre la topbar */
+    top: 0;     /* overlay també sobre la topbar */
     left: 0;
     bottom: 0;
 
@@ -184,26 +409,22 @@
     transform: translateX(-110%);
     transition: transform .22s ease;
 
-    z-index: 2000;
+    z-index: 3000;
     overflow-y: auto;
 
     padding: 16px;
     padding-top: 76px;
-    border: 0;
-  }
 
-  .sidebar-item{
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+    border: 0;
   }
 
   body.sidebar-open .app-sidebar{
     transform: translateX(0);
   }
 
-  .app-main{
-    margin-left: 0;
-    padding-top: var(--topbar-h);
+  /* En mòbil NO volem el branding a la sidebar */
+  .sidebar-brand{
+    display: none;
   }
 
   /* Botó tancar visible en mòbil */
@@ -225,6 +446,18 @@
     line-height: 52px;
     cursor: pointer;
 
-    z-index: 2100;
+    z-index: 3100;
+  }
+
+  /* BOTTOMBAR (en mòbil): que sigui part del scroll del main */
+  .app-bottombar{
+    position: static;
+    height: auto;
+  }
+
+  /* En mòbil, 3 blocs en vertical */
+  .app-bottombar__inner{
+    display: block;
+    padding: 12px;
   }
 }

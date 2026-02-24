@@ -14,15 +14,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-    font-size: 2rem;
+    font-size: 2.5rem;
 }
 
 h2 {
-    font-size: 1.8rem;
+    font-size: 2rem;
 }
 
 h3 {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
 }
 
 a {
@@ -2700,7 +2700,6 @@ table.taulavertical th {
   text-decoration:none;
   border:0;
   border-radius:0;
-  margin:1rem;
   box-shadow:none;
   max-width: 20rem;
 

@@ -38,7 +38,7 @@ $pageLevel = function (string $orderCode): int {
 };
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="ca">
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -56,9 +56,11 @@ $pageLevel = function (string $orderCode): int {
 </head>
 <body>
 
-<!-- TOPBAR FIXA -->
+<!-- TOPBAR -->
 <header class="app-topbar" id="appTopbar">
-    <div class="app-topbar__center">
+
+    <!-- Branding TOPBAR (NOMÉS MÒBIL) -->
+    <div class="topbar-brand topbar-brand--mobile">
         <?= $this->Html->image('logoGran.png', [
             'alt' => 'CFA Guinardó',
             'class' => 'app-topbar__logo'
@@ -75,15 +77,13 @@ $pageLevel = function (string $orderCode): int {
                 ['escape' => false, 'target' => '_blank', 'rel' => 'noopener']
             ) ?>
 
-            <!-- BOTÓ MENU (sidebar) -->
+            <!-- BOTÓ MENU (sidebar) - NOMÉS MÒBIL -->
             <button
                 class="app-topbar__menuImgBtn"
                 id="openSidebarBtn"
                 aria-label="Obrir menú"
                 type="button"
-            >
-                MENU
-            </button>
+            >MENU</button>
 
             <?= $this->Html->link(
                 $this->Html->image('facebook.png', [
@@ -97,6 +97,7 @@ $pageLevel = function (string $orderCode): int {
         </div>
     </div>
 
+    <!-- CTA (NOMÉS DESKTOP) -->
     <?= $this->Html->link(
         'INSCRIU-TE',
         'http://www.cfaguinardo.cat/gestioalumnes/students/alta-inici',
@@ -104,40 +105,69 @@ $pageLevel = function (string $orderCode): int {
     ) ?>
 </header>
 
-<!-- IMPORTANT: wrapper per a GRID (desktop) -->
+<!-- SHELL (DESKTOP: SIDEBAR + AREA DRETA) -->
 <div class="app-shell">
 
     <!-- SIDEBAR -->
     <aside class="app-sidebar" id="appSidebar" aria-hidden="true">
+        <!-- Tancar (NOMÉS MÒBIL) -->
         <button class="app-sidebar__close" id="closeSidebarBtn" type="button" aria-label="Tancar menú">✕</button>
 
-        <div class="app-sidebar__content">
-                    <?php
-        $colors = ['blaumari', 'blaucel', 'verd', 'rosa', 'lila', 'taronja', 'gris', 'ocre'];
-        $i = 0;
-        ?>
+        <!-- Branding SIDEBAR (NOMÉS DESKTOP) -->
+        <div class="sidebar-brand sidebar-brand--desktop">
+            <?= $this->Html->image('logoGran.png', [
+                'alt' => 'CFA Guinardó',
+                'class' => 'sidebar-logo'
+            ]) ?>
 
-        <?php foreach ($pages as $p): ?>
+            <div class="sidebar-social">
+                <?= $this->Html->link(
+                    $this->Html->image('instagram.png', [
+                        'alt' => 'Instagram',
+                        'class' => 'sidebar-socialIcon'
+                    ]),
+                    'https://www.instagram.com/cfaguinardo',
+                    ['escape' => false, 'target' => '_blank', 'rel' => 'noopener']
+                ) ?>
+
+                <?= $this->Html->link(
+                    $this->Html->image('facebook.png', [
+                        'alt' => 'Facebook',
+                        'class' => 'sidebar-socialIcon'
+                    ]),
+                    'https://www.facebook.com/people/Cfa-Guinardo/61560117734842/',
+                    ['escape' => false, 'target' => '_blank', 'rel' => 'noopener']
+                ) ?>
+            </div>
+        </div>
+
+        <!-- Botons / Pàgines -->
+        <div class="app-sidebar__content">
             <?php
+            $colors = ['blaumari', 'blaucel', 'verd', 'rosa', 'lila', 'taronja', 'gris', 'ocre'];
+            $i = 0;
+            ?>
+
+            <?php foreach ($pages as $p): ?>
+                <?php
                 $level = $pageLevel((string)$p->order_code);
                 $indentRem = max(0, $level - 1);
 
                 // color per seqüència (cíclic)
                 $color = $colors[$i % count($colors)];
                 $i++;
-            ?>
-
-            <div class="sidebar-item" style="margin-left: <?= h($indentRem) ?>rem;">
-                <?= $this->element('bototext', [
-                    'text'  => $p->title,
-                    'image' => null, // <-- IMPORTANT: sense imatge
-                    'link'  => ['controller' => 'Pagines', 'action' => 'view', $p->id],
-                    'title' => $p->title,
-                    'color' => $color,
-                    'class' => 'btn-page' // classe extra per estil “pàgines”
-                ]) ?>
-            </div>
-        <?php endforeach; ?>
+                ?>
+                <div class="sidebar-item" style="margin-left: <?= h($indentRem) ?>rem;">
+                    <?= $this->element('bototext', [
+                        'text'  => $p->title,
+                        'image' => null,
+                        'link'  => ['controller' => 'Pagines', 'action' => 'view', $p->id],
+                        'title' => $p->title,
+                        'color' => $color,
+                        'class' => 'btn-page'
+                    ]) ?>
+                </div>
+            <?php endforeach; ?>
         </div>
     </aside>
 
@@ -151,10 +181,34 @@ $pageLevel = function (string $orderCode): int {
 
 </div><!-- /.app-shell -->
 
-<!-- BACKDROP (mòbil) -->
+<!-- BACKDROP (MÒBIL) -->
 <div class="app-backdrop" id="appBackdrop" hidden></div>
 
-<footer></footer>
+<!-- BOTTOMBAR -->
+<footer class="app-bottombar">
+    <div class="app-bottombar__inner">
+        <section class="app-bottombar__col">
+            <div class="bottombar-title">GENERALITAT DE CATALUNYA</div>
+            <div class="bottombar-text">
+                Text Generalitat...
+            </div>
+        </section>
+
+        <section class="app-bottombar__col">
+            <div class="bottombar-title">CONTACTE</div>
+            <div class="bottombar-text">
+                Text contacte...
+            </div>
+        </section>
+
+        <section class="app-bottombar__col">
+            <div class="bottombar-title">HORARIS D’ATENCIÓ</div>
+            <div class="bottombar-text">
+                Text horaris...
+            </div>
+        </section>
+    </div>
+</footer>
 
 <!-- JS -->
 <script>
