@@ -544,7 +544,8 @@ foreach ($courses as $course) {
 }
 
 .cursos-nav-button {
-    width: min(100%, 720px);
+    width: 60%;
+    max-width: 720px;
     border: 0;
     background: var(--btn-bg, #708090);
     color: #fff;
@@ -628,6 +629,7 @@ foreach ($courses as $course) {
     padding: 0;
     margin-bottom: 0.5rem;
     width: 100%;
+    max-width: 100%;
 }
 
 .cursos-sticky-title-chip {
@@ -668,14 +670,28 @@ foreach ($courses as $course) {
         display: block;
         margin-left: 0;
     }
+
+
+    .cursos-course-page .pestanya .titol {
+        white-space: normal;
+    }
+
+    .cursos-sticky-title-chip {
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
 }
 </style>
 
 <script>
 (function () {
     const pages = document.querySelectorAll('.cursos-page');
+    let activePage = 'subjects';
 
-    function showPage(pageId) {
+    function renderPage(pageId) {
+        activePage = pageId;
         pages.forEach((page) => {
             page.classList.toggle('is-active', page.dataset.page === pageId);
         });
@@ -686,12 +702,42 @@ foreach ($courses as $course) {
         }
     }
 
+    function showPage(pageId, pushState = true) {
+        if (!pageId || pageId === activePage) {
+            return;
+        }
+
+        renderPage(pageId);
+
+        if (pushState) {
+            window.history.pushState({ cursosPage: pageId }, '');
+        }
+    }
+
+    function goBackOrFallback(fallbackPage) {
+        if (window.history.state && window.history.state.cursosPage && window.history.length > 1) {
+            window.history.back();
+            return;
+        }
+
+        if (fallbackPage) {
+            showPage(fallbackPage, false);
+        }
+    }
+
     document.querySelectorAll('.cursos-nav-button[data-target-page]').forEach((button) => {
         button.addEventListener('click', function () {
             const targetPage = this.dataset.targetPage;
-            if (targetPage) {
-                showPage(targetPage);
+            if (!targetPage) {
+                return;
             }
+
+            if (this.classList.contains('cursos-nav-button--back')) {
+                goBackOrFallback(targetPage);
+                return;
+            }
+
+            showPage(targetPage);
         });
     });
 
@@ -722,6 +768,12 @@ foreach ($courses as $course) {
         });
     });
 
-    showPage('subjects');
+    window.addEventListener('popstate', function (event) {
+        const statePage = event.state && event.state.cursosPage ? event.state.cursosPage : 'subjects';
+        renderPage(statePage);
+    });
+
+    renderPage('subjects');
+    window.history.replaceState({ cursosPage: 'subjects' }, '');
 })();
 </script>
