@@ -1,11 +1,36 @@
 /* PESTANYES GENERALS */
 .pestanya {
+    --pestanya-color: #cfcfcf;
     display: block;
     max-width: 1000px;
     width: 100%;
     margin: 1rem auto;
     opacity: 1;
     transform: translateX(0);
+}
+
+.pestanya-capcalera {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.pestanya-nav {
+    display: inline-flex;
+    gap: 0.35rem;
+}
+
+.pestanya-nav-btn {
+    width: 3.5rem;
+    min-width: 3.5rem;
+    border: 0;
+    border-radius: 0;
+    background: var(--pestanya-color);
+    color: #fff;
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
 }
 
 /* Animació opcional: només si es vol aplicar explícitament */
@@ -23,6 +48,7 @@
 /* Títol */
 .pestanya .titol {
     display: inline-block;
+    flex: 1;
     padding: 0.75rem 1rem;
     color: white;
     font-family: 'Bebas Neue', sans-serif;
@@ -45,6 +71,54 @@
     border-radius: 0;
     margin-top: 0;
     text-align: left;
+    max-height: 70vh;
+    overflow: auto;
+    scrollbar-width: auto;
+    scrollbar-color: var(--pestanya-color) #fff;
+}
+
+@media (min-width: 901px) {
+    .pestanya .text {
+        max-height: calc((100vh - var(--topbar-h-desktop) - var(--bottombar-h-desktop)) * 0.7);
+    }
+}
+
+@media (max-width: 900px) {
+    .pestanya .text {
+        max-height: calc((100vh - var(--topbar-h-mobile)) * 0.7);
+    }
+}
+
+.pestanya .text::-webkit-scrollbar {
+    width: 16px;
+}
+
+.pestanya .text::-webkit-scrollbar-track {
+    background: #fff;
+}
+
+.pestanya .text::-webkit-scrollbar-thumb {
+    background: var(--pestanya-color);
+    border-radius: 0;
+    border: 0;
+}
+
+.pestanya .text::-webkit-scrollbar-button:single-button {
+    display: block;
+    height: 16px;
+    background: var(--pestanya-color);
+    border-radius: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 9px 9px;
+}
+
+.pestanya .text::-webkit-scrollbar-button:single-button:vertical:decrement {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 9 9'%3E%3Cpath d='M4.5 1 L8 6 H1 Z' fill='white'/%3E%3C/svg%3E");
+}
+
+.pestanya .text::-webkit-scrollbar-button:single-button:vertical:increment {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 9 9'%3E%3Cpath d='M1 3 L8 3 L4.5 8 Z' fill='white'/%3E%3C/svg%3E");
 }
 
 .pestanya .text ul {
@@ -125,52 +199,62 @@
 /* Responsive */
 @media (max-width: 767px) {
     .pestanya { width: 100%; }
+    .pestanya-nav-btn { width: 2.8rem; min-width: 2.8rem; }
     .pestanya .titol { font-size: 1.5rem; }
     .pestanya .text { font-size: 1.1rem; padding: 1.2rem; }
     .pestanya .text ol li::before { font-size: 0.8rem; line-height: 1.2rem; }
 }
 
 /* COLORS (els de sempre) */
+.pestanya-rosa { --pestanya-color: #e55381; }
 .pestanya-rosa .titol,
 .pestanya-rosa .text ol li::before,
 .pestanya-rosa .text ul li::before { background-color: #e55381; }
 .pestanya-rosa .text { border-color: #e55381; }
 
+.pestanya-blaucel { --pestanya-color: #8ec3c3; }
 .pestanya-blaucel .titol,
 .pestanya-blaucel .text ol li::before,
 .pestanya-blaucel .text ul li::before { background-color: #8ec3c3; }
 .pestanya-blaucel .text { border-color: #8ec3c3; }
 
+.pestanya-lila { --pestanya-color: #b2abbe; }
 .pestanya-lila .titol,
 .pestanya-lila .text ol li::before,
 .pestanya-lila .text ul li::before { background-color: #b2abbe; }
 .pestanya-lila .text { border-color: #b2abbe; }
 
+.pestanya-taronja { --pestanya-color: #feb20e; }
 .pestanya-taronja .titol,
 .pestanya-taronja .text ol li::before,
 .pestanya-taronja .text ul li::before { background-color: #feb20e; }
 .pestanya-taronja .text { border-color: #feb20e; }
 
+.pestanya-blaumari { --pestanya-color: #708090; }
 .pestanya-blaumari .titol,
 .pestanya-blaumari .text ol li::before,
 .pestanya-blaumari .text ul li::before { background-color: #708090; }
 .pestanya-blaumari .text { border-color: #708090; }
 
+.pestanya-verd { --pestanya-color: #aed581; }
 .pestanya-verd .titol,
 .pestanya-verd .text ol li::before,
 .pestanya-verd .text ul li::before { background-color: #aed581; }
 .pestanya-verd .text { border-color: #aed581; }
 
+.pestanya-gris { --pestanya-color: #bfbfbf; }
 .pestanya-gris .titol,
 .pestanya-gris .text ol li::before,
 .pestanya-gris .text ul li::before { background-color: #bfbfbf; }
 .pestanya-gris .text { border-color: #bfbfbf; }
 
+.pestanya-ocre { --pestanya-color: #d8baa9; }
 .pestanya-ocre .titol,
 .pestanya-ocre .text ol li::before,
 .pestanya-ocre .text ul li::before { background-color: #d8baa9; }
 .pestanya-ocre .text { border-color: #d8baa9; }
 
+.pestanya-grisclar { --pestanya-color: #cfcfcf; }
 .pestanya-grisclar .titol,
 .pestanya-grisclar .text ol li::before,
 .pestanya-grisclar .text ul li::before { background-color: #cfcfcf; }
