@@ -298,6 +298,17 @@ if (in_array('materials', $tables, true)) {
 $materialPriceByYear = $getYearMaterialPrice($connection, $tables, $materialColumns, (int)$latestYear->id);
 
 $colors = ['blaumari', 'blaucel', 'verd', 'rosa', 'lila', 'taronja', 'gris', 'ocre', 'grisclar'];
+$colorHexByName = [
+    'rosa' => '#e55381',
+    'blaucel' => '#8ec3c3',
+    'lila' => '#b2abbe',
+    'taronja' => '#feb20e',
+    'blaumari' => '#708090',
+    'verd' => '#aed581',
+    'gris' => '#bfbfbf',
+    'ocre' => '#d8baa9',
+    'grisclar' => '#cfcfcf',
+];
 $subjectColors = [];
 $subjectNames = [];
 $nextColorIndex = 0;
@@ -329,7 +340,12 @@ foreach ($courses as $course) {
                     ? 'course-' . (int)$subjectCourses[0]->id
                     : 'subject-' . (int)$subjectId;
             ?>
-                <button type="button" class="cursos-nav-button" data-target-page="<?= h($target) ?>">
+                <?php $subjectColorName = $subjectColors[(int)$subjectId] ?? 'grisclar'; ?>
+                <button
+                    type="button"
+                    class="cursos-nav-button"
+                    style="--btn-bg: <?= h($colorHexByName[$subjectColorName] ?? '#708090') ?>;"
+                    data-target-page="<?= h($target) ?>">
                     <?= h($subjectName) ?>
                 </button>
             <?php endforeach; ?>
@@ -348,7 +364,15 @@ foreach ($courses as $course) {
         <div class="cursos-page" data-page="subject-<?= h((string)$subjectId) ?>">
             <div class="cursos-buttons-grid">
                 <?php foreach ($subjectCourses as $subjectCourse): ?>
-                    <button type="button" class="cursos-nav-button" data-target-page="course-<?= h((string)$subjectCourse->id) ?>">
+                    <?php
+                    $subjectColorName = $subjectColors[(int)$subjectId] ?? 'grisclar';
+                    $subjectColorHex = $colorHexByName[$subjectColorName] ?? '#708090';
+                    ?>
+                    <button
+                        type="button"
+                        class="cursos-nav-button"
+                        style="--btn-bg: <?= h($subjectColorHex) ?>;"
+                        data-target-page="course-<?= h((string)$subjectCourse->id) ?>">
                         <?= h((string)$subjectCourse->name) ?>
                     </button>
                 <?php endforeach; ?>
@@ -480,6 +504,8 @@ foreach ($courses as $course) {
 
         $subjectKey = (int)($course->subject_id ?? 0);
         $subjectColor = $subjectColors[$subjectKey] ?? $colors[0];
+        $subjectColorHex = $colorHexByName[$subjectColor] ?? '#708090';
+        $courseTitleHtml = '<span class="cursos-sticky-title-chip" style="--title-bg:' . h($subjectColorHex) . ';">' . h((string)$course->name) . '</span>';
         $subjectCoursesCount = count(array_filter($courses, static function ($item) use ($subjectKey): bool {
             return (int)($item->subject_id ?? 0) === $subjectKey;
         }));
@@ -488,6 +514,7 @@ foreach ($courses as $course) {
         <div class="cursos-page cursos-course-page" data-page="<?= h($courseAnchor) ?>" data-back-page="<?= h($backTarget) ?>">
             <?= $this->element('pestanya', [
                 'titol' => (string)$course->name,
+                'titolHtml' => $courseTitleHtml,
                 'contingut' => $content,
                 'color' => $subjectColor,
                 'extraClass' => 'cursos-pestanya',
@@ -510,21 +537,23 @@ foreach ($courses as $course) {
 }
 
 .cursos-buttons-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 0.75rem;
 }
 
 .cursos-nav-button {
-    width: 100%;
+    width: min(100%, 720px);
     border: 0;
-    background: #708090;
+    background: var(--btn-bg, #708090);
     color: #fff;
     padding: 0.9rem 1rem;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.4rem;
     cursor: pointer;
-    text-align: left;
+    text-align: center;
+    transition: transform 160ms ease, box-shadow 180ms ease;
 }
 
 .cursos-nav-button--back {
@@ -534,6 +563,15 @@ foreach ($courses as $course) {
 
 .cursos-back-course {
     margin-top: 1rem;
+    width: auto;
+    align-self: center;
+    padding-left: 1.8rem;
+    padding-right: 1.8rem;
+}
+
+.cursos-nav-button:hover {
+    transform: scale(1.03);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
 }
 
 .cursos-element .horari-linia {
@@ -549,6 +587,12 @@ foreach ($courses as $course) {
     cursor: pointer;
     padding: 0;
     font: inherit;
+    transition: transform 160ms ease, text-shadow 180ms ease;
+}
+
+.cursos-link-course:hover {
+    transform: scale(1.03);
+    text-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 .cursos-horari-abreujat {
@@ -576,11 +620,42 @@ foreach ($courses as $course) {
     display: block;
 }
 
-.cursos-pestanya .titol {
+.cursos-course-page .pestanya .titol {
     position: sticky;
     top: 0;
-    z-index: 5;
+    z-index: 8;
+    background: #fff !important;
+    padding: 0;
     margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.cursos-sticky-title-chip {
+    display: inline-block;
+    background: var(--title-bg, #708090);
+    color: #fff;
+    padding: 0.75rem 1rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.cursos-course-page .pestanya .text {
+    margin-top: 0.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cursos-nav-button,
+    .cursos-link-course {
+        transition: none;
+    }
+
+    .cursos-nav-button:hover,
+    .cursos-link-course:hover {
+        transform: none;
+        box-shadow: none;
+        text-shadow: none;
+    }
 }
 
 @media (max-width: 980px) {
