@@ -244,7 +244,7 @@ body{ margin: 0; }
     height: calc(100vh - var(--topbar-h-desktop) - var(--bottombar-h-desktop));
 
     display: flex;              /* ← clau */
-    align-items: center;
+    align-items: flex-start;
 
     overflow-y: auto;
 
@@ -257,6 +257,10 @@ body{ margin: 0; }
     max-width: none;
     margin: 0;
     padding: 16px;
+  }
+
+  .app-main.app-main--centered{
+    align-items: center;
   }
 
   /* BOTTOMBAR fixa (10vh) i 3 columnes, alineades a dalt */
