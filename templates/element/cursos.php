@@ -378,7 +378,7 @@ foreach ($courses as $course) {
                 <?php endforeach; ?>
 
                 <button type="button" class="cursos-nav-button cursos-nav-button--back" data-target-page="subjects">
-                    VEURE TOTS ELS ENSENYAMENTS
+                    VEGEU TOTS ELS ENSENYAMENTS
                 </button>
             </div>
         </div>
@@ -521,7 +521,7 @@ foreach ($courses as $course) {
             ]) ?>
 
             <button type="button" class="cursos-nav-button cursos-nav-button--back cursos-back-course" data-target-page="<?= h($backTarget) ?>">
-                VEURE ELS ALTRES GRUPS
+                VEGEU ELS ALTRES GRUPS
             </button>
         </div>
     <?php endforeach; ?>
