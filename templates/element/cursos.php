@@ -642,6 +642,7 @@ foreach ($courses as $course) {
 }
 
 .cursos-sticky-title-chip {
+    width: 100%;
     display: inline-block;
     background: var(--title-bg, #708090);
     color: #fff;
