@@ -4,7 +4,7 @@
 
   /* DESKTOP (10/80/10) */
   --topbar-h-desktop: 10vh;
-  --bottombar-h-desktop: 20vh;
+  --bottombar-h-desktop: 24vh;
 
   --sidebar-w: 280px;
   --pink: #e83e8c;
@@ -220,6 +220,16 @@ body{ margin: 0; }
   text-align: right;
 }
 
+.app-bottombar__col--right .bottombar-text{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.horarisatencio-table{
+  margin-left: auto;
+}
+
+
 /* =========================
    DESKTOP (>=901px)
    Sidebar 100vh + dreta en 10/80/10 (fixes)
@@ -366,10 +376,11 @@ body{ margin: 0; }
 ========================= */
 @media (max-width: 900px){
 
-  /* Evita que el scroll sigui del body (així la topbar no "balla") */
+  /* En mòbil el scroll és de pàgina perquè la bottombar quedi després del main */
   html, body{
-    height: 100%;
-    overflow: hidden;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   /* TOPBAR fixa */
@@ -424,19 +435,13 @@ body{ margin: 0; }
     --logo-offset-x: 0rem;
   }
 
-  /* MAIN: ocupa la pantalla sota la topbar i fa scroll */
+  /* MAIN en flux normal, sota topbar fixa */
   .app-main{
-    position: fixed;
-    top: var(--topbar-h-mobile);
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-
-    margin: 0;
+    position: static;
+    margin-top: var(--topbar-h-mobile);
     padding: 0;
+    overflow: visible;
+    min-height: 0;
   }
 
   /* Marges laterals del contingut */
@@ -510,5 +515,23 @@ body{ margin: 0; }
   .app-bottombar__inner{
     display: block;
     padding: 12px;
+  }
+
+  .app-bottombar__inner > section:nth-child(1){
+    text-align: left;
+  }
+
+  .app-bottombar__inner > section:nth-child(2),
+  .app-bottombar__inner > section:nth-child(3){
+    text-align: center;
+  }
+
+  .app-bottombar__col--right .bottombar-text{
+    justify-content: center;
+  }
+
+  .horarisatencio-table{
+    margin-left: auto;
+    margin-right: auto;
   }
 }
