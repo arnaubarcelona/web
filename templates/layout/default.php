@@ -187,22 +187,28 @@ $pageLevel = function (string $orderCode): int {
 <!-- BOTTOMBAR -->
 <footer class="app-bottombar">
     <div class="app-bottombar__inner">
-        <section class="app-bottombar__col">
-            <div class="bottombar-title">GENERALITAT DE CATALUNYA</div>
-            <div class="bottombar-text">
-                Text Generalitat...
+        <section class="app-bottombar__col app-bottombar__col--left">
+            <div class="bottombar-logos">
+                <?= $this->Html->image('line_small.png', [
+                    'alt' => 'Línia corporativa',
+                    'class' => 'bottombar-logos__line'
+                ]) ?>
+                <?= $this->Html->image('consorci.jpg', [
+                    'alt' => 'Consorci d’Educació de Barcelona',
+                    'class' => 'bottombar-logos__consorci'
+                ]) ?>
             </div>
         </section>
 
         <section class="app-bottombar__col">
             <div class="bottombar-title">CONTACTE</div>
             <div class="bottombar-text">
-                Text contacte...
+                <?= $this->element('contactecentre') ?>
             </div>
         </section>
 
-        <section class="app-bottombar__col">
-            <div class="bottombar-title">HORARIS D’ATENCIÓ</div>
+        <section class="app-bottombar__col app-bottombar__col--right">
+            <div class="bottombar-title">HORARI D’ATENCIÓ</div>
             <div class="bottombar-text">
                 <?= $this->element('horarisatencio') ?>
             </div>
