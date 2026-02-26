@@ -4,7 +4,7 @@
 
   /* DESKTOP (10/80/10) */
   --topbar-h-desktop: 10vh;
-  --bottombar-h-desktop: 24vh;
+  --bottombar-h-desktop: 26vh;
 
   --sidebar-w: 280px;
   --pink: #e83e8c;
@@ -429,6 +429,11 @@ body{ margin: 0; }
   .app-topbar__social{
     width: 100%;
     justify-content: center;
+  }
+
+  /* Textos bottombar */
+  .bottombar-title{
+    margin-top: 2rem;
   }
 
   /* (Opcional) treu qualsevol offset en mòbil */

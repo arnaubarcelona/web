@@ -3,6 +3,8 @@
  * Element: contactecentre
  *
  * Mostra les línies de contacte guardades a la taula configs.
+ * - Email → mailto:
+ * - Telèfon → tel:
  */
 
 use Cake\ORM\TableRegistry;
@@ -36,7 +38,37 @@ if ($contactText === '') {
 
 $lines = preg_split('/\r\n|\r|\n/', $contactText) ?: [];
 $lines = array_values(array_filter(array_map('trim', $lines), static fn(string $line): bool => $line !== ''));
+
+foreach ($lines as $line):
+
+    $isEmail = filter_var($line, FILTER_VALIDATE_EMAIL);
+
+    // Detecta telèfon (accepta +, espais i números)
+    $isPhone = preg_match('/^\+?[0-9\s]+$/', $line);
+
+    if ($isEmail):
 ?>
-<?php foreach ($lines as $line): ?>
-    <div><?= h($line) ?></div>
-<?php endforeach; ?>
+        <div>
+            <a href="mailto:<?= h($line) ?>">
+                <?= h($line) ?>
+            </a>
+        </div>
+<?php
+    elseif ($isPhone):
+        // Neteja espais per l'atribut tel:
+        $telLink = preg_replace('/\s+/', '', $line);
+?>
+        <div>
+            <a href="tel:<?= h($telLink) ?>">
+                <?= h($line) ?>
+            </a>
+        </div>
+<?php
+    else:
+?>
+        <div><?= h($line) ?></div>
+<?php
+    endif;
+
+endforeach;
+?>
