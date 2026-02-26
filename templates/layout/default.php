@@ -204,7 +204,7 @@ $pageLevel = function (string $orderCode): int {
         <section class="app-bottombar__col">
             <div class="bottombar-title">HORARIS D’ATENCIÓ</div>
             <div class="bottombar-text">
-                Text horaris...
+                <?= $this->element('horarisatencio') ?>
             </div>
         </section>
     </div>
