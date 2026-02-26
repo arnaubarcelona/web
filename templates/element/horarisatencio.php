@@ -169,7 +169,7 @@ foreach ($itemsByDate as $k => $info) {
             $times = $info['hasSpecial'] ? $info['specialTimes'] : $info['regularTimes'];
 
             // Si no hi ha franges aplicables: dia laborable tancat
-            $timesText = !empty($times) ? implode(' i ', $times) : __('Tancat');
+            $timesText = !empty($times) ? implode("\n", $times) : __('Tancat');
 
             $tdBase = 'padding:2px 0; border:none; vertical-align:top;';
             $sepStyle = $isWeekSeparator ? 'border-top:1px solid rgba(0,0,0,0.2); padding-top:5px;' : '';
@@ -179,7 +179,7 @@ foreach ($itemsByDate as $k => $info) {
                     <?= h($dayLabel) ?>
                 </td>
                 <td style="<?= $tdBase ?> text-align:left; <?= $sepStyle ?>">
-                    <?= h($timesText) ?>
+                    <?= nl2br(h($timesText)) ?>
                 </td>
             </tr>
         <?php
