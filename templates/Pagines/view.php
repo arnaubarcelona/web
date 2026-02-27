@@ -31,7 +31,13 @@ if ($body !== '') {
             return $m[0];
         }
 
-        return $this->element($elementName);
+        $elementHtml = $this->element($elementName);
+
+        return sprintf(
+            "<div class=\"pagina-element pagina-element--%s\">%s</div>",
+            h($elementName),
+            $elementHtml
+        );
     }, $body);
 }
 ?>

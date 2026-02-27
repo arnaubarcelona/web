@@ -685,3 +685,54 @@ body{ margin: 0; }
 .app-main .app-container .pagina-body-main a:focus-visible{
   text-decoration: underline !important; /* opcional: feedback en hover */
 }
+
+
+/* ==============================
+   ELEMENTS incrustats al body del MAIN
+   (evita que heretin l'estil de "pestanya")
+================================= */
+
+.app-main .app-container .pagina-body-main .pagina-element h1,
+.app-main .app-container .pagina-body-main .pagina-element h2,
+.app-main .app-container .pagina-body-main .pagina-element h3{
+  font-family: revert !important;
+  color: revert !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+  margin: revert !important;
+  line-height: revert;
+}
+
+.app-main .app-container .pagina-body-main .pagina-element a{
+  color: revert !important;
+  text-decoration: revert !important;
+  font-weight: revert !important;
+  font-size: revert !important;
+}
+
+.app-main .app-container .pagina-body-main .pagina-element a:hover,
+.app-main .app-container .pagina-body-main .pagina-element a:focus-visible{
+  text-decoration: revert !important;
+}
+
+.app-main .app-container .pagina-body-main .pagina-element ul,
+.app-main .app-container .pagina-body-main .pagina-element ol{
+  list-style: revert;
+  margin: revert;
+  padding: revert;
+  counter-reset: none;
+}
+
+.app-main .app-container .pagina-body-main .pagina-element ul li,
+.app-main .app-container .pagina-body-main .pagina-element ol li{
+  display: list-item;
+  position: static;
+  padding-left: 0;
+  margin-bottom: revert;
+  text-indent: 0;
+}
+
+.app-main .app-container .pagina-body-main .pagina-element ul li::before,
+.app-main .app-container .pagina-body-main .pagina-element ol li::before{
+  content: none;
+}
