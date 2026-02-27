@@ -10,7 +10,7 @@ $body = (string)($pagina->body ?? '');
 $isMenuPpalPage = str_contains($body, '{menuppal}') || str_contains($body, '&#123;menuppal&#125;');
 
 if ($isMenuPpalPage) {
-    $this->assign('appMainClass', 'app-main--centered');
+    $this->assign('appMainClass', 'has-menuppal app-main--centered');
 }
 
 if ($body !== '') {

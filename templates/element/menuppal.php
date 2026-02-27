@@ -38,8 +38,8 @@ usort($pages, function ($a, $b) {
 $colors = ['blaumari', 'blaucel', 'verd', 'rosa', 'lila', 'taronja', 'gris', 'ocre'];
 $i = 0;
 ?>
-
-<div class="menuppal-wrapper">
+<div class="pagina-component">
+<div class="menuppal-wrapper menuppal-component">
 <?php foreach ($pages as $p): ?>
     <?php
         $color = $colors[$i % count($colors)];
@@ -61,6 +61,7 @@ $i = 0;
 
 <?php endforeach; ?>
 </div>
+</div>
 
 <style>
 
@@ -69,21 +70,15 @@ $i = 0;
 ========================= */
 
 .menuppal-wrapper{
-  margin: 1rem 0;
-
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between; /* reparteix espai sobrant */
-  row-gap: 1rem;
+  gap: 1rem;
+  justify-content: center;
 }
 
 /* 5 per fila màxim */
 .menuppal-wrapper > a.custom-button{
-  flex: 0 1 calc(20% - 0.8rem); /* 100% / 5 = 20% */
-  max-width: 320px;             /* límit perquè no es facin gegants */
-  width: 100%;
-
-  margin: 0 !important;
+  flex: 0 0 20%;
 }
 
 /* =========================
@@ -138,5 +133,6 @@ $i = 0;
     animation: none;
   }
 }
+
 
 </style>

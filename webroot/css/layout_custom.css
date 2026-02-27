@@ -546,14 +546,13 @@ body{ margin: 0; }
   }
 }
 
-
-/* ==============================
+/* ==========================================================
    MAIN com "pestanya": tipografia + llistes
-   (acotat a la zona de contingut)
-================================= */
+   (NO s'aplica si <main> té .has-menuppal)
+========================================================== */
 
-/* Contenidor central com les pestanyes */
-.app-main .app-container .pagina-body-main{
+/* Contenidor central */
+.app-main:not(.has-menuppal) .app-container .pagina-body-main{
   max-width: 1000px;
   width: 100%;
   margin: 1rem auto;
@@ -565,33 +564,37 @@ body{ margin: 0; }
 }
 
 /* Paràgrafs */
-.app-main .app-container .pagina-body-main p{
+.app-main:not(.has-menuppal) .app-container .pagina-body-main p{
   margin: 0.3rem 0;
 }
 
-/* Links com a "pestanya" */
-.app-main .app-container .pagina-body-main a{
-  color: inherit;
+/* Links */
+.app-main:not(.has-menuppal) .app-container .pagina-body-main a{
+  color: #708090;      /* blaumari */
   font-size: inherit;
-  text-decoration: underline;
-  font-weight: bold;
+  text-decoration: none;
+  font-weight: 700;
 }
 
-/* UL com a "pestanya" (sense bullets natius + punt rodó custom) */
-.app-main .app-container .pagina-body-main ul{
+.app-main:not(.has-menuppal) .app-container .pagina-body-main a:hover,
+.app-main:not(.has-menuppal) .app-container .pagina-body-main a:focus-visible{
+  text-decoration: underline;
+}
+
+/* UL */
+.app-main:not(.has-menuppal) .app-container .pagina-body-main ul{
   list-style: none;
   padding-left: 0;
   margin: 0.5rem 0;
 }
 
-.app-main .app-container .pagina-body-main ul li{
+.app-main:not(.has-menuppal) .app-container .pagina-body-main ul li{
   position: relative;
   padding-left: 2rem;
   margin-bottom: 0.3rem;
-  text-indent: 0;
 }
 
-.app-main .app-container .pagina-body-main ul li::before{
+.app-main:not(.has-menuppal) .app-container .pagina-body-main ul li::before{
   content: '';
   width: 0.6rem;
   height: 0.6rem;
@@ -599,22 +602,19 @@ body{ margin: 0; }
   position: absolute;
   left: 0;
   top: 0.6rem;
-
-  /* color del punt: per defecte agafa el "teu blau" de links,
-     però el pots canviar si vols */
   background-color: currentColor;
   opacity: 0.8;
 }
 
-/* OL com a "pestanya" (numeració dins cercle) */
-.app-main .app-container .pagina-body-main ol{
+/* OL */
+.app-main:not(.has-menuppal) .app-container .pagina-body-main ol{
   counter-reset: list-counter;
   list-style: none;
   padding-left: 0;
   margin: 0.5rem 0;
 }
 
-.app-main .app-container .pagina-body-main ol li{
+.app-main:not(.has-menuppal) .app-container .pagina-body-main ol li{
   position: relative;
   padding-left: 2rem;
   margin-bottom: 0.3rem;
@@ -622,7 +622,7 @@ body{ margin: 0; }
   align-items: flex-start;
 }
 
-.app-main .app-container .pagina-body-main ol li::before{
+.app-main:not(.has-menuppal) .app-container .pagina-body-main ol li::before{
   counter-increment: list-counter;
   content: counter(list-counter);
 
@@ -643,96 +643,41 @@ body{ margin: 0; }
   transform: translateY(0.1em);
 }
 
-/* Responsive com a pestanya */
+/* Responsive */
 @media (max-width: 767px){
-  .app-main .app-container .pagina-body-main{
+  .app-main:not(.has-menuppal) .app-container .pagina-body-main{
     font-size: 1.1rem;
   }
-  .app-main .app-container .pagina-body-main ol li::before{
+  .app-main:not(.has-menuppal) .app-container .pagina-body-main ol li::before{
     font-size: 0.8rem;
     line-height: 1.2rem;
   }
 }
 
-/* ==============================
-   HEADERS + LINKS al MAIN (estil "pestanya")
-================================= */
+/* ==========================================================
+   HEADERS
+========================================================== */
 
-/* Tots els títols del MAIN: Bebas, blanc i padding */
-.app-main .app-container .pagina-body-main h1,
-.app-main .app-container .pagina-body-main h2,
-.app-main .app-container .pagina-body-main h3{
-  font-family: "Bebas Neue", sans-serif !important;
-  color: #ffffff !important;
-  padding: 0.5rem !important;
-  margin: 0.75rem 0 2rem 0; /* ajusta si vols */
+.app-main:not(.has-menuppal) .app-container .pagina-body-main h1,
+.app-main:not(.has-menuppal) .app-container .pagina-body-main h2,
+.app-main:not(.has-menuppal) .app-container .pagina-body-main h3{
+  font-family: "Bebas Neue", sans-serif;
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  margin: 0.75rem 0 2rem 0;
   line-height: 1.05;
+
+  display: inline-block;   /* 👈 clau */
 }
 
-/* Colors de fons segons nivell */
-.app-main .app-container .pagina-body-main h1{ background-color: #e55381 !important; }  /* rosa */
-.app-main .app-container .pagina-body-main h2{ background-color: #b2abbe !important; }  /* lila */
-.app-main .app-container .pagina-body-main h3{ background-color: #aed581 !important; }  /* verd */
-
-/* Enllaços del MAIN: blaumari i sense subratllat */
-.app-main .app-container .pagina-body-main a{
-  color: #708090 !important;            /* blaumari */
-  text-decoration: none !important;     /* sense subratllar */
-  font-weight: 700;                     /* opcional, queda bé */
+.app-main:not(.has-menuppal) .app-container .pagina-body-main h1{
+  background-color: #e55381;
 }
 
-.app-main .app-container .pagina-body-main a:hover,
-.app-main .app-container .pagina-body-main a:focus-visible{
-  text-decoration: underline !important; /* opcional: feedback en hover */
+.app-main:not(.has-menuppal) .app-container .pagina-body-main h2{
+  background-color: #b2abbe;
 }
 
-
-/* ==============================
-   ELEMENTS incrustats al body del MAIN
-   (evita que heretin l'estil de "pestanya")
-================================= */
-
-.app-main .app-container .pagina-body-main .pagina-element h1,
-.app-main .app-container .pagina-body-main .pagina-element h2,
-.app-main .app-container .pagina-body-main .pagina-element h3{
-  font-family: revert !important;
-  color: revert !important;
-  background-color: transparent !important;
-  padding: 0 !important;
-  margin: revert !important;
-  line-height: revert;
-}
-
-.app-main .app-container .pagina-body-main .pagina-element a{
-  color: revert !important;
-  text-decoration: revert !important;
-  font-weight: revert !important;
-  font-size: revert !important;
-}
-
-.app-main .app-container .pagina-body-main .pagina-element a:hover,
-.app-main .app-container .pagina-body-main .pagina-element a:focus-visible{
-  text-decoration: revert !important;
-}
-
-.app-main .app-container .pagina-body-main .pagina-element ul,
-.app-main .app-container .pagina-body-main .pagina-element ol{
-  list-style: revert;
-  margin: revert;
-  padding: revert;
-  counter-reset: none;
-}
-
-.app-main .app-container .pagina-body-main .pagina-element ul li,
-.app-main .app-container .pagina-body-main .pagina-element ol li{
-  display: list-item;
-  position: static;
-  padding-left: 0;
-  margin-bottom: revert;
-  text-indent: 0;
-}
-
-.app-main .app-container .pagina-body-main .pagina-element ul li::before,
-.app-main .app-container .pagina-body-main .pagina-element ol li::before{
-  content: none;
+.app-main:not(.has-menuppal) .app-container .pagina-body-main h3{
+  background-color: #aed581;
 }
