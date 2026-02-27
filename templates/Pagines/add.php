@@ -21,5 +21,6 @@ declare(strict_types=1);
         <li><code>{periode_matricula}</code>: <?= __('text "del ... al ..." amb les dates màximes de datainicimatricula i datafimatricula') ?></li>
         <li><code>{dies_caducitat_llista_espera}</code>: <?= __('valor del camp Years.diescaducitatllistaespera del registre més recent') ?></li>
         <li><code>{dies_no_justificades}</code>: <?= __('valor del camp Years.diesnojustificades del registre més recent') ?></li>
+        <li><code>{horaripreinscripcio}</code>: <?= __('taula d\'horaris (com {horarisatencio}) pels dies entre la data màxima de datainicipreinscripcio i la data màxima de datafipreinscripcio, ambdós inclosos') ?></li>
     </ul>
 </div>
