@@ -545,3 +545,143 @@ body{ margin: 0; }
     margin-right: auto;
   }
 }
+
+
+/* ==============================
+   MAIN com "pestanya": tipografia + llistes
+   (acotat a la zona de contingut)
+================================= */
+
+/* Contenidor central com les pestanyes */
+.app-main .app-container .pagina-body{
+  max-width: 1000px;
+  width: 100%;
+  margin: 1rem auto;
+
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  text-align: left;
+}
+
+/* Paràgrafs */
+.app-main .app-container .pagina-body p{
+  margin: 0.3rem 0;
+}
+
+/* Links com a "pestanya" */
+.app-main .app-container .pagina-body a{
+  color: inherit;
+  font-size: inherit;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+/* UL com a "pestanya" (sense bullets natius + punt rodó custom) */
+.app-main .app-container .pagina-body ul{
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5rem 0;
+}
+
+.app-main .app-container .pagina-body ul li{
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 0.3rem;
+  text-indent: 0;
+}
+
+.app-main .app-container .pagina-body ul li::before{
+  content: '';
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  top: 0.6rem;
+
+  /* color del punt: per defecte agafa el "teu blau" de links,
+     però el pots canviar si vols */
+  background-color: currentColor;
+  opacity: 0.8;
+}
+
+/* OL com a "pestanya" (numeració dins cercle) */
+.app-main .app-container .pagina-body ol{
+  counter-reset: list-counter;
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5rem 0;
+}
+
+.app-main .app-container .pagina-body ol li{
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+.app-main .app-container .pagina-body ol li::before{
+  counter-increment: list-counter;
+  content: counter(list-counter);
+
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+
+  background-color: currentColor;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.7em;
+  text-align: center;
+  line-height: 1.5em;
+
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translateY(0.1em);
+}
+
+/* Responsive com a pestanya */
+@media (max-width: 767px){
+  .app-main .app-container .pagina-body{
+    font-size: 1.1rem;
+  }
+  .app-main .app-container .pagina-body ol li::before{
+    font-size: 0.8rem;
+    line-height: 1.2rem;
+  }
+}
+
+/* ==============================
+   HEADERS + LINKS al MAIN (estil "pestanya")
+================================= */
+
+/* Tots els títols del MAIN: Bebas, blanc i padding */
+.app-main h1,
+.app-main h2,
+.app-main h3{
+  font-family: "Bebas Neue", sans-serif !important;
+  color: #ffffff !important;
+  padding: 0.5rem !important;
+  margin: 0.75rem 0 2rem 0; /* ajusta si vols */
+  line-height: 1.05;
+}
+
+/* Colors de fons segons nivell */
+.app-main h1{ background-color: #e55381 !important; }  /* rosa */
+.app-main h2{ background-color: #b2abbe !important; }  /* lila */
+.app-main h3{ background-color: #aed581 !important; }  /* verd */
+
+/* Enllaços del MAIN: blaumari i sense subratllat */
+.app-main a{
+  color: #708090 !important;            /* blaumari */
+  text-decoration: none !important;     /* sense subratllar */
+  font-weight: 700;                     /* opcional, queda bé */
+}
+
+.app-main a:hover,
+.app-main a:focus-visible{
+  text-decoration: underline !important; /* opcional: feedback en hover */
+}
