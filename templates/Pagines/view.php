@@ -38,7 +38,7 @@ if ($body !== '') {
 
 <div class="pagines view content">
 
-    <div class="pagina-body">
+    <div class="pagina-body pagina-body-main">
         <?= $this->Html->div(null, $body, ['escape' => false]) ?>
     </div>
 
