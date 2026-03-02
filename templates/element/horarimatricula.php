@@ -24,6 +24,21 @@ $daysCa = [
     7 => 'diumenge',
 ];
 
+$monthsCa = [
+    1 => 'gener',
+    2 => 'febrer',
+    3 => 'març',
+    4 => 'abril',
+    5 => 'maig',
+    6 => 'juny',
+    7 => 'juliol',
+    8 => 'agost',
+    9 => 'setembre',
+    10 => 'octubre',
+    11 => 'novembre',
+    12 => 'desembre',
+];
+
 $start = paginesGetYearMaxDate('datainicimatricula');
 $end = paginesGetYearMaxDate('datafimatricula');
 
@@ -169,7 +184,8 @@ foreach ($itemsByDate as $k => $info) {
 
             $dayName = $daysCa[$dow] ?? strtolower($d->i18nFormat('EEEE'));
             $asterisk = $info['hasSpecial'] ? '*' : '';
-            $dayLabel = $dayName . $asterisk . ' ' . $d->format('j');
+            $monthName = $monthsCa[(int)$d->format('n')] ?? strtolower($d->i18nFormat('LLLL'));
+            $dayLabel = $dayName . $asterisk . ' ' . $d->format('j') . ' ' . $monthName;
 
             $times = $info['hasSpecial'] ? $info['specialTimes'] : $info['regularTimes'];
             $timesText = !empty($times) ? implode("\n", $times) : __('Tancat');
