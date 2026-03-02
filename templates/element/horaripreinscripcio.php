@@ -30,14 +30,9 @@ if (!$start || !$end || $start > $end) {
     return;
 }
 
-// Com a horarisatencio: només dies laborables.
+// Tots els dies dins el rang de preinscripció (dl..dg).
 $dates = [];
 for ($d = $start; $d <= $end; $d = $d->modify('+1 day')) {
-    $dow = (int)$d->format('N');
-    if ($dow === 6 || $dow === 7) {
-        continue;
-    }
-
     $date = \Cake\I18n\FrozenDate::parseDate($d->format('Y-m-d'));
     if ($date) {
         $dates[] = $date;

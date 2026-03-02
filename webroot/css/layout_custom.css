@@ -226,7 +226,7 @@ body{ margin: 0; }
   justify-content: flex-end;
 }
 
-.horarisatencio-table{
+.app-bottombar__col--right .horarisatencio-table{
   margin-left: auto;
 }
 
@@ -533,16 +533,11 @@ body{ margin: 0; }
 
   .app-bottombar__inner > section:nth-child(2),
   .app-bottombar__inner > section:nth-child(3){
-    text-align: center;
+    text-align: right;
   }
 
   .app-bottombar__col--right .bottombar-text{
-    justify-content: center;
-  }
-
-  .horarisatencio-table{
-    margin-left: auto;
-    margin-right: auto;
+    justify-content: flex-end;
   }
 }
 
