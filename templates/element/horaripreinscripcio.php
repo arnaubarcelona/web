@@ -9,6 +9,7 @@
 
 declare(strict_types=1);
 
+use Cake\I18n\FrozenDate;
 use Cake\ORM\TableRegistry;
 
 require_once __DIR__ . '/_pagines_dynamic_utils.php';
@@ -30,13 +31,18 @@ if (!$start || !$end || $start > $end) {
     return;
 }
 
-// Tots els dies dins el rang de preinscripció (dl..dg).
+$startDate = FrozenDate::instance($start);
+$endDate = FrozenDate::instance($end);
+
+// Igual que horarisatencio: només dies laborables dins el rang de preinscripció.
 $dates = [];
-for ($d = $start; $d <= $end; $d = $d->modify('+1 day')) {
-    $date = \Cake\I18n\FrozenDate::parseDate($d->format('Y-m-d'));
-    if ($date) {
-        $dates[] = $date;
+for ($d = $startDate; $d <= $endDate; $d = $d->addDays(1)) {
+    $dow = (int)$d->format('N');
+    if ($dow === 6 || $dow === 7) {
+        continue;
     }
+
+    $dates[] = $d;
 }
 
 if (empty($dates)) {
