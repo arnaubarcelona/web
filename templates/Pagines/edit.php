@@ -22,5 +22,7 @@ declare(strict_types=1);
         <li><code>{dies_caducitat_llista_espera}</code>: <?= __('valor del camp Years.diescaducitatllistaespera del registre més recent') ?></li>
         <li><code>{dies_no_justificades}</code>: <?= __('valor del camp Years.diesnojustificades del registre més recent') ?></li>
         <li><code>{horaripreinscripcio}</code>: <?= __('taula d\'horaris (com {horarisatencio}) pels dies entre la data màxima de datainicipreinscripcio i la data màxima de datafipreinscripcio, ambdós inclosos') ?></li>
+        <li><code>{horarireclamacions}</code>: <?= __('taula d\'horaris (com {horarisatencio}) pels dies entre la data màxima de datainicireclamacions i la data màxima de datafireclamacions, ambdós inclosos') ?></li>
+        <li><code>{horarimatricula}</code>: <?= __('taula d\'horaris (com {horarisatencio}) pels dies entre la data màxima de datainicimatricula i la data màxima de datafimatricula, ambdós inclosos') ?></li>
     </ul>
 </div>
