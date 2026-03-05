@@ -80,6 +80,7 @@ if ($body !== '') {
 
         tables.forEach((table) => {
             table.classList.remove('table-stack-mobile');
+            table.classList.remove('table-stack-mobile--no-thead');
             table.querySelectorAll('td, th').forEach((cell) => {
                 cell.removeAttribute('data-label');
             });
@@ -91,6 +92,7 @@ if ($body !== '') {
             const labels = getHeaderLabels(table);
             const rows = table.querySelectorAll('tr');
             const hasThead = table.querySelector('thead') !== null;
+            table.classList.toggle('table-stack-mobile--no-thead', !hasThead);
 
             rows.forEach((row, rowIndex) => {
                 if (!hasThead && rowIndex === 0) {
