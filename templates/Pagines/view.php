@@ -153,6 +153,7 @@ $body = $renderDynamicElements($body);
         font-family: "Bebas Neue", sans-serif;
         font-size: 1.6rem;
         padding: 0.55rem 1.5rem;
+        margin: 1rem;
         cursor: pointer;
     }
 
