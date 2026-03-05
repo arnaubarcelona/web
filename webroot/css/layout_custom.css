@@ -585,14 +585,9 @@ body{ margin: 0; }
   .pagina-body table.table-stack-mobile tr,
   .pagina-body-main table.table-stack-mobile tr {
     display: block;
-    margin-bottom: 0.9rem;
+    margin-bottom: 1rem;
     border: 1px solid #ddd;
     background: #fff;
-  }
-
-  .pagina-body table.table-stack-mobile.table-stack-mobile--no-thead tr:first-child,
-  .pagina-body-main table.table-stack-mobile.table-stack-mobile--no-thead tr:first-child {
-    display: none;
   }
 
   .pagina-body table.table-stack-mobile td,
@@ -633,6 +628,21 @@ body{ margin: 0; }
   .pagina-body table.table-stack-mobile th[data-label='']::before,
   .pagina-body-main table.table-stack-mobile td[data-label='']::before,
   .pagina-body-main table.table-stack-mobile th[data-label='']::before {
+    content: none;
+    display: none;
+  }
+
+  .pagina-body table.table-stack-mobile.table-stack-mobile--plain-rows td,
+  .pagina-body table.table-stack-mobile.table-stack-mobile--plain-rows th,
+  .pagina-body-main table.table-stack-mobile.table-stack-mobile--plain-rows td,
+  .pagina-body-main table.table-stack-mobile.table-stack-mobile--plain-rows th {
+    font-weight: 400;
+  }
+
+  .pagina-body table.table-stack-mobile.table-stack-mobile--plain-rows td::before,
+  .pagina-body table.table-stack-mobile.table-stack-mobile--plain-rows th::before,
+  .pagina-body-main table.table-stack-mobile.table-stack-mobile--plain-rows td::before,
+  .pagina-body-main table.table-stack-mobile.table-stack-mobile--plain-rows th::before {
     content: none;
     display: none;
   }

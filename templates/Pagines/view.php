@@ -60,17 +60,7 @@ if ($body !== '') {
 
         if (headerCells.length > 0) {
             headerCells.forEach((cell) => labels.push((cell.textContent || '').trim()));
-            return labels;
         }
-
-        const firstRow = table.querySelector('tr');
-        if (!firstRow) {
-            return labels;
-        }
-
-        firstRow.querySelectorAll('th, td').forEach((cell) => {
-            labels.push((cell.textContent || '').trim());
-        });
 
         return labels;
     }
@@ -121,8 +111,8 @@ if ($body !== '') {
 
         tables.forEach((table) => {
             table.classList.remove('table-stack-mobile');
-            table.classList.remove('table-stack-mobile--no-thead');
             table.classList.remove('table-mobile-scroll');
+            table.classList.remove('table-stack-mobile--plain-rows');
             table.querySelectorAll('td, th').forEach((cell) => {
                 cell.removeAttribute('data-label');
             });
@@ -130,6 +120,13 @@ if ($body !== '') {
             unwrapScrollableTable(table);
 
             if (!MOBILE_QUERY.matches) {
+                return;
+            }
+
+            const hasThead = table.querySelector('thead') !== null;
+
+            if (!hasThead) {
+                table.classList.add('table-stack-mobile', 'table-stack-mobile--plain-rows');
                 return;
             }
 
@@ -141,14 +138,8 @@ if ($body !== '') {
 
             const labels = getHeaderLabels(table);
             const rows = table.querySelectorAll('tr');
-            const hasThead = table.querySelector('thead') !== null;
-            table.classList.toggle('table-stack-mobile--no-thead', !hasThead);
 
-            rows.forEach((row, rowIndex) => {
-                if (!hasThead && rowIndex === 0) {
-                    return;
-                }
-
+            rows.forEach((row) => {
                 row.querySelectorAll('th, td').forEach((cell, index) => {
                     const label = labels[index] || '';
                     cell.setAttribute('data-label', label);
