@@ -9,17 +9,14 @@ $this->assign('title', $pagina->title ?? 'Pàgina');
 $body = (string)($pagina->body ?? '');
 $isMenuPpalPage = str_contains($body, '{menuppal}') || str_contains($body, '&#123;menuppal&#125;');
 
-if ($isMenuPpalPage) {
-    $this->assign('appMainClass', 'has-menuppal app-main--centered');
-}
+$renderDynamicElements = function (string $html): string {
+    if ($html === '') {
+        return $html;
+    }
 
-if ($body !== '') {
-    // Regex que captura:
-    //  - {element}
-    //  - &#123;element&#125;
     $pattern = '/(?:\{|\&\#123;)\s*([a-zA-Z0-9_-]+)\s*(?:\}|\&\#125;)/';
 
-    $body = preg_replace_callback($pattern, function ($m) {
+    return preg_replace_callback($pattern, function ($m) {
         $elementName = $m[1];
 
         if ($elementName === '' || str_contains($elementName, '..') || str_contains($elementName, '/')) {
@@ -34,12 +31,32 @@ if ($body !== '') {
         $elementHtml = $this->element($elementName);
 
         return sprintf(
-            "<div class=\"pagina-element pagina-element--%s\">%s</div>",
+            '<div class="pagina-element pagina-element--%s">%s</div>',
             h($elementName),
             $elementHtml
         );
-    }, $body);
+    }, $html);
+};
+
+$popupBody = '';
+
+if ($isMenuPpalPage) {
+    $this->assign('appMainClass', 'has-menuppal app-main--centered');
+
+    $Pagines = \Cake\ORM\TableRegistry::getTableLocator()->get('Pagines');
+    $popupPagina = $Pagines->find()
+        ->select(['body'])
+        ->where(['popup' => 1])
+        ->order(['id' => 'DESC'])
+        ->first();
+
+    if ($popupPagina !== null) {
+        $popupBody = (string)($popupPagina->body ?? '');
+        $popupBody = $renderDynamicElements($popupBody);
+    }
 }
+
+$body = $renderDynamicElements($body);
 ?>
 
 <div class="pagines view content">
@@ -49,6 +66,86 @@ if ($body !== '') {
     </div>
 
 </div>
+
+<?php if ($popupBody !== ''): ?>
+    <div class="popup-menuppal" id="popupMenuppal" role="dialog" aria-modal="true" aria-label="Avís important">
+        <button type="button" class="popup-menuppal__close" id="popupMenuppalClose">TANCA</button>
+        <div class="popup-menuppal__content">
+            <?= $this->Html->div(null, $popupBody, ['escape' => false]) ?>
+        </div>
+    </div>
+
+    <style>
+    .popup-menuppal {
+        position: fixed;
+        inset: 0;
+        z-index: 999999;
+        background: #e55381;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+    }
+
+    .popup-menuppal__content {
+        width: 100%;
+        max-width: 1100px;
+        max-height: 100%;
+        overflow: auto;
+        font-family: "Roboto Condensed", "Roboto", sans-serif;
+        font-size: 2rem;
+        line-height: 1.25;
+        color: #fff;
+    }
+
+    .popup-menuppal__content table:not([border]):not([style*="border"]),
+    .popup-menuppal__content table:not([border]):not([style*="border"]) td:not([style*="border"]),
+    .popup-menuppal__content table:not([border]):not([style*="border"]) th:not([style*="border"]) {
+        border: 0 !important;
+    }
+
+    .popup-menuppal__content h1,
+    .popup-menuppal__content h2,
+    .popup-menuppal__content h3 {
+        width: 100%;
+        margin: 0 0 1rem 0;
+        padding: 0.5em;
+        background: #708090;
+        color: #fff;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 3rem;
+        line-height: 1;
+    }
+
+    .popup-menuppal__close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        border: 2px solid #fff;
+        background: transparent;
+        color: #fff;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.25rem;
+        padding: 0.35rem 0.75rem;
+        cursor: pointer;
+    }
+    </style>
+
+    <script>
+    (function () {
+        const modal = document.getElementById('popupMenuppal');
+        const closeBtn = document.getElementById('popupMenuppalClose');
+        if (!modal || !closeBtn) {
+            return;
+        }
+
+        closeBtn.addEventListener('click', function () {
+            modal.remove();
+        });
+    })();
+    </script>
+<?php endif; ?>
 
 <script>
 (function () {
