@@ -75,17 +75,67 @@ if ($body !== '') {
         return labels;
     }
 
+    function isComplexTable(table) {
+        if (table.querySelector('[rowspan], [colspan]')) {
+            return true;
+        }
+
+        const rows = Array.from(table.querySelectorAll('tr'));
+        const dataRows = rows.filter((row) => row.closest('thead') === null);
+        const firstDataRow = dataRows[0] || rows[0] || null;
+        if (!firstDataRow) {
+            return false;
+        }
+
+        const expectedCells = firstDataRow.querySelectorAll('th, td').length;
+        if (expectedCells === 0) {
+            return false;
+        }
+
+        return dataRows.some((row) => row.querySelectorAll('th, td').length !== expectedCells);
+    }
+
+    function wrapScrollableTable(table) {
+        const parent = table.parentElement;
+        if (!parent || parent.classList.contains('table-mobile-scroll-wrap')) {
+            return;
+        }
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'table-mobile-scroll-wrap';
+        parent.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+    }
+
+    function unwrapScrollableTable(table) {
+        const parent = table.parentElement;
+        if (!parent || !parent.classList.contains('table-mobile-scroll-wrap')) {
+            return;
+        }
+
+        parent.replaceWith(table);
+    }
+
     function applyResponsiveTables() {
         const tables = document.querySelectorAll('.pagina-body table, .pagina-body-main table');
 
         tables.forEach((table) => {
             table.classList.remove('table-stack-mobile');
             table.classList.remove('table-stack-mobile--no-thead');
+            table.classList.remove('table-mobile-scroll');
             table.querySelectorAll('td, th').forEach((cell) => {
                 cell.removeAttribute('data-label');
             });
 
+            unwrapScrollableTable(table);
+
             if (!MOBILE_QUERY.matches) {
+                return;
+            }
+
+            if (isComplexTable(table)) {
+                table.classList.add('table-mobile-scroll');
+                wrapScrollableTable(table);
                 return;
             }
 

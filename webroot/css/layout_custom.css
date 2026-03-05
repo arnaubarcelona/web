@@ -547,6 +547,21 @@ body{ margin: 0; }
 }
 
 @media (max-width: 900px){
+  .pagina-body .table-mobile-scroll-wrap,
+  .pagina-body-main .table-mobile-scroll-wrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 0.9rem;
+  }
+
+  .pagina-body table.table-mobile-scroll,
+  .pagina-body-main table.table-mobile-scroll {
+    min-width: 640px;
+    width: 100%;
+  }
+
   .pagina-body table.table-stack-mobile,
   .pagina-body-main table.table-stack-mobile {
     display: block;
