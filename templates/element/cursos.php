@@ -636,7 +636,7 @@ foreach ($courses as $course) {
     z-index: 8;
     background: #fff !important;
     padding: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1.1rem;
     width: 100%;
     max-width: 100%;
 }
@@ -653,7 +653,7 @@ foreach ($courses as $course) {
 }
 
 .cursos-course-page .pestanya .text {
-    margin-top: 0.5rem;
+    margin-top: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

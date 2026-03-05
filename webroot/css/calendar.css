@@ -69,15 +69,18 @@ body::after {
 
 /* Curs (model: lletra “display” gris) */
 .annual-calendar__course {
+  width: 100%;
+  display: block;
+  background: #708090;
+  color: #ffffff;
+  padding: 0.75rem 1rem;
+  margin: 0 0 0.9rem 0;
   font-family: "Bebas Neue", "Roboto Condensed", Arial, sans-serif;
-  font-size: 28px;
+  font-size: 2rem;
   font-weight: 400;
-  color: #808080;
+  line-height: 1;
   letter-spacing: 0.02em;
-
-  /* treiem el teu border-left i padding perquè s’assembli més al model */
-  border: 0;
-  padding: 0;
+  text-transform: uppercase;
 }
 
 /* Llegenda */
@@ -327,13 +330,14 @@ body::after {
   text-decoration: none;
   font-weight: 700;
   border: 2px solid #e83e8c;
-  transition: background-color .2s ease, color .2s ease;
+  transition: transform .2s ease, box-shadow .2s ease;
 }
 
 .annual-calendar__action-btn:hover,
 .annual-calendar__action-btn:focus {
-  background: #fff;
-  color: #e83e8c;
+  color: #fff;
+  transform: scale(1.04);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .2);
 }
 
 @media (max-width: 1200px) {

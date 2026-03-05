@@ -800,11 +800,11 @@ body{ margin: 0; }
 .app-main:not(.has-menuppal) .app-container .pagina-body-main h3{
   font-family: "Bebas Neue", sans-serif;
   color: #ffffff;
-  padding: 0.5rem 1rem;
-  margin: 0.75rem 0 2rem 0;
-  line-height: 1.05;
-
-  display: inline-block;   /* 👈 clau */
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0 0.9rem 0;
+  line-height: 1;
+  width: 100%;
+  display: block;
 }
 
 .app-main:not(.has-menuppal) .app-container .pagina-body-main h1{
