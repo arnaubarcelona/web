@@ -72,9 +72,9 @@ $body = $renderDynamicElements($body);
         <div class="popup-menuppal__scroll">
             <div class="popup-menuppal__content">
                 <?= $this->Html->div(null, $popupBody, ['escape' => false]) ?>
-                <div class="popup-menuppal__actions">
-                    <button type="button" class="popup-menuppal__close" id="popupMenuppalClose">TANCA</button>
-                </div>
+            </div>
+            <div class="popup-menuppal__actions">
+                <button type="button" class="popup-menuppal__close" id="popupMenuppalClose">TANCA</button>
             </div>
         </div>
     </div>
@@ -102,6 +102,7 @@ $body = $renderDynamicElements($body);
         width: 100%;
         min-height: calc(100vh - 4rem);
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
     }
@@ -109,8 +110,6 @@ $body = $renderDynamicElements($body);
     .popup-menuppal__content {
         width: 100%;
         max-width: 1100px;
-        max-height: 100%;
-        overflow: auto;
         font-family: "Roboto Condensed", "Roboto", sans-serif;
         font-size: 2rem;
         line-height: 1.25;
@@ -121,7 +120,7 @@ $body = $renderDynamicElements($body);
         width: 100%;
         display: flex;
         justify-content: center;
-        margin-top: 1.25rem;
+        margin-top: 1.5rem;
     }
 
     .popup-menuppal__content table:not([border]):not([style*="border"]),
@@ -148,8 +147,8 @@ $body = $renderDynamicElements($body);
         background: #708090;
         color: #fff;
         font-family: "Bebas Neue", sans-serif;
-        font-size: 1.25rem;
-        padding: 0.35rem 0.75rem;
+        font-size: 1.6rem;
+        padding: 0.55rem 1.5rem;
         cursor: pointer;
     }
 
