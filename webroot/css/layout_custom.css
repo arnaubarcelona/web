@@ -556,44 +556,44 @@ body{ margin: 0; }
     margin-bottom: 0.9rem;
   }
 
-  .pagina-body table.table-mobile-scroll,
-  .pagina-body-main table.table-mobile-scroll {
+  .pagina-body table.pagina-table-managed.table-mobile-scroll,
+  .pagina-body-main table.pagina-table-managed.table-mobile-scroll {
     min-width: 640px;
     width: 100%;
   }
 
-  .pagina-body table.table-stack-mobile,
-  .pagina-body-main table.table-stack-mobile {
+  .pagina-body table.pagina-table-managed.table-stack-mobile,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile {
     display: block;
     width: 100% !important;
     border-collapse: collapse;
     table-layout: fixed;
   }
 
-  .pagina-body table.table-stack-mobile thead,
-  .pagina-body-main table.table-stack-mobile thead,
-  .pagina-body table.table-stack-mobile colgroup,
-  .pagina-body-main table.table-stack-mobile colgroup {
+  .pagina-body table.pagina-table-managed.table-stack-mobile thead,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile thead,
+  .pagina-body table.pagina-table-managed.table-stack-mobile colgroup,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile colgroup {
     display: none;
   }
 
-  .pagina-body table.table-stack-mobile tbody,
-  .pagina-body-main table.table-stack-mobile tbody {
+  .pagina-body table.pagina-table-managed.table-stack-mobile tbody,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile tbody {
     display: block;
   }
 
-  .pagina-body table.table-stack-mobile tr,
-  .pagina-body-main table.table-stack-mobile tr {
+  .pagina-body table.pagina-table-managed.table-stack-mobile tr,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile tr {
     display: block;
     margin-bottom: 1rem;
     border: 1px solid #ddd;
     background: #fff;
   }
 
-  .pagina-body table.table-stack-mobile td,
-  .pagina-body table.table-stack-mobile th,
-  .pagina-body-main table.table-stack-mobile td,
-  .pagina-body-main table.table-stack-mobile th {
+  .pagina-body table.pagina-table-managed.table-stack-mobile td,
+  .pagina-body table.pagina-table-managed.table-stack-mobile th,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile td,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile th {
     display: block;
     width: 100%;
     border: 0;
@@ -604,33 +604,33 @@ body{ margin: 0; }
     word-break: break-word;
   }
 
-  .pagina-body table.table-stack-mobile td:not([style*="padding"]),
-  .pagina-body table.table-stack-mobile th:not([style*="padding"]),
-  .pagina-body-main table.table-stack-mobile td:not([style*="padding"]),
-  .pagina-body-main table.table-stack-mobile th:not([style*="padding"]) {
+  .pagina-body table.pagina-table-managed.table-stack-mobile td:not([style*="padding"]),
+  .pagina-body table.pagina-table-managed.table-stack-mobile th:not([style*="padding"]),
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile td:not([style*="padding"]),
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile th:not([style*="padding"]) {
     padding: 2px 0;
   }
 
-  .pagina-body table.table-stack-mobile td:last-child,
-  .pagina-body table.table-stack-mobile th:last-child,
-  .pagina-body-main table.table-stack-mobile td:last-child,
-  .pagina-body-main table.table-stack-mobile th:last-child {
+  .pagina-body table.pagina-table-managed.table-stack-mobile td:last-child,
+  .pagina-body table.pagina-table-managed.table-stack-mobile th:last-child,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile td:last-child,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile th:last-child {
     border-bottom: 0;
   }
 
-  .pagina-body table.table-stack-mobile:not([border]):not([style*="border"]) tr,
-  .pagina-body-main table.table-stack-mobile:not([border]):not([style*="border"]) tr,
-  .pagina-body table.table-stack-mobile:not([border]):not([style*="border"]) td:not([style*="border"]),
-  .pagina-body table.table-stack-mobile:not([border]):not([style*="border"]) th:not([style*="border"]),
-  .pagina-body-main table.table-stack-mobile:not([border]):not([style*="border"]) td:not([style*="border"]),
-  .pagina-body-main table.table-stack-mobile:not([border]):not([style*="border"]) th:not([style*="border"]) {
+  .pagina-body table.pagina-table-managed.table-stack-mobile:not([border]):not([style*="border"]) tr,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile:not([border]):not([style*="border"]) tr,
+  .pagina-body table.pagina-table-managed.table-stack-mobile:not([border]):not([style*="border"]) td:not([style*="border"]),
+  .pagina-body table.pagina-table-managed.table-stack-mobile:not([border]):not([style*="border"]) th:not([style*="border"]),
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile:not([border]):not([style*="border"]) td:not([style*="border"]),
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile:not([border]):not([style*="border"]) th:not([style*="border"]) {
     border: 0 !important;
   }
 
-  .pagina-body table.table-stack-mobile td::before,
-  .pagina-body table.table-stack-mobile th::before,
-  .pagina-body-main table.table-stack-mobile td::before,
-  .pagina-body-main table.table-stack-mobile th::before {
+  .pagina-body table.pagina-table-managed.table-stack-mobile td::before,
+  .pagina-body table.pagina-table-managed.table-stack-mobile th::before,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile td::before,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile th::before {
     content: attr(data-label);
     display: block;
     font-weight: 700;
@@ -639,25 +639,25 @@ body{ margin: 0; }
     margin-bottom: 0.2rem;
   }
 
-  .pagina-body table.table-stack-mobile td[data-label='']::before,
-  .pagina-body table.table-stack-mobile th[data-label='']::before,
-  .pagina-body-main table.table-stack-mobile td[data-label='']::before,
-  .pagina-body-main table.table-stack-mobile th[data-label='']::before {
+  .pagina-body table.pagina-table-managed.table-stack-mobile td[data-label='']::before,
+  .pagina-body table.pagina-table-managed.table-stack-mobile th[data-label='']::before,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile td[data-label='']::before,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile th[data-label='']::before {
     content: none;
     display: none;
   }
 
-  .pagina-body table.table-stack-mobile.table-stack-mobile--plain-rows td,
-  .pagina-body table.table-stack-mobile.table-stack-mobile--plain-rows th,
-  .pagina-body-main table.table-stack-mobile.table-stack-mobile--plain-rows td,
-  .pagina-body-main table.table-stack-mobile.table-stack-mobile--plain-rows th {
+  .pagina-body table.pagina-table-managed.table-stack-mobile.table-stack-mobile--plain-rows td,
+  .pagina-body table.pagina-table-managed.table-stack-mobile.table-stack-mobile--plain-rows th,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile.table-stack-mobile--plain-rows td,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile.table-stack-mobile--plain-rows th {
     font-weight: 400;
   }
 
-  .pagina-body table.table-stack-mobile.table-stack-mobile--plain-rows td::before,
-  .pagina-body table.table-stack-mobile.table-stack-mobile--plain-rows th::before,
-  .pagina-body-main table.table-stack-mobile.table-stack-mobile--plain-rows td::before,
-  .pagina-body-main table.table-stack-mobile.table-stack-mobile--plain-rows th::before {
+  .pagina-body table.pagina-table-managed.table-stack-mobile.table-stack-mobile--plain-rows td::before,
+  .pagina-body table.pagina-table-managed.table-stack-mobile.table-stack-mobile--plain-rows th::before,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile.table-stack-mobile--plain-rows td::before,
+  .pagina-body-main table.pagina-table-managed.table-stack-mobile.table-stack-mobile--plain-rows th::before {
     content: none;
     display: none;
   }
@@ -686,22 +686,22 @@ body{ margin: 0; }
 }
 
 /* Taules de contingut: per defecte, sense vora si no està especificada */
-.pagina-body table:not([border]):not([style*="border"]),
-.pagina-body-main table:not([border]):not([style*="border"]) {
+.pagina-body table.pagina-table-managed:not([border]):not([style*="border"]),
+.pagina-body-main table.pagina-table-managed:not([border]):not([style*="border"]) {
   border: 0 !important;
 }
 
-.pagina-body table td:not([style*="padding"]),
-.pagina-body table th:not([style*="padding"]),
-.pagina-body-main table td:not([style*="padding"]),
-.pagina-body-main table th:not([style*="padding"]) {
+.pagina-body table.pagina-table-managed td:not([style*="padding"]),
+.pagina-body table.pagina-table-managed th:not([style*="padding"]),
+.pagina-body-main table.pagina-table-managed td:not([style*="padding"]),
+.pagina-body-main table.pagina-table-managed th:not([style*="padding"]) {
   padding: 2px 0;
 }
 
-.pagina-body table:not([border]):not([style*="border"]) td:not([style*="border"]),
-.pagina-body table:not([border]):not([style*="border"]) th:not([style*="border"]),
-.pagina-body-main table:not([border]):not([style*="border"]) td:not([style*="border"]),
-.pagina-body-main table:not([border]):not([style*="border"]) th:not([style*="border"]) {
+.pagina-body table.pagina-table-managed:not([border]):not([style*="border"]) td:not([style*="border"]),
+.pagina-body table.pagina-table-managed:not([border]):not([style*="border"]) th:not([style*="border"]),
+.pagina-body-main table.pagina-table-managed:not([border]):not([style*="border"]) td:not([style*="border"]),
+.pagina-body-main table.pagina-table-managed:not([border]):not([style*="border"]) th:not([style*="border"]) {
   border: 0 !important;
 }
 

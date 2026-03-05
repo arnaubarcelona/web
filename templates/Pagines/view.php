@@ -110,6 +110,9 @@ if ($body !== '') {
         const tables = document.querySelectorAll('.pagina-body table, .pagina-body-main table');
 
         tables.forEach((table) => {
+            const isElementTable = table.closest('.pagina-element') !== null;
+
+            table.classList.remove('pagina-table-managed');
             table.classList.remove('table-stack-mobile');
             table.classList.remove('table-mobile-scroll');
             table.classList.remove('table-stack-mobile--plain-rows');
@@ -118,6 +121,12 @@ if ($body !== '') {
             });
 
             unwrapScrollableTable(table);
+
+            if (isElementTable) {
+                return;
+            }
+
+            table.classList.add('pagina-table-managed');
 
             if (!MOBILE_QUERY.matches) {
                 return;
