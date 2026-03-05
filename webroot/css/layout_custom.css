@@ -547,12 +547,53 @@ body{ margin: 0; }
 }
 
 @media (max-width: 900px){
-  .pagina-body table,
-  .pagina-body-main table {
+  .pagina-body table.table-stack-mobile,
+  .pagina-body-main table.table-stack-mobile {
+    width: 100% !important;
+    border-collapse: collapse;
+  }
+
+  .pagina-body table.table-stack-mobile thead,
+  .pagina-body-main table.table-stack-mobile thead {
+    display: none;
+  }
+
+  .pagina-body table.table-stack-mobile tr,
+  .pagina-body-main table.table-stack-mobile tr {
     display: block;
-    max-width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    background: #fff;
+  }
+
+  .pagina-body table.table-stack-mobile td,
+  .pagina-body table.table-stack-mobile th,
+  .pagina-body-main table.table-stack-mobile td,
+  .pagina-body-main table.table-stack-mobile th {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid #eee;
+    text-align: right;
+  }
+
+  .pagina-body table.table-stack-mobile td:last-child,
+  .pagina-body table.table-stack-mobile th:last-child,
+  .pagina-body-main table.table-stack-mobile td:last-child,
+  .pagina-body-main table.table-stack-mobile th:last-child {
+    border-bottom: 0;
+  }
+
+  .pagina-body table.table-stack-mobile td::before,
+  .pagina-body table.table-stack-mobile th::before,
+  .pagina-body-main table.table-stack-mobile td::before,
+  .pagina-body-main table.table-stack-mobile th::before {
+    content: attr(data-label);
+    font-weight: 700;
+    text-align: left;
+    color: #444;
   }
 }
 

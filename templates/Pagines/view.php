@@ -49,3 +49,71 @@ if ($body !== '') {
     </div>
 
 </div>
+
+<script>
+(function () {
+    const MOBILE_QUERY = window.matchMedia('(max-width: 900px)');
+
+    function getHeaderLabels(table) {
+        const labels = [];
+        const headerCells = table.querySelectorAll('thead th');
+
+        if (headerCells.length > 0) {
+            headerCells.forEach((cell) => labels.push((cell.textContent || '').trim()));
+            return labels;
+        }
+
+        const firstRow = table.querySelector('tr');
+        if (!firstRow) {
+            return labels;
+        }
+
+        firstRow.querySelectorAll('th, td').forEach((cell) => {
+            labels.push((cell.textContent || '').trim());
+        });
+
+        return labels;
+    }
+
+    function applyResponsiveTables() {
+        const tables = document.querySelectorAll('.pagina-body table, .pagina-body-main table');
+
+        tables.forEach((table) => {
+            table.classList.remove('table-stack-mobile');
+            table.querySelectorAll('td, th').forEach((cell) => {
+                cell.removeAttribute('data-label');
+            });
+
+            if (!MOBILE_QUERY.matches) {
+                return;
+            }
+
+            const shouldStack = table.scrollWidth > table.clientWidth;
+            if (!shouldStack) {
+                return;
+            }
+
+            const labels = getHeaderLabels(table);
+            const rows = table.querySelectorAll('tr');
+            const hasThead = table.querySelector('thead') !== null;
+
+            rows.forEach((row, rowIndex) => {
+                if (!hasThead && rowIndex === 0) {
+                    return;
+                }
+
+                row.querySelectorAll('th, td').forEach((cell, index) => {
+                    const label = labels[index] || '';
+                    cell.setAttribute('data-label', label);
+                });
+            });
+
+            table.classList.add('table-stack-mobile');
+        });
+    }
+
+    window.addEventListener('resize', applyResponsiveTables);
+    window.addEventListener('load', applyResponsiveTables);
+    applyResponsiveTables();
+})();
+</script>
