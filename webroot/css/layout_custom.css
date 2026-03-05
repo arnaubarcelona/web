@@ -691,11 +691,13 @@ body{ margin: 0; }
   border: 0 !important;
 }
 
-.pagina-body table.pagina-table-managed td:not([style*="padding"]),
-.pagina-body table.pagina-table-managed th:not([style*="padding"]),
-.pagina-body-main table.pagina-table-managed td:not([style*="padding"]),
-.pagina-body-main table.pagina-table-managed th:not([style*="padding"]) {
-  padding: 2px 0;
+@media (min-width: 901px) {
+  .pagina-body table.pagina-table-managed td:not([style*="padding"]),
+  .pagina-body table.pagina-table-managed th:not([style*="padding"]),
+  .pagina-body-main table.pagina-table-managed td:not([style*="padding"]),
+  .pagina-body-main table.pagina-table-managed th:not([style*="padding"]) {
+    padding: 0.4rem;
+  }
 }
 
 .pagina-body table.pagina-table-managed:not([border]):not([style*="border"]) td:not([style*="border"]),

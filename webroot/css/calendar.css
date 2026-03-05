@@ -114,7 +114,7 @@ body::after {
 
 /* Targeta mes = bloc de taula Google Docs */
 .month-card {
-  border: 2px solid #b2abbf;
+  border: 0;
   border-radius: 0;         /* Google Docs: cantonades rectes */
   overflow: hidden;
   background: #ffffff;
@@ -273,11 +273,6 @@ body::after {
   border-right: 1px solid #b2abbf !important;
 }
 
-/* mantenim la vora inferior del mes si és l'última fila */
-.month-card__table tbody tr:last-child > td.month-card__empty {
-  border-bottom: 1px solid #b2abbf !important;
-}
-
 /* =========================
    NOMÉS VORA EXTERIOR DEL MES
    ========================= */
@@ -333,11 +328,24 @@ body::after {
   transition: transform .2s ease, box-shadow .2s ease;
 }
 
+.app-main:not(.has-menuppal) .app-container .pagina-body-main a.annual-calendar__action-btn {
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
 .annual-calendar__action-btn:hover,
 .annual-calendar__action-btn:focus {
+  background: #e83e8c;
+  border-color: #e83e8c;
   color: #fff;
   transform: scale(1.04);
   box-shadow: 0 10px 24px rgba(0, 0, 0, .2);
+}
+
+.app-main:not(.has-menuppal) .app-container .pagina-body-main a.annual-calendar__action-btn:hover,
+.app-main:not(.has-menuppal) .app-container .pagina-body-main a.annual-calendar__action-btn:focus {
+  color: #fff !important;
+  text-decoration: none !important;
 }
 
 @media (max-width: 1200px) {
