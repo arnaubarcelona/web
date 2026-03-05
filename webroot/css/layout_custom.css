@@ -602,7 +602,13 @@ body{ margin: 0; }
     white-space: normal !important;
     overflow-wrap: anywhere;
     word-break: break-word;
-    padding: 0.55rem 0.75rem;
+  }
+
+  .pagina-body table.table-stack-mobile td:not([style*="padding"]),
+  .pagina-body table.table-stack-mobile th:not([style*="padding"]),
+  .pagina-body-main table.table-stack-mobile td:not([style*="padding"]),
+  .pagina-body-main table.table-stack-mobile th:not([style*="padding"]) {
+    padding: 2px 0;
   }
 
   .pagina-body table.table-stack-mobile td:last-child,
@@ -683,6 +689,13 @@ body{ margin: 0; }
 .pagina-body table:not([border]):not([style*="border"]),
 .pagina-body-main table:not([border]):not([style*="border"]) {
   border: 0 !important;
+}
+
+.pagina-body table td:not([style*="padding"]),
+.pagina-body table th:not([style*="padding"]),
+.pagina-body-main table td:not([style*="padding"]),
+.pagina-body-main table th:not([style*="padding"]) {
+  padding: 2px 0;
 }
 
 .pagina-body table:not([border]):not([style*="border"]) td:not([style*="border"]),
