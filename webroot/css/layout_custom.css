@@ -612,6 +612,15 @@ body{ margin: 0; }
     border-bottom: 0;
   }
 
+  .pagina-body table.table-stack-mobile:not([border]):not([style*="border"]) tr,
+  .pagina-body-main table.table-stack-mobile:not([border]):not([style*="border"]) tr,
+  .pagina-body table.table-stack-mobile:not([border]):not([style*="border"]) td:not([style*="border"]),
+  .pagina-body table.table-stack-mobile:not([border]):not([style*="border"]) th:not([style*="border"]),
+  .pagina-body-main table.table-stack-mobile:not([border]):not([style*="border"]) td:not([style*="border"]),
+  .pagina-body-main table.table-stack-mobile:not([border]):not([style*="border"]) th:not([style*="border"]) {
+    border: 0 !important;
+  }
+
   .pagina-body table.table-stack-mobile td::before,
   .pagina-body table.table-stack-mobile th::before,
   .pagina-body-main table.table-stack-mobile td::before,
@@ -668,6 +677,19 @@ body{ margin: 0; }
 /* Paràgrafs */
 .app-main:not(.has-menuppal) .app-container .pagina-body-main p{
   margin: 0.3rem 0;
+}
+
+/* Taules de contingut: per defecte, sense vora si no està especificada */
+.pagina-body table:not([border]):not([style*="border"]),
+.pagina-body-main table:not([border]):not([style*="border"]) {
+  border: 0 !important;
+}
+
+.pagina-body table:not([border]):not([style*="border"]) td:not([style*="border"]),
+.pagina-body table:not([border]):not([style*="border"]) th:not([style*="border"]),
+.pagina-body-main table:not([border]):not([style*="border"]) td:not([style*="border"]),
+.pagina-body-main table:not([border]):not([style*="border"]) th:not([style*="border"]) {
+  border: 0 !important;
 }
 
 /* Links */
