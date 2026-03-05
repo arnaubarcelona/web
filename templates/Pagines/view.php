@@ -77,15 +77,21 @@ $body = $renderDynamicElements($body);
 
     <style>
     .popup-menuppal {
-        position: fixed;
-        inset: 0;
-        z-index: 999999;
+        position: fixed !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100vw;
+        height: 100vh;
+        z-index: 2147483647 !important;
         background: #e55381;
         color: #fff;
         display: flex;
         justify-content: center;
         align-items: center;
         padding: 2rem;
+        isolation: isolate;
     }
 
     .popup-menuppal__content {
@@ -134,43 +140,19 @@ $body = $renderDynamicElements($body);
 
     <script>
     (function () {
-        console.info('[menuppal-popup] init', {
-            isMenuPpalPage: true,
-            popupBodyLength: <?= json_encode(strlen($popupBody)) ?>
-        });
-
         const modal = document.getElementById('popupMenuppal');
         const closeBtn = document.getElementById('popupMenuppalClose');
         if (!modal || !closeBtn) {
-            console.warn('[menuppal-popup] modal o boto no trobats', {
-                modalFound: Boolean(modal),
-                closeBtnFound: Boolean(closeBtn)
-            });
             return;
         }
 
-        console.info('[menuppal-popup] modal visible');
+        if (modal.parentElement !== document.body) {
+            document.body.appendChild(modal);
+        }
 
         closeBtn.addEventListener('click', function () {
-            console.info('[menuppal-popup] tancat per usuari');
             modal.remove();
         });
-    })();
-    </script>
-<?php endif; ?>
-
-<?php if ($isMenuPpalPage): ?>
-    <script>
-    (function () {
-        console.info('[menuppal] pagina carregada', {
-            isMenuPpalPage: true,
-            popupPresent: <?= json_encode($popupBody !== '') ?>,
-            popupBodyLength: <?= json_encode(strlen($popupBody)) ?>
-        });
-
-        if (!<?= json_encode($popupBody !== '') ?>) {
-            console.warn('[menuppal] no hi ha cap pagina amb popup=1 o body buit');
-        }
     })();
     </script>
 <?php endif; ?>
