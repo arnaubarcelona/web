@@ -69,9 +69,13 @@ $body = $renderDynamicElements($body);
 
 <?php if ($popupBody !== ''): ?>
     <div class="popup-menuppal" id="popupMenuppal" role="dialog" aria-modal="true" aria-label="Avís important">
-        <button type="button" class="popup-menuppal__close" id="popupMenuppalClose">TANCA</button>
-        <div class="popup-menuppal__content">
-            <?= $this->Html->div(null, $popupBody, ['escape' => false]) ?>
+        <div class="popup-menuppal__scroll">
+            <div class="popup-menuppal__content">
+                <?= $this->Html->div(null, $popupBody, ['escape' => false]) ?>
+                <div class="popup-menuppal__actions">
+                    <button type="button" class="popup-menuppal__close" id="popupMenuppalClose">TANCA</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -88,10 +92,18 @@ $body = $renderDynamicElements($body);
         background: #e55381;
         color: #fff;
         display: flex;
-        justify-content: center;
-        align-items: center;
         padding: 2rem;
         isolation: isolate;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .popup-menuppal__scroll {
+        width: 100%;
+        min-height: calc(100vh - 4rem);
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .popup-menuppal__content {
@@ -103,6 +115,13 @@ $body = $renderDynamicElements($body);
         font-size: 2rem;
         line-height: 1.25;
         color: #fff;
+    }
+
+    .popup-menuppal__actions {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 1.25rem;
     }
 
     .popup-menuppal__content table:not([border]):not([style*="border"]),
@@ -125,16 +144,25 @@ $body = $renderDynamicElements($body);
     }
 
     .popup-menuppal__close {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        border: 2px solid #fff;
-        background: transparent;
+        border: 0;
+        background: #708090;
         color: #fff;
         font-family: "Bebas Neue", sans-serif;
         font-size: 1.25rem;
         padding: 0.35rem 0.75rem;
         cursor: pointer;
+    }
+
+    @media (max-width: 900px) {
+        .popup-menuppal__content {
+            font-size: 1rem;
+        }
+
+        .popup-menuppal__content h1,
+        .popup-menuppal__content h2,
+        .popup-menuppal__content h3 {
+            font-size: 2rem;
+        }
     }
     </style>
 
