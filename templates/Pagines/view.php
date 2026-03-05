@@ -107,6 +107,10 @@ $body = $renderDynamicElements($body);
         align-items: center;
     }
 
+    .popup-menuppal__scroll.popup-menuppal__scroll--top {
+        justify-content: flex-start;
+    }
+
     .popup-menuppal__content {
         width: 100%;
         max-width: 1100px;
@@ -169,6 +173,8 @@ $body = $renderDynamicElements($body);
     (function () {
         const modal = document.getElementById('popupMenuppal');
         const closeBtn = document.getElementById('popupMenuppalClose');
+        const scrollContainer = modal ? modal.querySelector('.popup-menuppal__scroll') : null;
+        const content = modal ? modal.querySelector('.popup-menuppal__content') : null;
         if (!modal || !closeBtn) {
             return;
         }
@@ -177,7 +183,23 @@ $body = $renderDynamicElements($body);
             document.body.appendChild(modal);
         }
 
+        function updatePopupVerticalAlignment() {
+            if (!scrollContainer || !content) {
+                return;
+            }
+
+            const availableHeight = window.innerHeight - 64;
+            const contentHeight = content.offsetHeight + closeBtn.offsetHeight + 24;
+            const shouldAlignTop = contentHeight > availableHeight;
+
+            scrollContainer.classList.toggle('popup-menuppal__scroll--top', shouldAlignTop);
+        }
+
+        updatePopupVerticalAlignment();
+        window.addEventListener('resize', updatePopupVerticalAlignment);
+
         closeBtn.addEventListener('click', function () {
+            window.removeEventListener('resize', updatePopupVerticalAlignment);
             modal.remove();
         });
     })();
