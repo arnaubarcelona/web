@@ -714,6 +714,16 @@ foreach ($courses as $course) {
         const top = document.getElementById('cursos-top');
         if (top) {
             top.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            if (window.matchMedia('(max-width: 900px)').matches) {
+                const topbar = document.getElementById('appTopbar');
+                const topbarHeight = topbar ? topbar.offsetHeight : 0;
+                window.scrollBy({
+                    top: -(topbarHeight + 8),
+                    left: 0,
+                    behavior: 'smooth'
+                });
+            }
         }
     }
 
