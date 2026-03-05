@@ -88,11 +88,6 @@ if ($body !== '') {
                 return;
             }
 
-            const shouldStack = table.scrollWidth > table.clientWidth;
-            if (!shouldStack) {
-                return;
-            }
-
             const labels = getHeaderLabels(table);
             const rows = table.querySelectorAll('tr');
             const hasThead = table.querySelector('thead') !== null;
