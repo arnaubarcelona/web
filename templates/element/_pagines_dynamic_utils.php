@@ -84,3 +84,33 @@ if (!function_exists('paginesFormatCatalanDate')) {
         return trim(sprintf('%s %d de %s', $weekday, $day, $month));
     }
 }
+
+if (!function_exists('paginesGetFestiuDateMap')) {
+    /**
+     * @param \DateTimeInterface $start
+     * @param \DateTimeInterface $end
+     * @return array<string, bool>
+     */
+    function paginesGetFestiuDateMap(\DateTimeInterface $start, \DateTimeInterface $end): array
+    {
+        $festiusTable = TableRegistry::getTableLocator()->get('Festius');
+        $rows = $festiusTable->find()
+            ->select(['data'])
+            ->where([
+                'data >=' => $start->format('Y-m-d'),
+                'data <=' => $end->format('Y-m-d'),
+            ])
+            ->all();
+
+        $map = [];
+        foreach ($rows as $row) {
+            if (empty($row->data)) {
+                continue;
+            }
+
+            $map[$row->data->format('Y-m-d')] = true;
+        }
+
+        return $map;
+    }
+}

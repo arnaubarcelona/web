@@ -99,11 +99,11 @@ $targetTitle = 'Matrícula viva';
  * 3) Si avui és entre el dia següent a `datafireclamacions` i les 20:00 CET de
  *    `datallistaadmesos` (inclòs), redirigim a "Barem definitiu".
  * 4) Si avui és entre les 20:00 CET de `datallistaadmesos` i el final de
- *    `datafimatricula` (inclòs), redirigim a "Llista admesos".
+ *    `datafimatricula` (inclòs), redirigim a "Llista d'admesos i espera".
  * 5) Si avui és entre `datafimatricula` i abans dels 30 dies previs a
  *    `datasegonamatricula`, redirigim a "Matrícula viva".
  * 6) Si avui és dins els 30 dies previs a `datasegonamatricula` i fins 2 dies
- *    després (inclòs), redirigim a "Matrícula segon quadrimestre".
+ *    després (inclòs), redirigim a "Matrícula del 2n quadrimestre".
  * 7) Qualsevol altre cas: "Matrícula viva".
  */
 if ($startPreinscripcio40 && $endPreinscripcio40 && $now >= $startPreinscripcio40 && $now <= $endPreinscripcio40) {
@@ -113,9 +113,9 @@ if ($startPreinscripcio40 && $endPreinscripcio40 && $now >= $startPreinscripcio4
 } elseif ($startBaremDefinitiu && $endBaremDefinitiu && $now >= $startBaremDefinitiu && $now <= $endBaremDefinitiu) {
     $targetTitle = 'Barem definitiu';
 } elseif ($startLlistaAdmesos && $endLlistaAdmesos && $now >= $startLlistaAdmesos && $now <= $endLlistaAdmesos) {
-    $targetTitle = 'Llista admesos';
+    $targetTitle = "Llista d'admesos i espera";
 } elseif ($startMatriculaSegon && $endMatriculaSegon && $now >= $startMatriculaSegon && $now <= $endMatriculaSegon) {
-    $targetTitle = 'Matrícula segon quadrimestre';
+    $targetTitle = 'Matrícula del 2n quadrimestre';
 } elseif ($startMatriculaViva && $startMatriculaSegon && $now >= $startMatriculaViva && $now < $startMatriculaSegon) {
     $targetTitle = 'Matrícula viva';
 }

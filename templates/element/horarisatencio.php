@@ -21,6 +21,8 @@
 use Cake\I18n\FrozenDate;
 use Cake\ORM\TableRegistry;
 
+require_once __DIR__ . '/_pagines_dynamic_utils.php';
+
 $daysCa = [
     1 => 'dilluns',
     2 => 'dimarts',
@@ -34,6 +36,7 @@ $daysCa = [
 // Rang (avui + 7 dies)
 $start = FrozenDate::today();
 $end   = $start->addDays(7);
+$festiusMap = paginesGetFestiuDateMap($start, $end);
 
 // Dates laborables del rang (dl..dv)
 $dates = [];
@@ -166,10 +169,11 @@ foreach ($itemsByDate as $k => $info) {
             $dayLabel = $dayName . $asterisk . ' ' . $d->format('j');
 
             // Si hi ha specialdate, només specialTimes. Si no, regularTimes.
+            $isFestiu = isset($festiusMap[$k]);
             $times = $info['hasSpecial'] ? $info['specialTimes'] : $info['regularTimes'];
 
             // Si no hi ha franges aplicables: dia laborable tancat
-            $timesText = !empty($times) ? implode("\n", $times) : __('Tancat');
+            $timesText = $isFestiu ? __('Festiu') : (!empty($times) ? implode("\n", $times) : __('Tancat'));
 
             $tdBase = 'padding:2px 0; border:none; vertical-align:top;';
             $sepStyle = $isWeekSeparator ? 'border-top:1px solid rgba(0,0,0,0.2); padding-top:5px;' : '';

@@ -48,6 +48,7 @@ if (!$start || !$end || $start > $end) {
 
 $startDate = FrozenDate::instance($start);
 $endDate = FrozenDate::instance($end);
+$festiusMap = paginesGetFestiuDateMap($startDate, $endDate);
 
 // Igual que horarisatencio: només dies laborables dins el rang de preinscripció.
 $dates = [];
@@ -172,7 +173,7 @@ foreach ($itemsByDate as $k => $info) {
     $itemsByDate[$k]['regularTimes'] = $regular;
 }
 ?>
-<table class="horarisatencio-table" style="border-collapse:collapse; width:auto;">
+<table class="horarisatencio-table" style="border-collapse:collapse; width:auto; margin:0 auto;">
     <tbody>
         <?php
         $prevDate = null;
@@ -188,8 +189,9 @@ foreach ($itemsByDate as $k => $info) {
             $monthName = $monthsCa[(int)$d->format('n')] ?? strtolower($d->i18nFormat('LLLL'));
             $dayLabel = $dayName . $asterisk . ' ' . $d->format('j') . ' ' . $monthName;
 
+            $isFestiu = isset($festiusMap[$k]);
             $times = $info['hasSpecial'] ? $info['specialTimes'] : $info['regularTimes'];
-            $timesText = !empty($times) ? implode("\n", $times) : __('Tancat');
+            $timesText = $isFestiu ? __('Festiu') : (!empty($times) ? implode("\n", $times) : __('Tancat'));
 
             $tdBase = 'padding:2px 0; border:none; vertical-align:top;';
             $sepStyle = $isWeekSeparator ? 'border-top:1px solid rgba(0,0,0,0.2); padding-top:5px;' : '';
