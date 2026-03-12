@@ -12,7 +12,6 @@ use Cake\ORM\TableRegistry;
 $locator = TableRegistry::getTableLocator();
 $yearsTable = $locator->get('Years');
 $coursesTable = $locator->get('Courses');
-$paginesTable = $locator->get('Pagines');
 $connection = $coursesTable->getConnection();
 $schema = $connection->getSchemaCollection();
 $tables = $schema->listTables();
@@ -49,14 +48,6 @@ $formatTime = static function ($time): string {
     }
 
     return $time->format('H:i');
-};
-
-$timeToMinutes = static function ($time): int {
-    if (!$time instanceof \DateTimeInterface) {
-        $time = new \DateTime((string)$time);
-    }
-
-    return ((int)$time->format('H')) * 60 + (int)$time->format('i');
 };
 
 $getMaterialsForCourse = static function (Connection $conn, array $existingTables, int $courseId): array {
@@ -111,74 +102,11 @@ $getYearMaterialPrice = static function (Connection $conn, array $existingTables
     return $total;
 };
 
-$buildHorariAbreujat = static function (array $horaris, callable $formatTime): string {
-    if (empty($horaris)) {
-        return '';
-    }
-
-    $abbr = ['dilluns' => 'dl.', 'dimarts' => 'dt.', 'dimecres' => 'dc.', 'dijous' => 'dj.', 'divendres' => 'dv.', 'dissabte' => 'ds.', 'diumenge' => 'dg.'];
-    $items = [];
-    foreach ($horaris as $h) {
-        $dayName = mb_strtolower((string)($h->day->name ?? ''));
-        $items[] = ['day_id' => (int)($h->day->id ?? $h->day_id ?? 0), 'day' => $abbr[$dayName] ?? $dayName, 'start' => $formatTime($h->horainici), 'end' => $formatTime($h->horafinal)];
-    }
-
-    usort($items, static function ($a, $b): int {
-        if ($a['day_id'] === $b['day_id']) {
-            return strcmp($a['start'], $b['start']);
-        }
-        return $a['day_id'] <=> $b['day_id'];
-    });
-
-    $firstStart = $items[0]['start'];
-    $firstEnd = $items[0]['end'];
-    $sameRange = true;
-    $days = [];
-
-    foreach ($items as $item) {
-        $days[] = $item['day'];
-        if ($item['start'] !== $firstStart || $item['end'] !== $firstEnd) {
-            $sameRange = false;
-        }
-    }
-
-    if ($sameRange) {
-        return implode(' i ', $days) . ' de ' . $firstStart . ' a ' . $firstEnd;
-    }
-
-    $chunks = [];
-    foreach ($items as $item) {
-        $chunks[] = $item['day'] . ' de ' . $item['start'] . ' a ' . $item['end'];
-    }
-    return implode(', ', $chunks);
-};
-
-$areCoursesCompatible = static function (array $horarisA, array $horarisB, callable $timeToMinutes): bool {
-    foreach ($horarisA as $a) {
-        $dayA = (int)($a->day_id ?? 0);
-        $aStart = $timeToMinutes($a->horainici);
-        $aEnd = $timeToMinutes($a->horafinal);
-        foreach ($horarisB as $b) {
-            if ($dayA !== (int)($b->day_id ?? 0)) {
-                continue;
-            }
-            $overlap = min($aEnd, $timeToMinutes($b->horafinal)) - max($aStart, $timeToMinutes($b->horainici));
-            if ($overlap > 30) {
-                return false;
-            }
-        }
-    }
-    return true;
-};
-
 $latestYear = $yearsTable->find()->where(['Years.datainicipreinscripcio IS NOT' => null])->order(['Years.datainicipreinscripcio' => 'DESC'])->first();
 if (!$latestYear) {
     echo '<p>No hi ha cursos disponibles.</p>';
     return;
 }
-
-$paginaMatricula = $paginesTable->find()->select(['id'])->where(['Pagines.title' => 'matricula'])->first();
-$matriculaUrl = $paginaMatricula ? $this->Url->build(['controller' => 'Pagines', 'action' => 'view', $paginaMatricula->id]) : '#';
 
 if (!in_array('quadrimestre', $courseColumns, true)) {
     echo '<p>No hi ha cursos disponibles.</p>';
@@ -255,19 +183,6 @@ foreach ($courses as $course) {
             $horariLines[] = sprintf('<li class="horari-linia"><strong>%s</strong> de %s a %s</li>', h(mb_strtolower((string)($horari->day->name ?? ''))), h($formatTime($horari->horainici)), h($formatTime($horari->horafinal)));
         }
 
-        $compatibleItems = [];
-        foreach ($courses as $otherCourse) {
-            if ((int)$otherCourse->id === (int)$course->id || (int)($otherCourse->subject_id ?? 0) === (int)($course->subject_id ?? 0)) {
-                continue;
-            }
-            $otherHoraris = (array)($otherCourse->horaris ?? []);
-            if (!$areCoursesCompatible($horaris, $otherHoraris, $timeToMinutes)) {
-                continue;
-            }
-            $horariAbreujat = $buildHorariAbreujat($otherHoraris, $formatTime);
-            $compatibleItems[] = '<li class="horari-linia cursos-compatible-item"><strong>' . h((string)$otherCourse->name) . '</strong>' . ($horariAbreujat !== '' ? '<span class="cursos-horari-abreujat">(' . h($horariAbreujat) . ')</span>' : '') . '</li>';
-        }
-
         $competenciaItem = '';
         if ($course->competenciatic_id !== null) {
             $competencia = mb_strtolower((string)($competencies[(int)$course->competenciatic_id] ?? ''));
@@ -293,8 +208,6 @@ foreach ($courses as $course) {
 
         $totalWithYearMaterial = $courseMaterialsTotal + $materialPriceByYear;
         $showTotal = abs($totalWithYearMaterial - $materialPriceByYear) > 0.0001;
-        $compatibleList = empty($compatibleItems) ? '<li class="horari-linia cursos-compatible-item">Cap curs compatible.</li>' : implode('', $compatibleItems);
-
         $content = '<ul class="cursos-llista">'
             . $descriptionItems
             . $competenciaItem
@@ -307,9 +220,6 @@ foreach ($courses as $course) {
             . '<li><strong>NO s\'accepten diners en efectiu.</strong></li>'
             . $materialLines
             . ($showTotal ? '<li>En total són <strong>' . number_format($totalWithYearMaterial, 2, ',', '.') . ' €</strong>.</li>' : '')
-            . '<li>Si t\'interessa aquest curs, <a href="' . h($matriculaUrl) . '">fes clic aquí</a>.</li>'
-            . '<li>Els horaris d\'aquest curs són compatibles amb aquests altres cursos.</li>'
-            . '<li class="cursos-compatible-wrapper"><ul class="cursos-compatible-list is-open">' . $compatibleList . '</ul></li>'
             . '</ul>';
 
         $subjectKey = (int)($course->subject_id ?? 0);
@@ -329,8 +239,4 @@ foreach ($courses as $course) {
 .cursos2q-course-page .pestanya .titol { position: sticky; top: 0; z-index: 8; background: #fff !important; padding: 0; margin-bottom: 1.1rem; width: 100%; max-width: 100%; }
 .cursos-sticky-title-chip { width: 100%; display: inline-block; background: var(--title-bg, #708090); color: #fff; padding: 0.75rem 1rem; font-family: 'Bebas Neue', sans-serif; font-size: 2rem; line-height: 1; }
 .cursos2q-course-page .pestanya .text { margin-top: 0; }
-.cursos-horari-abreujat { margin-left: 0.35rem; }
-.cursos-compatible-wrapper { list-style: none; padding-left: 0 !important; margin-bottom: 0; }
-.cursos-compatible-wrapper::before { content: none !important; display: none !important; }
-.cursos-compatible-list { margin: 0; padding-left: 0; }
 </style>
