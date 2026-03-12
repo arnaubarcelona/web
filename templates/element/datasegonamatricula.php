@@ -37,4 +37,4 @@ $weekday = $weekDays[(int)$date->format('w')] ?? '';
 $day = (int)$date->format('j');
 $month = $months[(int)$date->format('n')] ?? '';
 
-echo h(paginesNoWrapText(sprintf('%s %d %s', $weekday, $day, $month)));
+echo h(trim(sprintf('%s %d %s', $weekday, $day, $month)));
