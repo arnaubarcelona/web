@@ -172,7 +172,7 @@ foreach ($itemsByDate as $k => $info) {
     $itemsByDate[$k]['regularTimes'] = $regular;
 }
 ?>
-<table class="horarisatencio-table" style="border-collapse:collapse; width:auto;">
+<table class="horarisatencio-table" style="border-collapse:collapse; width:auto; margin:0 auto;">
     <tbody>
         <?php
         $prevDate = null;
