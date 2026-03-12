@@ -10,4 +10,4 @@ if (!$inici || !$fi) {
     return;
 }
 
-echo '<span style="display:inline-block; text-align:left;">' . h(sprintf('del %s al %s', paginesFormatCatalanDate($inici), paginesFormatCatalanDate($fi))) . '</span>';
+echo '<span style="display:table; margin:0 auto; text-align:left;">' . h(sprintf('del %s al %s', paginesFormatCatalanDate($inici), paginesFormatCatalanDate($fi))) . '</span>';
