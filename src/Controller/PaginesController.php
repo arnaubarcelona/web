@@ -44,10 +44,7 @@ class PaginesController extends AppController
     public function view(int $id)
     {
         $pagina = $this->Pagines->find()
-            ->where([
-                'Pagines.id' => $id,
-                'Pagines.visible' => 1,
-            ])
+            ->where(['Pagines.id' => $id])
             ->first();
 
         if (!$pagina) {
