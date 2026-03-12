@@ -114,3 +114,10 @@ if (!function_exists('paginesGetFestiuDateMap')) {
         return $map;
     }
 }
+
+if (!function_exists('paginesNoWrapText')) {
+    function paginesNoWrapText(string $text): string
+    {
+        return str_replace(' ', "\u{00A0}", trim($text));
+    }
+}

@@ -10,4 +10,4 @@ if (!$inici || !$fi) {
     return;
 }
 
-echo h(sprintf('del %s al %s', paginesFormatCatalanDate($inici), paginesFormatCatalanDate($fi)));
+echo h(paginesNoWrapText(sprintf('del %s al %s', paginesFormatCatalanDate($inici), paginesFormatCatalanDate($fi))));
