@@ -496,8 +496,8 @@ foreach ($courses as $course) {
             . '<li>La matrícula és <strong>gratuïta</strong>.</li>'
             . '<li>El preu del material és de <strong>' . number_format($materialPriceByYear, 2, ',', '.') . ' €</strong>.</li>'
             . $materialLines
-            . '<li><strong>NO s\'accepten diners en efectiu.</strong></li>'
             . ($showTotal ? '<li>En total són <strong>' . number_format($totalWithYearMaterial, 2, ',', '.') . ' €</strong>.</li>' : '')
+            . '<li><strong>NO s\'accepten diners en efectiu.</strong></li>'
             . '<li>Si t\'interessa aquest curs, <a href="' . h($matriculaUrl) . '">fes clic aquí</a>.</li>'
             . '<li>Els horaris d\'aquest curs són compatibles amb aquests <a href="#" class="cursos-compatible-toggle" data-target="' . h($compatibleListId) . '">altres cursos</a>.</li>'
             . '<li class="cursos-compatible-wrapper"><ul id="' . h($compatibleListId) . '" class="cursos-compatible-list">' . $compatibleList . '</ul></li>'

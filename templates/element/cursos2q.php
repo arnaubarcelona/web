@@ -217,9 +217,9 @@ foreach ($courses as $course) {
             . implode('', $horariLines)
             . '<li>La matrícula és <strong>gratuïta</strong>.</li>'
             . '<li>El preu del material és de <strong>' . number_format($materialPriceByYear, 2, ',', '.') . ' €</strong>.</li>'
-            . '<li><strong>NO s\'accepten diners en efectiu.</strong></li>'
             . $materialLines
             . ($showTotal ? '<li>En total són <strong>' . number_format($totalWithYearMaterial, 2, ',', '.') . ' €</strong>.</li>' : '')
+            . '<li><strong>NO s\'accepten diners en efectiu.</strong></li>'
             . '</ul>';
 
         $subjectKey = (int)($course->subject_id ?? 0);
