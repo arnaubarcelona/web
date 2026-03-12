@@ -3,4 +3,4 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/_pagines_dynamic_utils.php';
 
-echo '<div style="text-align:center;">' . h(paginesFormatCatalanDate(paginesGetYearMaxDate('datallistaadmesos')) . ' a les 20:00h') . '</div>';
+echo '<span style="display:inline-block; text-align:left;">' . h(paginesFormatCatalanDate(paginesGetYearMaxDate('datallistaadmesos')) . ' a les 20:00h') . '</span>';
