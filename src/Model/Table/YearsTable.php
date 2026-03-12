@@ -129,6 +129,10 @@ class YearsTable extends Table
             ->date('datafi')
             ->allowEmptyDate('datafi');
 
+        $validator
+            ->date('datasegonamatricula')
+            ->allowEmptyDate('datasegonamatricula');
+
         return $validator;
     }
 }

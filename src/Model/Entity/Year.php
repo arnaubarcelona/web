@@ -59,6 +59,7 @@ class Year extends Entity
         'diescaducitatllistaespera' => true,
         'diesnojustificades' => true,
         'datafi' => true,
+        'datasegonamatricula' => true,
         'created' => true,
         'modified' => true,
         'courses' => true,
