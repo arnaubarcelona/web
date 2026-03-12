@@ -37,4 +37,4 @@ $weekday = $weekDays[(int)$date->format('w')] ?? '';
 $day = (int)$date->format('j');
 $month = $months[(int)$date->format('n')] ?? '';
 
-echo h(trim(sprintf('%s %d %s', $weekday, $day, $month)));
+echo '<span style="display:table; margin:0 auto; text-align:left;">' . h(trim(sprintf('%s %d %s', $weekday, $day, $month))) . '</span>';
