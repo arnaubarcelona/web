@@ -168,7 +168,6 @@ public function pdfMonthly(): void
             ['label' => 'Obert (lectiu)', 'color' => [239, 239, 239]],
             ['label' => 'Obert (no lectiu)', 'color' => [252, 229, 205]],
             ['label' => 'Tancat', 'color' => [244, 204, 204]],
-            ['label' => 'Tancat', 'color' => [244, 244, 246]],
         ], 8.2);
     }
 
@@ -526,7 +525,7 @@ private function renderMonthGrid(
         $datafi = FrozenDate::parse($year->datafi);
 
         $openStart = FrozenDate::create($datainici->year, 9, 1);
-        $openEnd = FrozenDate::create($datafi->year, 7, 15);
+        $openEnd = FrozenDate::create($datafi->year, 8, 31);
 
         $festiusTable = $this->fetchTable('Festius');
         $festius = $festiusTable->find()
@@ -636,7 +635,7 @@ private function renderMonthGrid(
     ): array {
         $dateKey = $date->format('Y-m-d');
         $isWeekend = (int)$date->format('N') >= 6;
-        $class = 'calendar-day--closed';
+        $class = 'calendar-day--obert';
 
         if ($isWeekend || isset($festiuDates[$dateKey])) {
             $class = 'calendar-day--festiu';

@@ -43,7 +43,7 @@ $datainici = FrozenDate::parse($year->datainici);
 $datafi    = FrozenDate::parse($year->datafi);
 
 $openStart = FrozenDate::create($datainici->year, 9, 1);
-$openEnd   = FrozenDate::create($datafi->year, 7, 15);
+$openEnd   = FrozenDate::create($datafi->year, 8, 31);
 
 /* ============================
  * 2) FESTIUS
@@ -73,7 +73,7 @@ $dayCell = function (
     $key = $date->format('Y-m-d');
     $isWeekend = (int)$date->format('N') >= 6;
 
-    $class = 'calendar-day--closed';
+    $class = 'calendar-day--obert';
 
     if ($isWeekend || isset($festiuDates[$key])) {
         $class = 'calendar-day--festiu';
@@ -173,11 +173,6 @@ $this->assign('title', __('Calendari'));
 
             <div class="annual-calendar__legend-item">
                 <span class="annual-calendar__legend-swatch calendar-day--festiu"></span>
-                <span><?= __('Festiu') ?></span>
-            </div>
-
-            <div class="annual-calendar__legend-item">
-                <span class="annual-calendar__legend-swatch calendar-day--closed"></span>
                 <span><?= __('Tancat') ?></span>
             </div>
 
