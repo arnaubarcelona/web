@@ -86,6 +86,7 @@ body::after {
 /* Llegenda */
 .annual-calendar__legend {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, max-content));
   gap: 10px;
   font-size: 12px;
   color: #434343;
@@ -236,12 +237,6 @@ body::after {
 .month-card__table td.lectiu {
   background: #ffffff !important;
   color: #434343 !important;
-}
-
-.month-card__table td.calendar-day--closed,
-.month-card__table td.closed {
-  background: #f4f4f6 !important;
-  color: #7b7b7b !important;
 }
 
 /* També per la llegenda (els swatches) */

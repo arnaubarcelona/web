@@ -19,8 +19,7 @@
     <div class="calendar-print__legend">
         <div class="calendar-print__legend-item"><span class="calendar-print__swatch calendar-day--lectiu"></span><span><?= __('Obert (lectiu)') ?></span></div>
         <div class="calendar-print__legend-item"><span class="calendar-print__swatch calendar-day--obert"></span><span><?= __('Obert (no lectiu)') ?></span></div>
-        <div class="calendar-print__legend-item"><span class="calendar-print__swatch calendar-day--festiu"></span><span><?= __('Festiu') ?></span></div>
-        <div class="calendar-print__legend-item"><span class="calendar-print__swatch calendar-day--closed"></span><span><?= __('Tancat') ?></span></div>
+        <div class="calendar-print__legend-item"><span class="calendar-print__swatch calendar-day--festiu"></span><span><?= __('Tancat') ?></span></div>
     </div>
 
     <div class="calendar-print__months--annual">

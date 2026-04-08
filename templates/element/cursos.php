@@ -244,7 +244,7 @@ if (!$latestYear) {
 
 $paginaMatricula = $paginesTable->find()
     ->select(['id'])
-    ->where(['Pagines.title' => 'matricula'])
+    ->where(['Pagines.title' => 'Preinscripció i matrícula'])
     ->first();
 $matriculaUrl = $paginaMatricula ? $this->Url->build(['controller' => 'Pagines', 'action' => 'view', $paginaMatricula->id]) : '#';
 
