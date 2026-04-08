@@ -40,12 +40,30 @@ class PaginesController extends AppController
     /**
      * Pàgina pública
      * /pagines/view/{id}
+     * /pagines/view/{title}
      */
-    public function view(int $id)
+    public function view(string $id)
     {
-        $pagina = $this->Pagines->find()
-            ->where(['Pagines.id' => $id])
-            ->first();
+        $lookup = trim($id);
+        $pagina = null;
+
+        if (ctype_digit($lookup)) {
+            $pagina = $this->Pagines->find()
+                ->where(['Pagines.id' => (int)$lookup])
+                ->first();
+        }
+
+        if (!$pagina) {
+            $lookupDecoded = urldecode($lookup);
+            $pagina = $this->Pagines->find()
+                ->where([
+                    'OR' => [
+                        'Pagines.title' => $lookupDecoded,
+                        'Pagines.link' => $lookupDecoded,
+                    ],
+                ])
+                ->first();
+        }
 
         if (!$pagina) {
             throw new NotFoundException(__('Pàgina no trobada'));
