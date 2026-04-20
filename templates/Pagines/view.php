@@ -26,7 +26,7 @@ $renderDynamicElements = function (string $html): string {
             return null;
         }
 
-        return $this->Url->build('/upload/' . rawurlencode($fileName));
+        return $this->Url->build('/uploads/' . rawurlencode($fileName));
     };
 
     $html = preg_replace_callback('/([\"\'])\*\*([^*\r\n]+)\*\*\1/', function ($m) use ($buildUploadUrl) {
