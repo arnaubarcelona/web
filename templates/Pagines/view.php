@@ -14,6 +14,23 @@ $renderDynamicElements = function (string $html): string {
         return $html;
     }
 
+    $html = preg_replace_callback('/\*\*([^*\r\n]+)\*\*/', function ($m) {
+        $fileName = trim($m[1]);
+
+        if (
+            $fileName === '' ||
+            str_contains($fileName, '..') ||
+            str_contains($fileName, '/') ||
+            str_contains($fileName, '\\')
+        ) {
+            return $m[0];
+        }
+
+        $url = $this->Url->build('/upload/' . rawurlencode($fileName));
+
+        return sprintf('<a href="%s" target="_blank" rel="noopener">%s</a>', h($url), h($fileName));
+    }, $html) ?? $html;
+
     $pattern = '/(?:\{|\&\#123;)\s*([a-zA-Z0-9_-]+)\s*(?:\}|\&\#125;)/';
 
     return preg_replace_callback($pattern, function ($m) {
