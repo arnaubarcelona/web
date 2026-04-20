@@ -14,8 +14,8 @@ $renderDynamicElements = function (string $html): string {
         return $html;
     }
 
-    $html = preg_replace_callback('/\*\*([^*\r\n]+)\*\*/', function ($m) {
-        $fileName = trim($m[1]);
+    $buildUploadUrl = function (string $rawFileName): ?string {
+        $fileName = trim($rawFileName);
 
         if (
             $fileName === '' ||
@@ -23,10 +23,29 @@ $renderDynamicElements = function (string $html): string {
             str_contains($fileName, '/') ||
             str_contains($fileName, '\\')
         ) {
+            return null;
+        }
+
+        return $this->Url->build('/upload/' . rawurlencode($fileName));
+    };
+
+    $html = preg_replace_callback('/([\"\'])\*\*([^*\r\n]+)\*\*\1/', function ($m) use ($buildUploadUrl) {
+        $url = $buildUploadUrl($m[2]);
+
+        if ($url === null) {
             return $m[0];
         }
 
-        $url = $this->Url->build('/upload/' . rawurlencode($fileName));
+        return $m[1] . h($url) . $m[1];
+    }, $html) ?? $html;
+
+    $html = preg_replace_callback('/\*\*([^*\r\n]+)\*\*/', function ($m) use ($buildUploadUrl) {
+        $fileName = trim($m[1]);
+        $url = $buildUploadUrl($fileName);
+
+        if ($url === null) {
+            return $m[0];
+        }
 
         return sprintf('<a href="%s" target="_blank" rel="noopener">%s</a>', h($url), h($fileName));
     }, $html) ?? $html;
