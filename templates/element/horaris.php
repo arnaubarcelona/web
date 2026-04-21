@@ -118,8 +118,8 @@ foreach ($courses as $course) {
 
     $level = trim((string)($course->level ?? ''));
     $tornName = trim((string)($course->torn->name ?? ''));
-    $trioKey = mb_strtolower($sectionKey . '|' . $level . '|' . $tornName);
     $label = $normalizeCourseLabel((string)$course->name);
+    $trioKey = mb_strtolower($sectionKey . '|' . $label . '|' . $level . '|' . $tornName);
     $courseNameNormalized = mb_strtolower((string)($course->name ?? ''));
     $looksLikeParentAccess = str_contains($courseNameNormalized, 'proves')
         && str_contains($courseNameNormalized, 'grau')

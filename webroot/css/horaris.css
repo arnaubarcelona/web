@@ -50,6 +50,7 @@
   background: var(--section-color);
   color: #fff;
   font-family: 'Bebas Neue', Bebas, Arial, sans-serif;
+  font-weight: 400;
   font-size: 1.5rem;
   line-height: 1.8rem;
   border: 0;
@@ -67,7 +68,7 @@
   font-weight: 400;
   letter-spacing: .01em;
   line-height: 1.1;
-  padding: .42rem .75rem .42rem .5rem;
+  padding: .42rem .75rem .42rem 1rem !important;
   text-align: left;
   vertical-align: middle;
   border: 0;

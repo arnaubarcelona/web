@@ -218,10 +218,10 @@ class HorarisController extends AppController
 
             $level = trim((string)($course->level ?? ''));
             $tornName = trim((string)($course->torn->name ?? ''));
-            $trioKey = mb_strtolower($sectionKey . '|' . $level . '|' . $tornName);
             $courseLabel = mb_strtoupper(trim((string)$course->name));
             $courseLabel = preg_replace('/\\s*-\\s*C\\d+$/u', '', $courseLabel) ?? $courseLabel;
             $courseLabel = preg_replace('/\\s*-\\s*\\d+$/u', '', $courseLabel) ?? $courseLabel;
+            $trioKey = mb_strtolower($sectionKey . '|' . $courseLabel . '|' . $level . '|' . $tornName);
 
             $courseNameNormalized = mb_strtolower((string)($course->name ?? ''));
             $looksLikeParentAccess = str_contains($courseNameNormalized, 'proves')
