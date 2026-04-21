@@ -337,18 +337,28 @@ body{ margin: 0; }
   */
   .sidebar-brand--desktop{
     position: fixed;
-    top: 10px;
+    top: 14px;
     left: calc((100vw + var(--sidebar-w)) / 2);
     transform: translateX(-50%);
-    width: min(260px, calc(100vw - var(--sidebar-w) - 2rem));
+    width: min(320px, calc(100vw - var(--sidebar-w) - 2rem));
     margin: 0;
     transition: left 420ms cubic-bezier(.2,.8,.2,1);
     z-index: 1100;
   }
 
+  body.is-menuppal-page .sidebar-brand--desktop{
+    left: calc((100vw + var(--sidebar-w)) / 2);
+  }
+
   body.is-regular-page .sidebar-brand--desktop{
     left: calc(var(--sidebar-w) / 2);
     width: min(240px, calc(var(--sidebar-w) - 24px));
+  }
+
+  /* En pàgines normals, deixem espai perquè el branding no se superposi
+     als botons del menú lateral. */
+  body.is-regular-page .app-sidebar__content{
+    padding-top: 7.5rem;
   }
 
   @media (prefers-reduced-motion: reduce){
