@@ -47,6 +47,9 @@ class HorarisController extends AppController
 
             $pdf->SetFillColor($rgb[0], $rgb[1], $rgb[2]);
             $pdf->Rect($x + $wLeft + $wMid, $y, $wRight, 8.0, 'F');
+            $pdf->SetDrawColor($rgb[0], $rgb[1], $rgb[2]);
+            $pdf->SetLineWidth(0.55);
+            $pdf->Rect($x + $wLeft + $wMid, $y, $wRight, 8.0, 'D');
             $pdf->SetTextColor(255, 255, 255);
             $pdf->SetFont('BebasNeue', '', 14);
             $pdf->SetXY($x + $wLeft + $wMid, $y + 1.1);
@@ -98,7 +101,6 @@ class HorarisController extends AppController
                 for ($line = 0; $line < $span; $line++) {
                     $lineRow = $rows[$idx + $line];
                     $lineY = $tableY + (($idx + $line) * $rowH);
-                    $pdf->Rect($x + $wLeft + $wMid, $lineY, $wRight, $rowH, 'D');
                     $pdf->SetTextColor(55, 55, 55);
                     $pdf->SetFont('RobotoCondensed', '', 10.4);
                     $pdf->SetXY($x + $wLeft + 2.6, $lineY + 1.05);
