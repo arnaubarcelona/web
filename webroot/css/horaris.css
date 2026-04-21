@@ -188,7 +188,7 @@
   }
 
   .horaris-course-table__row--parent:has(+ tr.horaris-course-table__row--parent) .horaris-course-table__aula{
-    margin-bottom: 2rem;
+    padding-bottom: 2rem;
   }
 
   .horaris-course-table__aula-head{ font-size: 1.25rem; }
