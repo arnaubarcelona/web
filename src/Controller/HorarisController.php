@@ -68,7 +68,7 @@ class HorarisController extends AppController
                 $pdf->SetTextColor(255, 255, 255);
                 $pdf->SetFont('BebasNeue', '', 12.5);
                 $pdf->SetXY($x + 2, $rowY + 1.15);
-                $pdf->Cell($wLeft - 4, 5.5, $this->pdfText($row['course']), 0, 0, 'C');
+                $pdf->Cell($wLeft - 4, 5.5, $this->pdfText($row['course']), 0, 0, 'L');
 
                 $pdf->SetTextColor(55, 55, 55);
                 $pdf->SetFont('RobotoCondensed', '', 10.4);
@@ -81,11 +81,6 @@ class HorarisController extends AppController
                 $pdf->SetXY($x + $wLeft + $wMid + 2, $rowY + 1.05);
                 $pdf->Cell($wRight - 4, 5.4, $this->pdfText($row['aula']), 0, 0, 'C');
 
-                if ($idx < $rowsCount - 1) {
-                    $pdf->SetDrawColor(215, 215, 215);
-                    $pdf->SetLineWidth(0.2);
-                    $pdf->Line($x, $rowY + $rowH, $x + $wLeft + $wMid + $wRight, $rowY + $rowH);
-                }
             }
 
             $y = $tableY + $tableH + 6.0;
@@ -141,6 +136,10 @@ class HorarisController extends AppController
             'anglès' => [118, 136, 156],
             'competic' => [221, 79, 132],
         ];
+        $fallbackPalette = [
+            [132, 188, 192], [118, 136, 156], [171, 165, 186],
+            [221, 79, 132], [164, 201, 117], [250, 177, 0],
+        ];
 
         $sections = [];
         foreach ($courses as $course) {
@@ -151,7 +150,7 @@ class HorarisController extends AppController
 
             $sectionKey = mb_strtolower($subjectName);
             if (!isset($sections[$sectionKey])) {
-                $rgb = [132, 188, 192];
+                $rgb = $fallbackPalette[count($sections) % count($fallbackPalette)];
                 foreach ($colorBySubject as $needle => $color) {
                     if (str_contains($sectionKey, $needle)) {
                         $rgb = $color;
@@ -178,33 +177,73 @@ class HorarisController extends AppController
                 return strcmp((string)($a->horainici ?? ''), (string)($b->horainici ?? ''));
             });
 
-            $days = [];
-            $ranges = [];
-            foreach ($horaris as $h) {
-                $dayName = mb_strtolower(trim((string)($h->day->name ?? '')));
-                if ($dayName !== '' && !in_array($dayName, $days, true)) {
-                    $days[] = $dayName;
-                }
+            $courseNameNormalized = mb_strtolower((string)($course->name ?? ''));
+            $looksLikeParentAccess = str_contains($courseNameNormalized, 'proves')
+                && str_contains($courseNameNormalized, 'grau')
+                && str_contains($courseNameNormalized, 'mitj');
 
-                $start = $this->formatHour($h->horainici ?? null);
-                $end = $this->formatHour($h->horafinal ?? null);
-                if ($start !== '' && $end !== '') {
-                    $range = $start . '-' . $end . 'h';
-                    if (!in_array($range, $ranges, true)) {
-                        $ranges[] = $range;
-                    }
+            $isParentCourse = false;
+            foreach ($courses as $candidateChild) {
+                if ((int)($candidateChild->parentcourse_id ?? 0) === (int)($course->id ?? 0)) {
+                    $isParentCourse = true;
+                    break;
                 }
             }
+            $isParentCourse = $isParentCourse || $looksLikeParentAccess;
 
-            $daysText = $this->joinDays($days);
-            $hoursText = implode(' / ', $ranges);
+            $courseLabel = mb_strtoupper((string)$course->name);
+            if (preg_match('/^COMPETIC\\s*3\\s*-\\s*VESPRE\\s*-\\s*C\\d+$/u', $courseLabel)) {
+                $courseLabel = 'COMPETIC 3 - VESPRE';
+            }
 
-            $sections[$sectionKey]['rows'][] = [
-                'course' => mb_strtoupper((string)$course->name),
-                'days' => $daysText,
-                'hours' => $hoursText,
-                'aula' => mb_strtolower((string)($course->aula->name ?? '')),
-            ];
+            $entries = [];
+            if ($isParentCourse) {
+                foreach ($horaris as $h) {
+                    $dayName = mb_strtolower(trim((string)($h->day->name ?? '')));
+                    $start = $this->formatHour($h->horainici ?? null);
+                    $end = $this->formatHour($h->horafinal ?? null);
+                    if ($dayName === '' || $start === '' || $end === '') {
+                        continue;
+                    }
+                    $entries[] = [
+                        'course' => $courseLabel,
+                        'days' => $dayName,
+                        'hours' => $start . '-' . $end . 'h',
+                        'aula' => mb_strtolower((string)($course->aula->name ?? '')),
+                    ];
+                }
+            } else {
+                $days = [];
+                $ranges = [];
+                foreach ($horaris as $h) {
+                    $dayName = mb_strtolower(trim((string)($h->day->name ?? '')));
+                    if ($dayName !== '' && !in_array($dayName, $days, true)) {
+                        $days[] = $dayName;
+                    }
+                    $start = $this->formatHour($h->horainici ?? null);
+                    $end = $this->formatHour($h->horafinal ?? null);
+                    if ($start !== '' && $end !== '') {
+                        $range = $start . '-' . $end . 'h';
+                        if (!in_array($range, $ranges, true)) {
+                            $ranges[] = $range;
+                        }
+                    }
+                }
+                $entries[] = [
+                    'course' => $courseLabel,
+                    'days' => $this->joinDays($days),
+                    'hours' => implode(' / ', $ranges),
+                    'aula' => mb_strtolower((string)($course->aula->name ?? '')),
+                ];
+            }
+
+            $rows = (array)$sections[$sectionKey]['rows'];
+            $dedup = [];
+            foreach (array_merge($rows, $entries) as $row) {
+                $k = (($row['course'] ?? '') . '|' . ($row['days'] ?? '') . '|' . ($row['hours'] ?? '') . '|' . ($row['aula'] ?? ''));
+                $dedup[$k] = $row;
+            }
+            $sections[$sectionKey]['rows'] = array_values($dedup);
         }
 
         $yearLabel = sprintf(
@@ -258,7 +297,7 @@ class HorarisController extends AppController
     {
         $logoPath = WWW_ROOT . 'img' . DS . 'logoGran.png';
         if (is_file($logoPath)) {
-            $pdf->Image($logoPath, 14, 10, 40, 20);
+            $pdf->Image($logoPath, 14, 10, 40, 0);
         }
 
         $pdf->SetTextColor(70, 70, 70);
@@ -285,6 +324,7 @@ class HorarisController extends AppController
 
     private function pdfText(string $text): string
     {
-        return html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $decoded = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        return iconv('UTF-8', 'windows-1252//TRANSLIT', $decoded) ?: utf8_decode($decoded);
     }
 }

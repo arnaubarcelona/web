@@ -67,6 +67,16 @@ $formatHour = static function ($value): string {
     return substr($raw, 0, 5);
 };
 
+$normalizeCourseName = static function (string $name): string {
+    $label = mb_strtoupper(trim($name));
+
+    if (preg_match('/^COMPETIC\\s*3\\s*-\\s*VESPRE\\s*-\\s*C\\d+$/u', $label)) {
+        return 'COMPETIC 3 - VESPRE';
+    }
+
+    return $label;
+};
+
 $colorBySubject = [
     'preparació' => '#A4C975',
     'català' => '#84BCC0',
@@ -172,11 +182,35 @@ foreach ($courses as $course) {
         ];
     }
 
-    $sections[$sectionKey]['courses'][] = [
-        'course' => mb_strtoupper((string)$course->name),
-        'entries' => $entries,
-        'is_parent' => $isParentCourse,
-    ];
+    $normalizedCourse = $normalizeCourseName((string)$course->name);
+    $existingIdx = null;
+    foreach ($sections[$sectionKey]['courses'] as $idx => $existing) {
+        if (($existing['course'] ?? '') === $normalizedCourse) {
+            $existingIdx = $idx;
+            break;
+        }
+    }
+
+    if ($existingIdx === null) {
+        $sections[$sectionKey]['courses'][] = [
+            'course' => $normalizedCourse,
+            'entries' => $entries,
+            'is_parent' => $isParentCourse,
+        ];
+    } else {
+        $mergedEntries = array_merge(
+            (array)$sections[$sectionKey]['courses'][$existingIdx]['entries'],
+            $entries
+        );
+        $dedup = [];
+        foreach ($mergedEntries as $entry) {
+            $entryKey = (($entry['days'] ?? '') . '|' . ($entry['hours'] ?? '') . '|' . ($entry['aula'] ?? ''));
+            $dedup[$entryKey] = $entry;
+        }
+        $sections[$sectionKey]['courses'][$existingIdx]['entries'] = array_values($dedup);
+        $sections[$sectionKey]['courses'][$existingIdx]['is_parent'] =
+            (bool)$sections[$sectionKey]['courses'][$existingIdx]['is_parent'] || $isParentCourse;
+    }
 }
 
 $yearLabel = sprintf('Horaris %d-%02d', (int)$year->datainici->format('Y'), ((int)$year->datafi->format('Y')) % 100);
