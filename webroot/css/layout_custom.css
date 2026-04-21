@@ -356,6 +356,17 @@ body{ margin: 0; }
     display: none;
   }
 
+  /* Si hi ha menuppal, el menú lateral queda centrat verticalment */
+  body.is-menuppal-page .app-sidebar{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  body.is-menuppal-page .app-sidebar__content{
+    width: 100%;
+  }
+
   /* Contenidor shell neutre */
   .app-shell{
     padding: 0;
