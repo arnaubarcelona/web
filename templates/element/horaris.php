@@ -225,7 +225,7 @@ $yearLabel = sprintf('Horaris %d-%02d', (int)$year->datainici->format('Y'), ((in
                     $rowspan = max(1, count($entries));
                     ?>
                     <?php foreach ($entries as $idx => $entry): ?>
-                        <tr>
+                        <tr class="<?= $isParent ? 'horaris-course-table__row--parent' : '' ?>">
                             <?php if (!$isParent || $idx === 0): ?>
                                 <th
                                     scope="row"

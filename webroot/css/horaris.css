@@ -175,13 +175,16 @@
 
   .horaris-course-table__aula{
     text-align: left;
-    padding-top: .55rem;
-    margin-top: .2rem;
-    border-top: 1px solid rgba(0,0,0,.14) !important;
   }
 
   .horaris-course-table__days{
-    padding-bottom: .45rem;
+    padding-bottom: .2rem;
+  }
+
+  .horaris-course-table__row--parent .horaris-course-table__aula{
+    padding-bottom: .55rem;
+    margin-bottom: .2rem;
+    border-bottom: 1px solid rgba(0,0,0,.14) !important;
   }
 
   .horaris-course-table__aula-head{ font-size: 1.25rem; }
