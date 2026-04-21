@@ -330,6 +330,33 @@ body{ margin: 0; }
     display: block;
   }
 
+  /* Logo + socials:
+     - a pàgines amb menuppal: centrat amb l'àrea principal
+     - a la resta: cap a l'esquerra, centrat amb el menú lateral
+     El moviment és animat.
+  */
+  .sidebar-brand--desktop{
+    position: fixed;
+    top: 10px;
+    left: calc((100vw + var(--sidebar-w)) / 2);
+    transform: translateX(-50%);
+    width: min(260px, calc(100vw - var(--sidebar-w) - 2rem));
+    margin: 0;
+    transition: left 420ms cubic-bezier(.2,.8,.2,1);
+    z-index: 1100;
+  }
+
+  body.is-regular-page .sidebar-brand--desktop{
+    left: calc(var(--sidebar-w) / 2);
+    width: min(240px, calc(var(--sidebar-w) - 24px));
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .sidebar-brand--desktop{
+      transition: none;
+    }
+  }
+
   /* Contenidor shell neutre */
   .app-shell{
     padding: 0;

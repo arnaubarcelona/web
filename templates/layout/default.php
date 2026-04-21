@@ -52,6 +52,9 @@ $pageLevel = function (string $orderCode): int {
     $orderCode = trim($orderCode);
     return $orderCode === '' ? 1 : count(explode('.', $orderCode));
 };
+
+$appMainClass = trim((string)$this->fetch('appMainClass'));
+$isMenuPpalLayout = str_contains($appMainClass, 'has-menuppal');
 ?>
 <!DOCTYPE html>
 <html lang="ca">
@@ -70,7 +73,7 @@ $pageLevel = function (string $orderCode): int {
     <?= $this->fetch('calendar') ?>
     <?= $this->fetch('script') ?>
 </head>
-<body>
+<body class="<?= $isMenuPpalLayout ? 'is-menuppal-page' : 'is-regular-page' ?>">
 
 <!-- TOPBAR -->
 <header class="app-topbar" id="appTopbar">
@@ -188,7 +191,7 @@ $pageLevel = function (string $orderCode): int {
     </aside>
 
     <!-- CONTINGUT -->
-    <main class="app-main <?= h(trim((string)$this->fetch('appMainClass'))) ?>">
+    <main class="app-main <?= h($appMainClass) ?>">
         <div class="app-container">
             <?= $this->Flash->render() ?>
             <?= $this->fetch('content') ?>
