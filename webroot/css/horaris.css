@@ -71,6 +71,7 @@
   text-align: center;
   vertical-align: middle;
   border: 0;
+  border-left: 3px solid var(--section-color);
 }
 
 .horaris-course-table__days,
@@ -117,18 +118,10 @@
   border-right: 3px solid var(--section-color);
 }
 
-/* Vora esquerra pintada a totes les files menys la primera */
-.horaris-course-table tbody tr:not(:first-child) > *:first-child{
-  border-left: 3px solid var(--section-color);
-}
-
-/* Primera fila: sense vora esquerra ni superior, però amb vora inferior pintada */
+/* Primera fila del cos: sense vora superior i inferior */
 .horaris-course-table tbody tr:first-child > *{
   border-top: 0;
-  border-bottom: 3px solid var(--section-color);
-}
-.horaris-course-table tbody tr:first-child > :first-child{
-  border-left: 0;
+  border-bottom: 0;
 }
 
 /* Vora inferior de la taula (gruix 3) */
