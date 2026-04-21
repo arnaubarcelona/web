@@ -59,28 +59,46 @@ class HorarisController extends AppController
             $pdf->SetLineWidth(0.55);
             $pdf->Rect($x, $tableY, $wLeft + $wMid + $wRight, $tableH, 'D');
 
-            foreach ($rows as $idx => $row) {
+            for ($idx = 0; $idx < $rowsCount; $idx++) {
+                $row = $rows[$idx];
                 $rowY = $tableY + ($idx * $rowH);
 
+                $span = 1;
+                if (!empty($row['is_parent'])) {
+                    for ($j = $idx + 1; $j < $rowsCount; $j++) {
+                        $next = $rows[$j];
+                        if (empty($next['is_parent']) || (string)($next['course'] ?? '') !== (string)($row['course'] ?? '')) {
+                            break;
+                        }
+                        $span++;
+                    }
+                }
+
                 $pdf->SetFillColor($rgb[0], $rgb[1], $rgb[2]);
-                $pdf->Rect($x, $rowY, $wLeft, $rowH, 'F');
+                $pdf->Rect($x, $rowY, $wLeft, $rowH * $span, 'F');
 
                 $pdf->SetTextColor(255, 255, 255);
                 $pdf->SetFont('BebasNeue', '', 12.5);
-                $pdf->SetXY($x + 2, $rowY + 1.15);
+                $textY = $rowY + (($rowH * $span - 5.5) / 2);
+                $pdf->SetXY($x + 2, $textY);
                 $pdf->Cell($wLeft - 4, 5.5, $this->pdfText($row['course']), 0, 0, 'L');
 
-                $pdf->SetTextColor(55, 55, 55);
-                $pdf->SetFont('RobotoCondensed', '', 10.4);
-                $pdf->SetXY($x + $wLeft + 2.6, $rowY + 1.05);
-                $pdf->Cell(54, 5.4, $this->pdfText($row['days']), 0, 0, 'L');
+                for ($line = 0; $line < $span; $line++) {
+                    $lineRow = $rows[$idx + $line];
+                    $lineY = $tableY + (($idx + $line) * $rowH);
+                    $pdf->SetTextColor(55, 55, 55);
+                    $pdf->SetFont('RobotoCondensed', '', 10.4);
+                    $pdf->SetXY($x + $wLeft + 2.6, $lineY + 1.05);
+                    $pdf->Cell(54, 5.4, $this->pdfText((string)($lineRow['days'] ?? '')), 0, 0, 'L');
 
-                $pdf->SetXY($x + $wLeft + 54, $rowY + 1.05);
-                $pdf->Cell($wMid - 56, 5.4, $this->pdfText($row['hours']), 0, 0, 'L');
+                    $pdf->SetXY($x + $wLeft + 54, $lineY + 1.05);
+                    $pdf->Cell($wMid - 56, 5.4, $this->pdfText((string)($lineRow['hours'] ?? '')), 0, 0, 'L');
 
-                $pdf->SetXY($x + $wLeft + $wMid + 2, $rowY + 1.05);
-                $pdf->Cell($wRight - 4, 5.4, $this->pdfText($row['aula']), 0, 0, 'C');
+                    $pdf->SetXY($x + $wLeft + $wMid + 2, $lineY + 1.05);
+                    $pdf->Cell($wRight - 4, 5.4, $this->pdfText((string)($lineRow['aula'] ?? '')), 0, 0, 'C');
+                }
 
+                $idx += ($span - 1);
             }
 
             $y = $tableY + $tableH + 6.0;
@@ -263,6 +281,7 @@ class HorarisController extends AppController
                         'days' => (string)($entry['days'] ?? ''),
                         'hours' => (string)($entry['hours'] ?? ''),
                         'aula' => (string)($entry['aula'] ?? ''),
+                        'is_parent' => (bool)($row['is_parent'] ?? false),
                     ];
                 }
             }
