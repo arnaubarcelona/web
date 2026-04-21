@@ -8,6 +8,7 @@ declare(strict_types=1);
     <ul>
         <li><code>{telefon}</code>: <?= __('valor de Configs.valuetext on name = telefoncentre') ?></li>
         <li><code>{email}</code>: <?= __('valor de Configs.valuetext on name = mailcentre') ?></li>
+        <li><code>{contacte}</code>: <?= __('adreça + codi postal/city + email + telèfon del centre des de Configs') ?></li>
         <li><code>{contactevcf}</code>: <?= __('valor de Configs.valuetext on name = urlcontactevcf') ?></li>
         <li><code>{data_inici_preinscripcio}</code>: <?= __('data més gran del camp Years.datainicipreinscripcio (format català)') ?></li>
         <li><code>{data_fi_preinscripcio}</code>: <?= __('data més gran del camp Years.datafipreinscripcio (format català)') ?></li>
