@@ -143,11 +143,17 @@
     display: block;
     border-right: 3px solid var(--section-color);
     border-left: 3px solid var(--section-color);
-    border-bottom: 3px solid var(--section-color);
+    border-bottom: 0;
   }
 
-  .horaris-course-table tbody tr + tr{
+  .horaris-course-table tbody tr:has(> .horaris-course-table__course){
+    border-top: 3px solid var(--section-color);
     margin-top: .55rem;
+  }
+
+  .horaris-course-table tbody tr:last-child,
+  .horaris-course-table tbody tr:has(+ tr > .horaris-course-table__course){
+    border-bottom: 3px solid var(--section-color);
   }
 
   .horaris-course-table__course,
@@ -163,7 +169,7 @@
   }
 
   .horaris-course-table__course{
-    border-top: 3px solid var(--section-color) !important;
+    border-top: 0 !important;
     border-left: 0 !important;
   }
 
