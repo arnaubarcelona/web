@@ -114,7 +114,7 @@ class HorarisController extends AppController
                 'Courses.microgrup' => 0,
                 'Courses.propi' => 1,
             ])
-            ->contain(['Subjects', 'Aulas', 'Horaris' => ['Days']])
+            ->contain(['Subjects', 'Torns', 'Aulas', 'Horaris' => ['Days']])
             ->order(['Subjects.name' => 'ASC', 'Courses.name' => 'ASC'])
             ->all()
             ->toList();
@@ -177,73 +177,52 @@ class HorarisController extends AppController
                 return strcmp((string)($a->horainici ?? ''), (string)($b->horainici ?? ''));
             });
 
-            $courseNameNormalized = mb_strtolower((string)($course->name ?? ''));
-            $looksLikeParentAccess = str_contains($courseNameNormalized, 'proves')
-                && str_contains($courseNameNormalized, 'grau')
-                && str_contains($courseNameNormalized, 'mitj');
+            $level = trim((string)($course->level ?? ''));
+            $tornName = trim((string)($course->torn->name ?? ''));
+            $trioKey = mb_strtolower($sectionKey . '|' . $level . '|' . $tornName);
+            $courseLabel = mb_strtoupper(trim($subjectName . ' ' . $level . ' - ' . $tornName));
 
-            $isParentCourse = false;
-            foreach ($courses as $candidateChild) {
-                if ((int)($candidateChild->parentcourse_id ?? 0) === (int)($course->id ?? 0)) {
-                    $isParentCourse = true;
-                    break;
-                }
-            }
-            $isParentCourse = $isParentCourse || $looksLikeParentAccess;
-
-            $courseLabel = mb_strtoupper((string)$course->name);
-            if (preg_match('/^COMPETIC\\s*3\\s*-\\s*VESPRE\\s*-\\s*C\\d+$/u', $courseLabel)) {
-                $courseLabel = 'COMPETIC 3 - VESPRE';
-            }
-
-            $entries = [];
-            if ($isParentCourse) {
-                foreach ($horaris as $h) {
-                    $dayName = mb_strtolower(trim((string)($h->day->name ?? '')));
-                    $start = $this->formatHour($h->horainici ?? null);
-                    $end = $this->formatHour($h->horafinal ?? null);
-                    if ($dayName === '' || $start === '' || $end === '') {
-                        continue;
-                    }
-                    $entries[] = [
-                        'course' => $courseLabel,
-                        'days' => $dayName,
-                        'hours' => $start . '-' . $end . 'h',
-                        'aula' => mb_strtolower((string)($course->aula->name ?? '')),
-                    ];
-                }
-            } else {
-                $days = [];
-                $ranges = [];
-                foreach ($horaris as $h) {
-                    $dayName = mb_strtolower(trim((string)($h->day->name ?? '')));
-                    if ($dayName !== '' && !in_array($dayName, $days, true)) {
-                        $days[] = $dayName;
-                    }
-                    $start = $this->formatHour($h->horainici ?? null);
-                    $end = $this->formatHour($h->horafinal ?? null);
-                    if ($start !== '' && $end !== '') {
-                        $range = $start . '-' . $end . 'h';
-                        if (!in_array($range, $ranges, true)) {
-                            $ranges[] = $range;
-                        }
-                    }
-                }
-                $entries[] = [
+            if (!isset($sections[$sectionKey]['rows'][$trioKey])) {
+                $sections[$sectionKey]['rows'][$trioKey] = [
                     'course' => $courseLabel,
-                    'days' => $this->joinDays($days),
-                    'hours' => implode(' / ', $ranges),
-                    'aula' => mb_strtolower((string)($course->aula->name ?? '')),
+                    'days' => [],
+                    'ranges' => [],
+                    'aulas' => [],
                 ];
             }
 
-            $rows = (array)$sections[$sectionKey]['rows'];
-            $dedup = [];
-            foreach (array_merge($rows, $entries) as $row) {
-                $k = (($row['course'] ?? '') . '|' . ($row['days'] ?? '') . '|' . ($row['hours'] ?? '') . '|' . ($row['aula'] ?? ''));
-                $dedup[$k] = $row;
+            foreach ($horaris as $h) {
+                $dayName = mb_strtolower(trim((string)($h->day->name ?? '')));
+                if ($dayName !== '' && !in_array($dayName, $sections[$sectionKey]['rows'][$trioKey]['days'], true)) {
+                    $sections[$sectionKey]['rows'][$trioKey]['days'][] = $dayName;
+                }
+                $start = $this->formatHour($h->horainici ?? null);
+                $end = $this->formatHour($h->horafinal ?? null);
+                if ($start !== '' && $end !== '') {
+                    $range = $start . '-' . $end . 'h';
+                    if (!in_array($range, $sections[$sectionKey]['rows'][$trioKey]['ranges'], true)) {
+                        $sections[$sectionKey]['rows'][$trioKey]['ranges'][] = $range;
+                    }
+                }
             }
-            $sections[$sectionKey]['rows'] = array_values($dedup);
+
+            $aulaName = mb_strtolower((string)($course->aula->name ?? ''));
+            if ($aulaName !== '' && !in_array($aulaName, $sections[$sectionKey]['rows'][$trioKey]['aulas'], true)) {
+                $sections[$sectionKey]['rows'][$trioKey]['aulas'][] = $aulaName;
+            }
+        }
+
+        foreach ($sections as $key => $section) {
+            $finalRows = [];
+            foreach ((array)$section['rows'] as $row) {
+                $finalRows[] = [
+                    'course' => (string)$row['course'],
+                    'days' => $this->joinDays((array)$row['days']),
+                    'hours' => implode(' / ', (array)$row['ranges']),
+                    'aula' => implode(' / ', (array)$row['aulas']),
+                ];
+            }
+            $sections[$key]['rows'] = $finalRows;
         }
 
         $yearLabel = sprintf(
