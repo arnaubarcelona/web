@@ -25,6 +25,7 @@ declare(strict_types=1);
         <li><code>{horaripreinscripcio}</code>: <?= __('taula d\'horaris (com {horarisatencio}) pels dies entre la data màxima de datainicipreinscripcio i la data màxima de datafipreinscripcio, ambdós inclosos') ?></li>
         <li><code>{horarireclamacions}</code>: <?= __('taula d\'horaris (com {horarisatencio}) pels dies entre la data màxima de datainicireclamacions i la data màxima de datafireclamacions, ambdós inclosos') ?></li>
         <li><code>{horarimatricula}</code>: <?= __('taula d\'horaris (com {horarisatencio}) pels dies entre la data màxima de datainicimatricula i la data màxima de datafimatricula, ambdós inclosos') ?></li>
+        <li><code>{horarisatencio_centre}</code>: <?= __('duplicat de {horarisatencio} amb línies centrades a la pàgina') ?></li>
         <li><code>{horaris}</code>: <?= __('taula d\'horaris de cursos propis (microgrup=0, propi=1) de l\'any més recent + botó de descàrrega en PDF') ?></li>
     </ul>
 </div>
