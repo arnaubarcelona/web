@@ -67,14 +67,7 @@ $formatHour = static function ($value): string {
     return substr($raw, 0, 5);
 };
 
-$colorBySubject = [
-    'preparació' => '#A4C975',
-    'català' => '#84BCC0',
-    'castellà' => '#ABA5BA',
-    'anglès' => '#76889C',
-    'competic' => '#DD4F84',
-];
-$fallbackPalette = ['#84BCC0', '#76889C', '#ABA5BA', '#DD4F84', '#A4C975', '#FAB100'];
+$palette = ['#E55381', '#708090', '#8EC3C3', '#AED581', '#FEB20E', '#ABA5BA', '#A8A8A8'];
 
 $sections = [];
 
@@ -83,13 +76,7 @@ foreach ($courses as $course) {
     $sectionKey = mb_strtolower($subjectName !== '' ? $subjectName : (string)__('Altres'));
 
     if (!isset($sections[$sectionKey])) {
-        $color = $fallbackPalette[count($sections) % count($fallbackPalette)];
-        foreach ($colorBySubject as $needle => $value) {
-            if (str_contains($sectionKey, $needle)) {
-                $color = $value;
-                break;
-            }
-        }
+        $color = $palette[count($sections) % count($palette)];
 
         $sections[$sectionKey] = [
             'name' => $subjectName,

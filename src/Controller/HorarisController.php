@@ -129,16 +129,14 @@ class HorarisController extends AppController
             'diumenge' => 7,
         ];
 
-        $colorBySubject = [
-            'preparació' => [164, 201, 117],
-            'català' => [132, 188, 192],
-            'castellà' => [171, 165, 186],
-            'anglès' => [118, 136, 156],
-            'competic' => [221, 79, 132],
-        ];
-        $fallbackPalette = [
-            [132, 188, 192], [118, 136, 156], [171, 165, 186],
-            [221, 79, 132], [164, 201, 117], [250, 177, 0],
+        $palette = [
+            [229, 83, 129],  // rosa
+            [112, 128, 144], // blaumari
+            [142, 195, 195], // blaucel
+            [174, 213, 129], // verd
+            [254, 178, 14],  // taronja
+            [171, 165, 186], // lila
+            [168, 168, 168], // gris
         ];
 
         $sections = [];
@@ -150,13 +148,7 @@ class HorarisController extends AppController
 
             $sectionKey = mb_strtolower($subjectName);
             if (!isset($sections[$sectionKey])) {
-                $rgb = $fallbackPalette[count($sections) % count($fallbackPalette)];
-                foreach ($colorBySubject as $needle => $color) {
-                    if (str_contains($sectionKey, $needle)) {
-                        $rgb = $color;
-                        break;
-                    }
-                }
+                $rgb = $palette[count($sections) % count($palette)];
 
                 $sections[$sectionKey] = [
                     'name' => $subjectName,
