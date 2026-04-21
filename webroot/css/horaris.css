@@ -182,9 +182,13 @@
   }
 
   .horaris-course-table__row--parent .horaris-course-table__aula{
-    padding-bottom: .55rem;
-    margin-bottom: .2rem;
-    border-bottom: 1px solid rgba(0,0,0,.14) !important;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: 0 !important;
+  }
+
+  .horaris-course-table__row--parent:has(+ tr.horaris-course-table__row--parent) .horaris-course-table__aula{
+    margin-bottom: 2rem;
   }
 
   .horaris-course-table__aula-head{ font-size: 1.25rem; }
