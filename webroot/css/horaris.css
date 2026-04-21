@@ -130,6 +130,12 @@
   border-bottom: 3px solid var(--section-color);
 }
 
+@media (min-width: 901px){
+  .horaris-course-table__course[rowspan]{
+    border-bottom: 3px solid var(--section-color);
+  }
+}
+
 @media (max-width: 900px){
   .horaris-course-table{
     table-layout: auto;
