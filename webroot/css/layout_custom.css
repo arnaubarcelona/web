@@ -4,7 +4,7 @@
 
   /* DESKTOP (10/80/10) */
   --topbar-h-desktop: 10vh;
-  --bottombar-h-desktop: 26vh;
+  --bottombar-h-desktop: calc(26vh + 0.5rem);
 
   --sidebar-w: 280px;
   --pink: #e83e8c;
@@ -111,6 +111,53 @@ body{ margin: 0; }
   margin-bottom: 0.5rem;
 }
 
+.app-sidebar__content .sidebar-item{
+  opacity: 0;
+  transform: translateX(-28px);
+  animation: sidebarItemSlideInLeft 520ms cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+@keyframes sidebarItemSlideInLeft{
+  0%{
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+  100%{
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Escalonat (botó per botó) */
+.app-sidebar__content .sidebar-item:nth-child(1){ animation-delay: 0ms; }
+.app-sidebar__content .sidebar-item:nth-child(2){ animation-delay: 90ms; }
+.app-sidebar__content .sidebar-item:nth-child(3){ animation-delay: 180ms; }
+.app-sidebar__content .sidebar-item:nth-child(4){ animation-delay: 270ms; }
+.app-sidebar__content .sidebar-item:nth-child(5){ animation-delay: 360ms; }
+.app-sidebar__content .sidebar-item:nth-child(6){ animation-delay: 450ms; }
+.app-sidebar__content .sidebar-item:nth-child(7){ animation-delay: 540ms; }
+.app-sidebar__content .sidebar-item:nth-child(8){ animation-delay: 630ms; }
+.app-sidebar__content .sidebar-item:nth-child(9){ animation-delay: 720ms; }
+.app-sidebar__content .sidebar-item:nth-child(10){ animation-delay: 810ms; }
+.app-sidebar__content .sidebar-item:nth-child(11){ animation-delay: 900ms; }
+.app-sidebar__content .sidebar-item:nth-child(12){ animation-delay: 990ms; }
+.app-sidebar__content .sidebar-item:nth-child(13){ animation-delay: 1080ms; }
+.app-sidebar__content .sidebar-item:nth-child(14){ animation-delay: 1170ms; }
+.app-sidebar__content .sidebar-item:nth-child(15){ animation-delay: 1260ms; }
+.app-sidebar__content .sidebar-item:nth-child(16){ animation-delay: 1350ms; }
+.app-sidebar__content .sidebar-item:nth-child(17){ animation-delay: 1440ms; }
+.app-sidebar__content .sidebar-item:nth-child(18){ animation-delay: 1530ms; }
+.app-sidebar__content .sidebar-item:nth-child(19){ animation-delay: 1620ms; }
+.app-sidebar__content .sidebar-item:nth-child(20){ animation-delay: 1710ms; }
+
+@media (prefers-reduced-motion: reduce){
+  .app-sidebar__content .sidebar-item{
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
 .app-sidebar .sidebar-item .bototext{
   transition: transform 160ms ease, box-shadow 180ms ease, background-color 0.3s;
   transform-origin: center;
@@ -170,7 +217,7 @@ body{ margin: 0; }
 }
 
 .app-bottombar__inner{
-  padding: 12px;
+  padding: 12.5px;
 }
 
 /* Textos bottombar */
@@ -520,7 +567,7 @@ body{ margin: 0; }
   /* En mòbil, 3 blocs en vertical */
   .app-bottombar__inner{
     display: block;
-    padding: 12px;
+    padding: 12.5px;
   }
 
   .app-bottombar__inner > section:nth-child(1){
