@@ -91,13 +91,34 @@ $i = 0;
 .menuppal-wrapper{
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 3rem;
   justify-content: center;
 }
 
 /* 5 per fila màxim */
 .menuppal-wrapper > a.custom-button{
   flex: 0 0 20%;
+}
+
+/* Ajustos tipogràfics en pantalla gran */
+@media (min-width: 901px){
+  .custom-button .line1{
+    padding: 1rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    line-height: 3.5rem;
+    color: #fff;
+  }
+
+  .custom-button .line2{
+    padding-top: 1rem;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 1.2rem;
+    background: #f5f5f5;
+    color: #191919;
+    height: 4rem;
+    padding-bottom: 1rem;
+  }
 }
 
 /* =========================

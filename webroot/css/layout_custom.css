@@ -344,6 +344,17 @@ body{ margin: 0; }
 
     border: 0;
     margin: 0;
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+  }
+
+  .app-sidebar[aria-hidden="true"]{
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 
   /* En desktop, SÍ es veu el branding dins sidebar (pàgines normals) */
