@@ -68,8 +68,27 @@ $formatHour = static function ($value): string {
 };
 
 $palette = ['#E55381', '#708090', '#8EC3C3', '#AED581', '#FEB20E', '#ABA5BA', '#A8A8A8'];
+$normalizeCourseLabel = static function (string $name): string {
+    $label = mb_strtoupper(trim($name));
+    $label = preg_replace('/\\s*-\\s*C\\d+$/u', '', $label) ?? $label;
+    $label = preg_replace('/\\s*-\\s*\\d+$/u', '', $label) ?? $label;
+    return trim($label);
+};
 
 $sections = [];
+$parentCourseIds = [];
+foreach ($courses as $maybeParent) {
+    $courseId = (int)($maybeParent->id ?? 0);
+    if ($courseId <= 0) {
+        continue;
+    }
+    foreach ($courses as $candidateChild) {
+        if ((int)($candidateChild->parentcourse_id ?? 0) === $courseId) {
+            $parentCourseIds[$courseId] = true;
+            break;
+        }
+    }
+}
 
 foreach ($courses as $course) {
     $subjectName = trim((string)($course->subject->name ?? __('Altres')));
@@ -100,7 +119,12 @@ foreach ($courses as $course) {
     $level = trim((string)($course->level ?? ''));
     $tornName = trim((string)($course->torn->name ?? ''));
     $trioKey = mb_strtolower($sectionKey . '|' . $level . '|' . $tornName);
-    $label = mb_strtoupper(trim($subjectName . ' ' . $level . ' - ' . $tornName));
+    $label = $normalizeCourseLabel((string)$course->name);
+    $courseNameNormalized = mb_strtolower((string)($course->name ?? ''));
+    $looksLikeParentAccess = str_contains($courseNameNormalized, 'proves')
+        && str_contains($courseNameNormalized, 'grau')
+        && str_contains($courseNameNormalized, 'mitj');
+    $isParentCourse = isset($parentCourseIds[(int)($course->id ?? 0)]) || $looksLikeParentAccess;
 
     $existingIdx = null;
     foreach ($sections[$sectionKey]['courses'] as $idx => $existing) {
@@ -114,43 +138,60 @@ foreach ($courses as $course) {
         $sections[$sectionKey]['courses'][] = [
             'trio_key' => $trioKey,
             'course' => $label,
-            'days' => [],
-            'ranges' => [],
-            'aulas' => [],
+            'entries' => [],
+            'is_parent' => $isParentCourse,
         ];
         $existingIdx = count($sections[$sectionKey]['courses']) - 1;
     }
 
-    foreach ($horaris as $h) {
-        $dayName = mb_strtolower(trim((string)($h->day->name ?? '')));
-        if ($dayName !== '' && !in_array($dayName, $sections[$sectionKey]['courses'][$existingIdx]['days'], true)) {
-            $sections[$sectionKey]['courses'][$existingIdx]['days'][] = $dayName;
+    $entries = [];
+    if ($isParentCourse) {
+        foreach ($horaris as $h) {
+            $dayName = mb_strtolower(trim((string)($h->day->name ?? '')));
+            $start = $formatHour($h->horainici ?? null);
+            $end = $formatHour($h->horafinal ?? null);
+            if ($dayName === '' || $start === '' || $end === '') {
+                continue;
+            }
+            $entries[] = [
+                'days' => $dayName,
+                'hours' => $start . '-' . $end . 'h',
+                'aula' => mb_strtolower((string)($course->aula->name ?? '')),
+            ];
         }
-
-        $start = $formatHour($h->horainici ?? null);
-        $end = $formatHour($h->horafinal ?? null);
-        if ($start !== '' && $end !== '') {
-            $range = $start . '-' . $end . 'h';
-            if (!in_array($range, $sections[$sectionKey]['courses'][$existingIdx]['ranges'], true)) {
-                $sections[$sectionKey]['courses'][$existingIdx]['ranges'][] = $range;
+    } else {
+        $days = [];
+        $ranges = [];
+        foreach ($horaris as $h) {
+            $dayName = mb_strtolower(trim((string)($h->day->name ?? '')));
+            if ($dayName !== '' && !in_array($dayName, $days, true)) {
+                $days[] = $dayName;
+            }
+            $start = $formatHour($h->horainici ?? null);
+            $end = $formatHour($h->horafinal ?? null);
+            if ($start !== '' && $end !== '') {
+                $range = $start . '-' . $end . 'h';
+                if (!in_array($range, $ranges, true)) {
+                    $ranges[] = $range;
+                }
             }
         }
+        $entries[] = [
+            'days' => $joinDays($days),
+            'hours' => implode(' / ', $ranges),
+            'aula' => mb_strtolower((string)($course->aula->name ?? '')),
+        ];
     }
 
-    $aulaName = mb_strtolower((string)($course->aula->name ?? ''));
-    if ($aulaName !== '' && !in_array($aulaName, $sections[$sectionKey]['courses'][$existingIdx]['aulas'], true)) {
-        $sections[$sectionKey]['courses'][$existingIdx]['aulas'][] = $aulaName;
+    $merged = array_merge((array)$sections[$sectionKey]['courses'][$existingIdx]['entries'], $entries);
+    $dedup = [];
+    foreach ($merged as $entry) {
+        $k = (($entry['days'] ?? '') . '|' . ($entry['hours'] ?? '') . '|' . ($entry['aula'] ?? ''));
+        $dedup[$k] = $entry;
     }
-}
-
-foreach ($sections as $sectionKey => $section) {
-    foreach ($section['courses'] as $idx => $courseRow) {
-        $sections[$sectionKey]['courses'][$idx]['entries'] = [[
-            'days' => $joinDays((array)$courseRow['days']),
-            'hours' => implode(' / ', (array)$courseRow['ranges']),
-            'aula' => implode(' / ', (array)$courseRow['aulas']),
-        ]];
-    }
+    $sections[$sectionKey]['courses'][$existingIdx]['entries'] = array_values($dedup);
+    $sections[$sectionKey]['courses'][$existingIdx]['is_parent'] =
+        (bool)$sections[$sectionKey]['courses'][$existingIdx]['is_parent'] || $isParentCourse;
 }
 
 $yearLabel = sprintf('Horaris %d-%02d', (int)$year->datainici->format('Y'), ((int)$year->datafi->format('Y')) % 100);
@@ -170,9 +211,20 @@ $yearLabel = sprintf('Horaris %d-%02d', (int)$year->datainici->format('Y'), ((in
                 </thead>
                 <tbody>
                 <?php foreach ($section['courses'] as $courseBlock): ?>
-                    <?php foreach ((array)$courseBlock['entries'] as $entry): ?>
+                    <?php
+                    $entries = (array)$courseBlock['entries'];
+                    $isParent = (bool)($courseBlock['is_parent'] ?? false);
+                    $rowspan = max(1, count($entries));
+                    ?>
+                    <?php foreach ($entries as $idx => $entry): ?>
                         <tr>
-                            <th scope="row" class="horaris-course-table__course"><?= h($courseBlock['course']) ?></th>
+                            <?php if (!$isParent || $idx === 0): ?>
+                                <th
+                                    scope="row"
+                                    class="horaris-course-table__course"
+                                    <?= $isParent && $rowspan > 1 ? 'rowspan="' . (int)$rowspan . '"' : '' ?>
+                                ><?= h($courseBlock['course']) ?></th>
+                            <?php endif; ?>
                             <td class="horaris-course-table__days"><?= h($entry['days']) ?></td>
                             <td class="horaris-course-table__hours"><?= h($entry['hours']) ?></td>
                             <td class="horaris-course-table__aula"><?= h($entry['aula']) ?></td>

@@ -59,7 +59,7 @@
 }
 
 .horaris-course-table__course{
-  width: 28%;
+  width: 36%;
   background: var(--section-color);
   color: #fff;
   font-family: 'Bebas Neue', Bebas, Arial, sans-serif;
@@ -86,7 +86,7 @@
 }
 
 .horaris-course-table__days{ width: 35%; text-align: left; }
-.horaris-course-table__hours{ width: 19%; text-align: left; }
+.horaris-course-table__hours{ width: 11%; text-align: left; }
 .horaris-course-table__aula{
   width: 18%;
   text-align: center;
