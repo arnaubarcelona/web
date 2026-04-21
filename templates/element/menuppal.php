@@ -4,7 +4,6 @@
  *
  * - visible=1
  * - main=1
- * - principals (order_code sense punt)
  * - ordenació natural
  * - màxim 5 botons per fila
  * - espai sobrant repartit
@@ -20,19 +19,24 @@ $pages = $Pagines->find()
         'visible' => 1,
         'main' => 1,
     ])
-    ->andWhere(['order_code NOT LIKE' => '%.%'])
     ->all()
     ->toList();
 
 /* Ordenació natural */
 usort($pages, function ($a, $b) {
-    $va = (int)preg_replace('/\D+/', '', (string)$a->order_code);
-    $vb = (int)preg_replace('/\D+/', '', (string)$b->order_code);
+    $pa = array_map('intval', explode('.', (string)$a->order_code));
+    $pb = array_map('intval', explode('.', (string)$b->order_code));
 
-    if ($va === $vb) {
-        return strcmp((string)$a->order_code, (string)$b->order_code);
+    $len = max(count($pa), count($pb));
+    for ($idx = 0; $idx < $len; $idx++) {
+        $va = $pa[$idx] ?? 0;
+        $vb = $pb[$idx] ?? 0;
+        if ($va !== $vb) {
+            return $va <=> $vb;
+        }
     }
-    return $va <=> $vb;
+
+    return 0;
 });
 
 $colors = ['blaumari', 'blaucel', 'verd', 'rosa', 'lila', 'taronja', 'gris', 'ocre'];
