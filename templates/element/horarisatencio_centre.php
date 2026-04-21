@@ -178,7 +178,7 @@ foreach ($itemsByDate as $k => $info) {
             $sepStyle = $isWeekSeparator ? 'border-top:1px solid rgba(0,0,0,0.2); padding-top:5px;' : '';
         ?>
             <tr>
-                <td style="<?= $tdBase ?> text-align:center; font-weight:700; padding-right:8px; <?= $sepStyle ?>">
+                <td style="<?= $tdBase ?> text-align:right; font-weight:700; padding-right:8px; <?= $sepStyle ?>">
                     <?= h($dayLabel) ?>
                 </td>
                 <td style="<?= $tdBase ?> text-align:center; <?= $sepStyle ?>">
