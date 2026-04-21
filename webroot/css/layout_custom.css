@@ -356,15 +356,15 @@ body{ margin: 0; }
     display: none;
   }
 
-  /* Si hi ha menuppal, el menú lateral queda centrat verticalment */
+  /* Si hi ha menuppal, el menú lateral queda a dalt
+     amb un marge superior de l'alçada del logotip */
   body.is-menuppal-page .app-sidebar{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    display: block;
   }
 
   body.is-menuppal-page .app-sidebar__content{
     width: 100%;
+    margin-top: 6rem;
   }
 
   /* Contenidor shell neutre */
