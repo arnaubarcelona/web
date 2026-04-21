@@ -24,11 +24,14 @@
   font-size: 1.35rem;
   letter-spacing: .02em;
 }
+.horaris-board__download-btn:visited,
+.horaris-board__download-btn:hover,
+.horaris-board__download-btn:focus{
+  color: #fff;
+}
 
 .horaris-section{
   margin: 0 auto 1rem;
-  display: grid;
-  gap: .95rem;
 }
 
 .horaris-course-table{
@@ -85,9 +88,12 @@
 .horaris-course-table__hours{ width: 22%; text-align: left; }
 .horaris-course-table__aula{ width: 12%; text-align: center; }
 
-/* Vora superior de la primera fila d'horari com la vora exterior */
+/* Primera fila sense vora superior; cantonada superior esquerra també sense vora */
 .horaris-course-table tbody tr:first-child > *{
-  border-top: 2px solid var(--section-color);
+  border-top: 0;
+}
+.horaris-course-table tbody tr:first-child > :first-child{
+  border-left: 0;
 }
 
 @media (max-width: 900px){

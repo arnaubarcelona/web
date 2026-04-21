@@ -179,17 +179,17 @@ $yearLabel = sprintf('Horaris %d-%02d', (int)$year->datainici->format('Y'), ((in
 <section class="horaris-board" aria-label="<?= h($yearLabel) ?>">
     <?php foreach (array_values($sections) as $section): ?>
         <div class="horaris-section" style="--section-color: <?= h($section['color']) ?>;" aria-label="<?= h($section['name']) ?>">
-            <?php foreach ($section['courses'] as $courseBlock): ?>
-                <table class="horaris-course-table" role="table">
-                    <thead>
-                        <tr>
-                            <th class="horaris-course-table__spacer"></th>
-                            <th class="horaris-course-table__spacer"></th>
-                            <th class="horaris-course-table__spacer"></th>
-                            <th class="horaris-course-table__aula-head">AULA</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <table class="horaris-course-table" role="table">
+                <thead>
+                    <tr>
+                        <th class="horaris-course-table__spacer"></th>
+                        <th class="horaris-course-table__spacer"></th>
+                        <th class="horaris-course-table__spacer"></th>
+                        <th class="horaris-course-table__aula-head">AULA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($section['courses'] as $courseBlock): ?>
                     <?php foreach ($courseBlock['entries'] as $entry): ?>
                         <tr>
                             <th scope="row" class="horaris-course-table__course"><?= h($courseBlock['course']) ?></th>
@@ -198,9 +198,9 @@ $yearLabel = sprintf('Horaris %d-%02d', (int)$year->datainici->format('Y'), ((in
                             <td class="horaris-course-table__aula"><?= h($entry['aula']) ?></td>
                         </tr>
                     <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     <?php endforeach; ?>
 
