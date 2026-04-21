@@ -314,9 +314,12 @@ body{ margin: 0; }
 
   body.is-menuppal-page .topbar-brand--desktop-menuppal{
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 8px;
+    left: 50%;
+    right: auto;
+    top: 6px;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: calc(100% - 220px);
     display: flex;
     flex-direction: column;
     align-items: center;
