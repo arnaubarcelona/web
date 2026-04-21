@@ -14,8 +14,24 @@ $pages = $Pagines->find()
  * Ordenació "natural" per order_code: 1, 1.1, 1.2, 2, 10, 10.1...
  */
 usort($pages, function ($a, $b) {
-    $pa = array_map('intval', explode('.', (string)$a->order_code));
-    $pb = array_map('intval', explode('.', (string)$b->order_code));
+    $orderA = trim((string)$a->order_code);
+    $orderB = trim((string)$b->order_code);
+
+    $emptyA = ($orderA === '');
+    $emptyB = ($orderB === '');
+
+    if ($emptyA && !$emptyB) {
+        return 1;
+    }
+    if (!$emptyA && $emptyB) {
+        return -1;
+    }
+    if ($emptyA && $emptyB) {
+        return 0;
+    }
+
+    $pa = array_map('intval', explode('.', $orderA));
+    $pb = array_map('intval', explode('.', $orderB));
 
     $len = max(count($pa), count($pb));
     for ($i = 0; $i < $len; $i++) {
