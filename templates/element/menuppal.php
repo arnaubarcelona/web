@@ -2,9 +2,9 @@
 /**
  * Element: menuppal
  *
- * - visible=1
  * - main=1
- * - ordenació natural
+ * - ordenació natural per order_code
+ * - sense ordre (order_code buit) al final
  * - màxim 5 botons per fila
  * - espai sobrant repartit
  */
@@ -16,7 +16,6 @@ $Pagines = TableRegistry::getTableLocator()->get('Pagines');
 $pages = $Pagines->find()
     ->select(['id', 'title', 'description', 'order_code', 'link'])
     ->where([
-        'visible' => 1,
         'main' => 1,
     ])
     ->all()
@@ -24,8 +23,24 @@ $pages = $Pagines->find()
 
 /* Ordenació natural */
 usort($pages, function ($a, $b) {
-    $pa = array_map('intval', explode('.', (string)$a->order_code));
-    $pb = array_map('intval', explode('.', (string)$b->order_code));
+    $orderA = trim((string)$a->order_code);
+    $orderB = trim((string)$b->order_code);
+
+    $emptyA = ($orderA === '');
+    $emptyB = ($orderB === '');
+
+    if ($emptyA && !$emptyB) {
+        return 1;
+    }
+    if (!$emptyA && $emptyB) {
+        return -1;
+    }
+    if ($emptyA && $emptyB) {
+        return 0;
+    }
+
+    $pa = array_map('intval', explode('.', $orderA));
+    $pb = array_map('intval', explode('.', $orderB));
 
     $len = max(count($pa), count($pb));
     for ($idx = 0; $idx < $len; $idx++) {
