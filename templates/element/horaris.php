@@ -76,6 +76,20 @@ $colorBySubject = [
 ];
 
 $sections = [];
+$parentCourseIds = [];
+foreach ($courses as $maybeParent) {
+    $courseId = (int)($maybeParent->id ?? 0);
+    if ($courseId <= 0) {
+        continue;
+    }
+    foreach ($courses as $candidateChild) {
+        if ((int)($candidateChild->parentcourse_id ?? 0) === $courseId) {
+            $parentCourseIds[$courseId] = true;
+            break;
+        }
+    }
+}
+
 foreach ($courses as $course) {
     $subjectName = trim((string)($course->subject->name ?? __('Altres')));
     $sectionKey = mb_strtolower($subjectName !== '' ? $subjectName : (string)__('Altres'));
@@ -92,7 +106,7 @@ foreach ($courses as $course) {
         $sections[$sectionKey] = [
             'name' => $subjectName,
             'color' => $color,
-            'rows' => [],
+            'courses' => [],
         ];
     }
 
@@ -108,29 +122,54 @@ foreach ($courses as $course) {
         return strcmp((string)($a->horainici ?? ''), (string)($b->horainici ?? ''));
     });
 
-    $days = [];
-    $ranges = [];
-    foreach ($horaris as $h) {
-        $dayName = mb_strtolower(trim((string)($h->day->name ?? '')));
-        if ($dayName !== '' && !in_array($dayName, $days, true)) {
-            $days[] = $dayName;
-        }
+    $entries = [];
+    $isParentCourse = isset($parentCourseIds[(int)($course->id ?? 0)]);
 
-        $start = $formatHour($h->horainici ?? null);
-        $end = $formatHour($h->horafinal ?? null);
-        if ($start !== '' && $end !== '') {
-            $range = $start . '-' . $end . 'h';
-            if (!in_array($range, $ranges, true)) {
-                $ranges[] = $range;
+    if ($isParentCourse) {
+        foreach ($horaris as $h) {
+            $dayName = mb_strtolower(trim((string)($h->day->name ?? '')));
+            $start = $formatHour($h->horainici ?? null);
+            $end = $formatHour($h->horafinal ?? null);
+
+            if ($dayName === '' || $start === '' || $end === '') {
+                continue;
+            }
+
+            $entries[] = [
+                'days' => $dayName,
+                'hours' => $start . '-' . $end . 'h',
+                'aula' => mb_strtolower((string)($course->aula->name ?? '')),
+            ];
+        }
+    } else {
+        $days = [];
+        $ranges = [];
+        foreach ($horaris as $h) {
+            $dayName = mb_strtolower(trim((string)($h->day->name ?? '')));
+            if ($dayName !== '' && !in_array($dayName, $days, true)) {
+                $days[] = $dayName;
+            }
+
+            $start = $formatHour($h->horainici ?? null);
+            $end = $formatHour($h->horafinal ?? null);
+            if ($start !== '' && $end !== '') {
+                $range = $start . '-' . $end . 'h';
+                if (!in_array($range, $ranges, true)) {
+                    $ranges[] = $range;
+                }
             }
         }
+
+        $entries[] = [
+            'days' => $joinDays($days),
+            'hours' => implode(' / ', $ranges),
+            'aula' => mb_strtolower((string)($course->aula->name ?? '')),
+        ];
     }
 
-    $sections[$sectionKey]['rows'][] = [
+    $sections[$sectionKey]['courses'][] = [
         'course' => mb_strtoupper((string)$course->name),
-        'days' => $joinDays($days),
-        'hours' => implode(' / ', $ranges),
-        'aula' => mb_strtolower((string)($course->aula->name ?? '')),
+        'entries' => $entries,
     ];
 }
 
@@ -138,6 +177,33 @@ $yearLabel = sprintf('Horaris %d-%02d', (int)$year->datainici->format('Y'), ((in
 ?>
 
 <section class="horaris-board" aria-label="<?= h($yearLabel) ?>">
+    <?php foreach (array_values($sections) as $section): ?>
+        <div class="horaris-section" style="--section-color: <?= h($section['color']) ?>;" aria-label="<?= h($section['name']) ?>">
+            <?php foreach ($section['courses'] as $courseBlock): ?>
+                <table class="horaris-course-table" role="table">
+                    <thead>
+                        <tr>
+                            <th class="horaris-course-table__spacer"></th>
+                            <th class="horaris-course-table__spacer"></th>
+                            <th class="horaris-course-table__spacer"></th>
+                            <th class="horaris-course-table__aula-head">AULA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($courseBlock['entries'] as $entry): ?>
+                        <tr>
+                            <th scope="row" class="horaris-course-table__course"><?= h($courseBlock['course']) ?></th>
+                            <td class="horaris-course-table__days"><?= h($entry['days']) ?></td>
+                            <td class="horaris-course-table__hours"><?= h($entry['hours']) ?></td>
+                            <td class="horaris-course-table__aula"><?= h($entry['aula']) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endforeach; ?>
+        </div>
+    <?php endforeach; ?>
+
     <div class="horaris-board__actions">
         <?= $this->Html->link(
             __('Descarrega horaris (PDF)'),
@@ -145,23 +211,4 @@ $yearLabel = sprintf('Horaris %d-%02d', (int)$year->datainici->format('Y'), ((in
             ['class' => 'horaris-board__download-btn']
         ) ?>
     </div>
-
-    <?php foreach (array_values($sections) as $section): ?>
-        <div class="horaris-section" style="--section-color: <?= h($section['color']) ?>;">
-            <div class="horaris-section__header">AULA</div>
-
-            <table class="horaris-section__table" role="table">
-                <tbody>
-                <?php foreach ($section['rows'] as $row): ?>
-                    <tr>
-                        <th scope="row" class="horaris-section__course"><?= h($row['course']) ?></th>
-                        <td class="horaris-section__days"><?= h($row['days']) ?></td>
-                        <td class="horaris-section__hours"><?= h($row['hours']) ?></td>
-                        <td class="horaris-section__aula"><?= h($row['aula']) ?></td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    <?php endforeach; ?>
 </section>
