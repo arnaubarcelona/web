@@ -78,14 +78,27 @@ class HorarisController extends AppController
                 $pdf->Rect($x, $rowY, $wLeft, $rowH * $span, 'F');
 
                 $pdf->SetTextColor(255, 255, 255);
-                $pdf->SetFont('BebasNeue', '', 12.5);
-                $textY = $rowY + (($rowH * $span - 5.5) / 2);
-                $pdf->SetXY($x + 2, $textY);
-                $pdf->Cell($wLeft - 4, 5.5, $this->pdfText($row['course']), 0, 0, 'L');
+                $pdf->SetFont('BebasNeue', '', 11.8);
+                $courseLineHeight = 4.5;
+                $courseAvailableHeight = ($rowH * $span) - 1.4;
+                $maxCourseLines = max(1, (int)floor($courseAvailableHeight / $courseLineHeight));
+                $courseLines = $this->splitPdfTextLines($pdf, (string)($row['course'] ?? ''), $wLeft - 4);
+                if (count($courseLines) > $maxCourseLines) {
+                    $courseLines = array_slice($courseLines, 0, $maxCourseLines);
+                    $lastLine = (string)array_pop($courseLines);
+                    $courseLines[] = rtrim($lastLine, " \t\n\r\0\x0B-") . '…';
+                }
+                $courseTextHeight = count($courseLines) * $courseLineHeight;
+                $courseTextY = $rowY + (($rowH * $span - $courseTextHeight) / 2);
+                foreach ($courseLines as $lineIdx => $courseLine) {
+                    $pdf->SetXY($x + 2, $courseTextY + ($lineIdx * $courseLineHeight));
+                    $pdf->Cell($wLeft - 4, $courseLineHeight, $this->pdfText($courseLine), 0, 0, 'L');
+                }
 
                 for ($line = 0; $line < $span; $line++) {
                     $lineRow = $rows[$idx + $line];
                     $lineY = $tableY + (($idx + $line) * $rowH);
+                    $pdf->Rect($x + $wLeft + $wMid, $lineY, $wRight, $rowH, 'D');
                     $pdf->SetTextColor(55, 55, 55);
                     $pdf->SetFont('RobotoCondensed', '', 10.4);
                     $pdf->SetXY($x + $wLeft + 2.6, $lineY + 1.05);
@@ -368,5 +381,33 @@ class HorarisController extends AppController
     {
         $decoded = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         return iconv('UTF-8', 'windows-1252//TRANSLIT', $decoded) ?: utf8_decode($decoded);
+    }
+
+    /**
+     * @return array<int,string>
+     */
+    private function splitPdfTextLines(Fpdi $pdf, string $text, float $maxWidth): array
+    {
+        $words = preg_split('/\s+/u', trim($text)) ?: [];
+        if ($words === []) {
+            return [''];
+        }
+
+        $lines = [];
+        $current = '';
+        foreach ($words as $word) {
+            $candidate = $current === '' ? $word : ($current . ' ' . $word);
+            if ($current !== '' && $pdf->GetStringWidth($this->pdfText($candidate)) > $maxWidth) {
+                $lines[] = $current;
+                $current = $word;
+                continue;
+            }
+            $current = $candidate;
+        }
+        if ($current !== '') {
+            $lines[] = $current;
+        }
+
+        return $lines === [] ? [''] : $lines;
     }
 }
