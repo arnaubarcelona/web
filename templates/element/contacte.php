@@ -21,8 +21,17 @@ $email = $getFirstConfigValue(['mailcentre', 'emailcentre', 'email']);
 $phone = $getFirstConfigValue(['telefoncentre', 'telefon_centre', 'telefon', 'telcentre']);
 
 $cityLine = trim(trim($postalCode . ' ' . $cityName));
+$phoneHref = preg_replace('/\s+/', '', $phone) ?? '';
 ?>
 <div><?= h($address) ?></div>
 <div><?= h($cityLine) ?></div>
-<div><?= h($email) ?></div>
-<div><?= h($phone) ?></div>
+<div>
+    <?php if ($email !== ''): ?>
+        <a href="mailto:<?= h($email) ?>"><?= h($email) ?></a>
+    <?php endif; ?>
+</div>
+<div>
+    <?php if ($phone !== ''): ?>
+        <a href="tel:<?= h($phoneHref) ?>"><?= h($phone) ?></a>
+    <?php endif; ?>
+</div>
