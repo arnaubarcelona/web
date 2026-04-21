@@ -74,6 +74,7 @@ $colorBySubject = [
     'anglès' => '#76889C',
     'competic' => '#DD4F84',
 ];
+$fallbackPalette = ['#84BCC0', '#76889C', '#ABA5BA', '#DD4F84', '#A4C975', '#FAB100'];
 
 $sections = [];
 $parentCourseIds = [];
@@ -95,7 +96,7 @@ foreach ($courses as $course) {
     $sectionKey = mb_strtolower($subjectName !== '' ? $subjectName : (string)__('Altres'));
 
     if (!isset($sections[$sectionKey])) {
-        $color = '#84BCC0';
+        $color = $fallbackPalette[count($sections) % count($fallbackPalette)];
         foreach ($colorBySubject as $needle => $value) {
             if (str_contains($sectionKey, $needle)) {
                 $color = $value;
@@ -123,7 +124,11 @@ foreach ($courses as $course) {
     });
 
     $entries = [];
-    $isParentCourse = isset($parentCourseIds[(int)($course->id ?? 0)]);
+    $courseNameNormalized = mb_strtolower((string)($course->name ?? ''));
+    $looksLikeParentAccess = str_contains($courseNameNormalized, 'proves')
+        && str_contains($courseNameNormalized, 'grau')
+        && str_contains($courseNameNormalized, 'mitj');
+    $isParentCourse = isset($parentCourseIds[(int)($course->id ?? 0)]) || $looksLikeParentAccess;
 
     if ($isParentCourse) {
         foreach ($horaris as $h) {
