@@ -370,12 +370,27 @@ body{ margin: 0; }
   /* Si hi ha menuppal, el menú lateral queda a dalt
      amb un marge superior de l'alçada del logotip */
   body.is-menuppal-page .app-sidebar{
-    display: block;
+    display: none !important;
   }
 
   body.is-menuppal-page .app-sidebar__content{
     width: 100%;
     margin-top: calc(6rem + 0.35rem + 2.2rem + 0.6rem);
+  }
+
+  body.is-menuppal-page .app-topbar{
+    left: 0;
+    width: 100%;
+  }
+
+  body.is-menuppal-page .app-main{
+    left: 0;
+    width: 100%;
+  }
+
+  body.is-menuppal-page .app-bottombar{
+    left: 0;
+    width: 100%;
   }
 
   /* Contenidor shell neutre */
