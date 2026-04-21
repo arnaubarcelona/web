@@ -300,6 +300,19 @@ class HorarisController extends AppController
                     ];
                 }
             }
+            usort($finalRows, static function (array $a, array $b): int {
+                $courseCmp = strcasecmp((string)($a['course'] ?? ''), (string)($b['course'] ?? ''));
+                if ($courseCmp !== 0) {
+                    return $courseCmp;
+                }
+
+                $dayCmp = strcasecmp((string)($a['days'] ?? ''), (string)($b['days'] ?? ''));
+                if ($dayCmp !== 0) {
+                    return $dayCmp;
+                }
+
+                return strcasecmp((string)($a['hours'] ?? ''), (string)($b['hours'] ?? ''));
+            });
             $sections[$key]['rows'] = $finalRows;
         }
 

@@ -194,6 +194,14 @@ foreach ($courses as $course) {
         (bool)$sections[$sectionKey]['courses'][$existingIdx]['is_parent'] || $isParentCourse;
 }
 
+foreach ($sections as $sectionKey => $section) {
+    $sectionCourses = (array)($section['courses'] ?? []);
+    usort($sectionCourses, static function (array $a, array $b): int {
+        return strcasecmp((string)($a['course'] ?? ''), (string)($b['course'] ?? ''));
+    });
+    $sections[$sectionKey]['courses'] = $sectionCourses;
+}
+
 $yearLabel = sprintf('Horaris %d-%02d', (int)$year->datainici->format('Y'), ((int)$year->datafi->format('Y')) % 100);
 ?>
 
