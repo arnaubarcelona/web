@@ -116,6 +116,34 @@ $isMenuPpalLayout = str_contains($appMainClass, 'has-menuppal');
         </div>
     </div>
 
+    <!-- Branding TOPBAR (NOMÉS DESKTOP en pàgines amb menuppal) -->
+    <div class="topbar-brand topbar-brand--desktop-menuppal">
+        <?= $this->Html->image('logoGran.png', [
+            'alt' => 'CFA Guinardó',
+            'class' => 'app-topbar__logo'
+        ]) ?>
+
+        <div class="app-topbar__social">
+            <?= $this->Html->link(
+                $this->Html->image('instagram.png', [
+                    'alt' => 'Instagram',
+                    'class' => 'app-topbar__socialIcon'
+                ]),
+                'https://www.instagram.com/cfaguinardo',
+                ['escape' => false, 'target' => '_blank', 'rel' => 'noopener']
+            ) ?>
+
+            <?= $this->Html->link(
+                $this->Html->image('facebook.png', [
+                    'alt' => 'Facebook',
+                    'class' => 'app-topbar__socialIcon'
+                ]),
+                'https://www.facebook.com/people/Cfa-Guinardo/61560117734842/',
+                ['escape' => false, 'target' => '_blank', 'rel' => 'noopener']
+            ) ?>
+        </div>
+    </div>
+
     <!-- CTA (NOMÉS DESKTOP) -->
     <?= $this->Html->link(
         'INSCRIU-TE',
