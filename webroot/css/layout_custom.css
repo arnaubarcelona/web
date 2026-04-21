@@ -364,7 +364,7 @@ body{ margin: 0; }
 
   body.is-menuppal-page .app-sidebar__content{
     width: 100%;
-    margin-top: calc(6rem + 0.35rem + 2.2rem);
+    margin-top: calc(6rem + 0.35rem + 2.2rem + 0.6rem);
   }
 
   /* Contenidor shell neutre */
