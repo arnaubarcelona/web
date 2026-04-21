@@ -175,6 +175,7 @@ foreach ($courses as $course) {
     $sections[$sectionKey]['courses'][] = [
         'course' => mb_strtoupper((string)$course->name),
         'entries' => $entries,
+        'is_parent' => $isParentCourse,
     ];
 }
 
@@ -195,9 +196,20 @@ $yearLabel = sprintf('Horaris %d-%02d', (int)$year->datainici->format('Y'), ((in
                 </thead>
                 <tbody>
                 <?php foreach ($section['courses'] as $courseBlock): ?>
-                    <?php foreach ($courseBlock['entries'] as $entry): ?>
+                    <?php
+                    $entries = (array)$courseBlock['entries'];
+                    $isParent = (bool)($courseBlock['is_parent'] ?? false);
+                    $rowspan = max(1, count($entries));
+                    ?>
+                    <?php foreach ($entries as $idx => $entry): ?>
                         <tr>
-                            <th scope="row" class="horaris-course-table__course"><?= h($courseBlock['course']) ?></th>
+                            <?php if (!$isParent || $idx === 0): ?>
+                                <th
+                                    scope="row"
+                                    class="horaris-course-table__course"
+                                    <?= $isParent && $rowspan > 1 ? 'rowspan="' . (int)$rowspan . '"' : '' ?>
+                                ><?= h($courseBlock['course']) ?></th>
+                            <?php endif; ?>
                             <td class="horaris-course-table__days"><?= h($entry['days']) ?></td>
                             <td class="horaris-course-table__hours"><?= h($entry['hours']) ?></td>
                             <td class="horaris-course-table__aula"><?= h($entry['aula']) ?></td>

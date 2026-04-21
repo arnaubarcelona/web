@@ -18,7 +18,7 @@
   min-height: 42px;
   padding: 0.35rem 1rem;
   background: #dd4f84;
-  color: #fff;
+  color: #fff !important;
   text-decoration: none;
   font-family: 'Bebas Neue', Bebas, Arial, sans-serif;
   font-size: 1.35rem;
@@ -54,12 +54,12 @@
   line-height: 1.8rem;
   border: 0;
   text-align: center;
-  width: 12%;
-  border-right: 3px solid var(--section-color);
+  width: 18%;
+  border: 3px solid var(--section-color);
 }
 
 .horaris-course-table__course{
-  width: 31%;
+  width: 28%;
   background: var(--section-color);
   color: #fff;
   font-family: 'Bebas Neue', Bebas, Arial, sans-serif;
@@ -85,8 +85,24 @@
 }
 
 .horaris-course-table__days{ width: 35%; text-align: left; }
-.horaris-course-table__hours{ width: 22%; text-align: left; }
-.horaris-course-table__aula{ width: 12%; text-align: center; }
+.horaris-course-table__hours{ width: 19%; text-align: left; }
+.horaris-course-table__aula{
+  width: 18%;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Primera fila real de la taula (capçalera): interiors a 0 i inferior pintada */
+.horaris-course-table thead tr > *{
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 3px solid var(--section-color);
+}
+
+.horaris-course-table thead tr > *:last-child{
+  border: 3px solid var(--section-color);
+}
 
 /* Vores interiors invisibles */
 .horaris-course-table tbody tr > *{
