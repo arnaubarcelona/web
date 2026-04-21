@@ -1,0 +1,93 @@
+.horaris-board{
+  font-family: 'Roboto Condensed', Arial, sans-serif;
+  color: #3f3f3f;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.horaris-board__actions{
+  display: flex;
+  justify-content: center;
+  margin: 0 0 1.2rem;
+}
+
+.horaris-board__download-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0.35rem 1rem;
+  background: #dd4f84;
+  color: #fff;
+  text-decoration: none;
+  font-family: 'Bebas Neue', Bebas, Arial, sans-serif;
+  font-size: 1.35rem;
+  letter-spacing: .02em;
+}
+
+.horaris-section{
+  position: relative;
+  margin: 0 auto 1rem;
+  border: 2px solid var(--section-color);
+  border-top: 0;
+}
+
+.horaris-section__header{
+  position: absolute;
+  right: -2px;
+  top: -1.85rem;
+  width: 120px;
+  height: 1.85rem;
+  background: var(--section-color);
+  color: #fff;
+  font-family: 'Bebas Neue', Bebas, Arial, sans-serif;
+  font-size: 1.5rem;
+  line-height: 1.85rem;
+  text-align: center;
+}
+
+.horaris-section__table{
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.horaris-section__table tr + tr{
+  border-top: 1px solid #d8d8d8;
+}
+
+.horaris-section__course{
+  width: 31%;
+  background: var(--section-color);
+  color: #fff;
+  font-family: 'Bebas Neue', Bebas, Arial, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: .01em;
+  line-height: 1.1;
+  padding: .42rem .75rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.horaris-section__days,
+.horaris-section__hours,
+.horaris-section__aula{
+  background: #fff;
+  padding: .35rem .6rem;
+  font-size: 1.32rem;
+  line-height: 1.2;
+  vertical-align: middle;
+}
+
+.horaris-section__days{ width: 35%; text-align: left; }
+.horaris-section__hours{ width: 22%; text-align: left; }
+.horaris-section__aula{ width: 12%; text-align: center; }
+
+@media (max-width: 900px){
+  .horaris-section__header{ width: 95px; font-size: 1.25rem; }
+  .horaris-section__course{ font-size: 1.2rem; }
+  .horaris-section__days,
+  .horaris-section__hours,
+  .horaris-section__aula{ font-size: 1rem; }
+}
