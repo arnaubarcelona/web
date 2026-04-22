@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
+use Cake\Utility\Text;
 
 /**
  * Pagine Entity
@@ -20,6 +21,8 @@ use Cake\ORM\Entity;
  */
 class Pagine extends Entity
 {
+    protected $_virtual = ['slug'];
+
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -29,6 +32,18 @@ class Pagine extends Entity
      *
      * @var array<string, bool>
      */
+    protected function _getSlug(): string
+    {
+        $raw = trim((string)($this->link ?: $this->title));
+        $slug = mb_strtolower((string)Text::slug($raw, '-'));
+
+        if ($slug === '') {
+            return (string)$this->id;
+        }
+
+        return trim($slug, '-');
+    }
+
     protected $_accessible = [
         'title' => true,
         'body' => true,

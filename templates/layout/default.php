@@ -208,7 +208,7 @@ $isMenuPpalLayout = str_contains($appMainClass, 'has-menuppal');
                     <?= $this->element('bototext', [
                         'text'  => $p->title,
                         'image' => null,
-                        'link'  => ['controller' => 'Pagines', 'action' => 'view', $p->id],
+                        'link'  => ['_name' => 'pagina:view', 'slug' => $p->slug],
                         'title' => $p->title,
                         'color' => $color,
                         'class' => 'btn-page'

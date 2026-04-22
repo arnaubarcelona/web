@@ -66,7 +66,7 @@ $i = 0;
 
         $link = !empty($p->link)
             ? $p->link
-            : ['controller' => 'Pagines', 'action' => 'view', $p->id];
+            : ['_name' => 'pagina:view', 'slug' => $p->slug];
 
         $desc = trim((string)($p->description ?? ''));
     ?>

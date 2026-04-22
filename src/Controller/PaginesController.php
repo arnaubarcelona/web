@@ -39,30 +39,38 @@ class PaginesController extends AppController
 
     /**
      * Pàgina pública
-     * /pagines/view/{id}
-     * /pagines/view/{title}
+     * /pagines/view/{identifier} (format antic)
+     * /{slug} (format nou)
      */
-    public function view(string $id)
+    public function view(string $identifier)
     {
-        $lookup = trim($id);
+        $lookup = trim($identifier);
         $pagina = null;
 
         if (ctype_digit($lookup)) {
             $pagina = $this->Pagines->find()
                 ->where(['Pagines.id' => (int)$lookup])
                 ->first();
+
+            if ($pagina) {
+                return $this->redirect(['_name' => 'pagina:view', 'slug' => $pagina->slug], 301);
+            }
         }
 
+        $lookupDecoded = urldecode($lookup);
+        $pagina = $this->Pagines->find()
+            ->where([
+                'OR' => [
+                    'Pagines.title' => $lookupDecoded,
+                    'Pagines.link' => $lookupDecoded,
+                ],
+            ])
+            ->first();
+
         if (!$pagina) {
-            $lookupDecoded = urldecode($lookup);
-            $pagina = $this->Pagines->find()
-                ->where([
-                    'OR' => [
-                        'Pagines.title' => $lookupDecoded,
-                        'Pagines.link' => $lookupDecoded,
-                    ],
-                ])
-                ->first();
+            $pagina = $this->Pagines->find()->all()->match(function ($candidate) use ($lookup) {
+                return $candidate->slug === $lookup;
+            })->first();
         }
 
         if (!$pagina) {

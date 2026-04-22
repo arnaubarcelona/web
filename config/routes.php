@@ -64,6 +64,17 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/calendar', ['controller' => 'Calendar', 'action' => 'index']);
         $builder->connect('/calendar/pdf-annual', ['controller' => 'Calendar', 'action' => 'pdfAnnual']);
         $builder->connect('/calendar/pdf-monthly', ['controller' => 'Calendar', 'action' => 'pdfMonthly']);
+
+        // URL antiga
+        $builder->connect('/pagines/view/{identifier}', ['controller' => 'Pagines', 'action' => 'view'])
+            ->setPass(['identifier']);
+
+        // URL pública amigable basada en el títol/link de la pàgina
+        $builder->connect('/{slug}', ['controller' => 'Pagines', 'action' => 'view'], ['_name' => 'pagina:view'])
+            ->setPass(['slug'])
+            ->setPatterns([
+                'slug' => '(?!pagines$|pages$|calendar$|horaris$)[a-z0-9][a-z0-9-]*',
+            ]);
         /*
          * Connect catchall routes for all controllers.
          *

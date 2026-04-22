@@ -56,7 +56,7 @@ $toDateAtTime = static function ($date, string $time, DateTimeZone $timezone): ?
 
 $getPageUrlByTitle = static function (string $title) use ($Pagines) {
     $page = $Pagines->find()
-        ->select(['id', 'link'])
+        ->select(['id', 'title', 'link'])
         ->where(['title' => $title])
         ->first();
 
@@ -68,7 +68,7 @@ $getPageUrlByTitle = static function (string $title) use ($Pagines) {
         return $page->link;
     }
 
-    return ['controller' => 'Pagines', 'action' => 'view', $page->id];
+    return ['_name' => 'pagina:view', 'slug' => $page->slug];
 };
 
 $startPreinscripcio40 = $toDateAtTime($maxDates['datafipreinscripcio'], '00:00:00', $tz)?->modify('-40 days');
