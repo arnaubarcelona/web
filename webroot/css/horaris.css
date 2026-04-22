@@ -119,10 +119,10 @@
   border-right: 3px solid var(--section-color);
 }
 
-/* Primera fila del cos: sense vora superior i inferior */
+/* Primera fila del cos: sense vora superior */
 .horaris-course-table tbody tr:first-child > *{
   border-top: 0;
-  border-bottom: 0;
+  /* border-bottom: 0; */
 }
 
 /* Vora inferior de la taula (gruix 3) */
