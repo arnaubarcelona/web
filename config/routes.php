@@ -64,15 +64,6 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/calendar', ['controller' => 'Calendar', 'action' => 'index']);
         $builder->connect('/calendar/pdf-annual', ['controller' => 'Calendar', 'action' => 'pdfAnnual']);
         $builder->connect('/calendar/pdf-monthly', ['controller' => 'Calendar', 'action' => 'pdfMonthly']);
-        $builder->connect(
-            '/pagines/{id}',
-            ['controller' => 'Pagines', 'action' => 'view'],
-            [
-                'pass' => ['id'],
-                'id' => '.+',
-            ]
-        );
-
         /*
          * Connect catchall routes for all controllers.
          *
