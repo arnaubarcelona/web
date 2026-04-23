@@ -65,7 +65,6 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/calendar/pdf-annual', ['controller' => 'Calendar', 'action' => 'pdfAnnual']);
         $builder->connect('/calendar/pdf-monthly', ['controller' => 'Calendar', 'action' => 'pdfMonthly']);
         $builder->connect('/pagines', ['controller' => 'Pagines', 'action' => 'index']);
-        $builder->connect('/horaris', ['controller' => 'Horaris', 'action' => 'index']);
 
         // URL antiga
         $builder->connect('/pagines/view/{identifier}', ['controller' => 'Pagines', 'action' => 'view'])
