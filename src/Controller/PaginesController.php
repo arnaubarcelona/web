@@ -68,9 +68,12 @@ class PaginesController extends AppController
             ->first();
 
         if (!$pagina) {
-            $pagina = $this->Pagines->find()->all()->match(function ($candidate) use ($lookup) {
-                return $candidate->slug === $lookup;
-            })->first();
+            $lookupSlug = mb_strtolower($lookupDecoded);
+            $pagina = $this->Pagines->find()->all()
+                ->filter(function ($candidate) use ($lookupSlug) {
+                    return $candidate->slug === $lookupSlug;
+                })
+                ->first();
         }
 
         if (!$pagina) {
