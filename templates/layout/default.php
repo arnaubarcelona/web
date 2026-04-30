@@ -61,7 +61,7 @@ $isMenuPpalLayout = str_contains($appMainClass, 'has-menuppal');
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= h($cakeDescription) ?>: <?= $this->fetch('title') ?></title>
+    <title>CFA Guinardó</title>
     <?= $this->Html->meta('icon') ?>
 
     <?= $this->Html->css(['fonts', 'cake']) ?>
