@@ -16,6 +16,7 @@ $Pagines = TableRegistry::getTableLocator()->get('Pagines');
 
 $yearRows = $Years->find()
     ->select([
+        'datainicipreinscripcio',
         'datafipreinscripcio',
         'databaremprovisional',
         'datafireclamacions',
@@ -26,6 +27,7 @@ $yearRows = $Years->find()
     ->all();
 
 $maxDates = [
+    'datainicipreinscripcio' => null,
     'datafipreinscripcio' => null,
     'databaremprovisional' => null,
     'datafireclamacions' => null,
@@ -71,7 +73,7 @@ $getPageUrlByTitle = static function (string $title) use ($Pagines) {
     return ['_name' => 'pagina:view', 'slug' => $page->slug];
 };
 
-$startPreinscripcio40 = $toDateAtTime($maxDates['datafipreinscripcio'], '00:00:00', $tz)?->modify('-40 days');
+$startPreinscripcio40 = $toDateAtTime($maxDates['datainicipreinscripcio'], '00:00:00', $tz)?->modify('-40 days');
 $endPreinscripcio40 = $toDateAtTime($maxDates['datafipreinscripcio'], '23:59:59', $tz);
 
 $startBaremProvisional = $toDateAtTime($maxDates['databaremprovisional'], '20:00:00', $tz);
@@ -91,7 +93,7 @@ $targetTitle = 'Matrícula viva';
 
 /**
  * Condicions de redirecció:
- * 1) Si avui és dins els 40 dies anteriors a `datafipreinscripcio` (inclòs),
+ * 1) Si avui és dins els 40 dies anteriors a `datainicipreinscripcio` (inclòs),
  *    redirigim a "Preinscripció de juny".
  * 2) Si avui és entre les 20:00 CET de `databaremprovisional` i el final del
  *    dia de `datafireclamacions` (ambdós inclosos), redirigim a
