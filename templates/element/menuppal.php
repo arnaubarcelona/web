@@ -91,7 +91,7 @@ $i = 0;
 .menuppal-wrapper{
   display: flex;
   flex-wrap: wrap;
-  gap: 3rem;
+  gap: 1rem;
   justify-content: center;
 }
 

@@ -113,6 +113,16 @@ $isMenuPpalLayout = str_contains($appMainClass, 'has-menuppal');
                 ['escape' => false, 'target' => '_blank', 'rel' => 'noopener']
             ) ?>
 
+            <?= $this->Html->link(
+                'INSCRIU-TE',
+                'http://www.cfaguinardo.cat/gestioalumnes/students/alta-inici',
+                [
+                    'class' => 'app-topbar__cta app-topbar__cta--mobile-social',
+                    'target' => '_blank',
+                    'rel' => 'noopener'
+                ]
+            ) ?>
+
         </div>
     </div>
 

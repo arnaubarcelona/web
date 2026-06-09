@@ -102,6 +102,10 @@ body{ margin: 0; }
   white-space: nowrap;
 }
 
+.app-topbar__cta--mobile-social{
+  display: none;
+}
+
 /* =========================
    SIDEBAR (base)
 ========================= */
@@ -513,11 +517,23 @@ body{ margin: 0; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    height: 2rem;
   }
 
-  /* En mòbil: NO mostrar Inscriu-te */
+  /* En mòbil: amaga el CTA desktop i mostra el CTA del grup social només al menú principal */
   .app-topbar__cta{
     display: none;
+  }
+
+  body.is-menuppal-page .app-topbar__cta--mobile-social{
+    display: inline-flex;
+    margin-left: 0;
+    height: 2rem;
+    max-height: 2rem;
+    padding: 0 0.6rem;
+    background: var(--pink);
+    font-size: 1.1rem;
+    line-height: 1;
   }
 
   /* Branding centrat dins topbar */
