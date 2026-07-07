@@ -51,10 +51,10 @@ $renderDynamicElements = function (string $html): string {
     }, $html) ?? $html;
 
     // Els arxius pujats són públics des de /uploads/; si el contingut antic
-    // apunta a /webroot/uploads/, només cal corregir aquest prefix.
+    // apunta a /webroot/fitxer.pdf o /webroot/uploads/fitxer.pdf, corregim el prefix.
     $uploadsUrl = $this->Url->build('/uploads/');
     $html = preg_replace(
-        '#(?:(?:https?:)?//[^/"\'<>\r\n\s]+)?/?webroot/uploads/#i',
+        '~(?:(?:https?:)?//[^/"\'<>\r\n\s]+)?/?webroot/(?:uploads/)?(?=[^"\'<>\r\n\s]+\.(?:pdf|docx?|xlsx?|od[ts]|jpg|jpeg|png|gif|webp)(?:[?#][^"\'<>\r\n\s]*)?)~i',
         $uploadsUrl,
         $html
     ) ?? $html;
