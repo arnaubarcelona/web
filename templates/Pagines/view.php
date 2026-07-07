@@ -50,18 +50,14 @@ $renderDynamicElements = function (string $html): string {
         return sprintf('<a href="%s" target="_blank" rel="noopener">%s</a>', h($url), h($fileName));
     }, $html) ?? $html;
 
-    $html = preg_replace_callback('/\b(href|src)=(["\'])((?:https?:)?\/\/[^"\']+)?\/?webroot\/uploads\/([^"\']+)\2/i', function ($m) {
-        $filePath = str_replace('\\', '/', rawurldecode($m[4]));
-
-        if ($filePath === '' || str_contains($filePath, '..')) {
-            return $m[0];
-        }
-
-        $segments = array_map('rawurlencode', explode('/', $filePath));
-        $url = $this->Url->build('/uploads/' . implode('/', $segments));
-
-        return sprintf('%s=%s%s%s', $m[1], $m[2], h($url), $m[2]);
-    }, $html) ?? $html;
+    // Els arxius pujats són públics des de /uploads/; si el contingut antic
+    // apunta a /webroot/uploads/, només cal corregir aquest prefix.
+    $uploadsUrl = $this->Url->build('/uploads/');
+    $html = preg_replace(
+        '#(?:(?:https?:)?//[^/"\'<>\r\n\s]+)?/?webroot/uploads/#i',
+        $uploadsUrl,
+        $html
+    ) ?? $html;
 
     $pattern = '/(?:\{|\&\#123;)\s*([a-zA-Z0-9_-]+)\s*(?:\}|\&\#125;)/';
 
