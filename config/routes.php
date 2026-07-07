@@ -66,9 +66,6 @@ return function (RouteBuilder $routes): void {
         $builder->connect('/calendar/pdf-monthly', ['controller' => 'Calendar', 'action' => 'pdfMonthly']);
         $builder->connect('/pagines', ['controller' => 'Pagines', 'action' => 'index']);
 
-        // Compatibilitat amb enllaços antics que apunten a /webroot/...
-        $builder->connect('/webroot/*', ['controller' => 'Webroot', 'action' => 'file']);
-
         // URL antiga
         $builder->connect('/pagines/view/{identifier}', ['controller' => 'Pagines', 'action' => 'view'])
             ->setPass(['identifier']);
